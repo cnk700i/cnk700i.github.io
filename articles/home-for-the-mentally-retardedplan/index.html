@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"ljr.im","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="准备天猫精灵接入的网络环境。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="智障家居初战-网络篇">
+<meta property="og:url" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/index.html">
+<meta property="og:site_name" content="星路">
+<meta property="og:description" content="准备天猫精灵接入的网络环境。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/1.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/2.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/3.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/4.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/5.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/6.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/7.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/8.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/9.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/10.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/11.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/12.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/13.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/14.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/15.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/16.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/17.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/18.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/19.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/20.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/21.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/22.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/23.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/24.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/25.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/26.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/27.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/28.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/29.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/30.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/31.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/32.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/33.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/34.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/35.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/36.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/37.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/38.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/39.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/40.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/41.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/42.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/43.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/44.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/45.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/46.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/47.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/48.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/49.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/50.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/51.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/52.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/53.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/54.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/55.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/56.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/57.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/58.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/59.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/60.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/61.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/62.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/63.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/64.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/65.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/66.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/67.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/68.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/69.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/70.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/71.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/72.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/73.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/74.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/75.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/76.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/77.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/78.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/79.png">
+<meta property="article:published_time" content="2018-03-11T09:03:00.000Z">
+<meta property="article:modified_time" content="2020-08-28T13:42:34.000Z">
+<meta property="article:author" content="cnk700i">
+<meta property="article:tag" content="天猫精灵">
+<meta property="article:tag" content="智能家居">
+<meta property="article:tag" content="openvpn">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ljr.im/articles/home-for-the-mentally-retardedplan/1.png">
+
+<link rel="canonical" href="https://ljr.im/articles/home-for-the-mentally-retardedplan/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>智障家居初战-网络篇 | 星路</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-137999457-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-137999457-1');
+      }
+    </script>
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?dc919d77bfa18b55261c23c656062137";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">星路</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">追寻那一缕星光，在漆黑夜晚前行</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ljr.im/articles/home-for-the-mentally-retardedplan/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="cnk700i">
+      <meta itemprop="description" content="虽然没用技术赚到钱，至少让生活更有趣吧">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="星路">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          智障家居初战-网络篇
+        </h1>
+
+        <div class="post-meta">
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-03-11 09:03:00" itemprop="dateCreated datePublished" datetime="2018-03-11T09:03:00+00:00">2018-03-11</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-08-28 13:42:34" itemprop="dateModified" datetime="2020-08-28T13:42:34+00:00">2020-08-28</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%85%B6%E5%AE%83/" itemprop="url" rel="index"><span itemprop="name">其它</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/articles/home-for-the-mentally-retardedplan/" class="post-meta-item leancloud_visitors" data-flag-title="智障家居初战-网络篇" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>5.7k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>5 分钟</span>
+            </span>
+            <div class="post-description">准备天猫精灵接入的网络环境。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本篇主要讲解网络方面的准备：将会申请一台配备公网IP的VPS，并申请域名进行解析。然后，通过部署VPN，打通VPS访问家庭内网的网络访问通道。</p>
+<hr>
+<a id="more"></a>
+<img src="/articles/home-for-the-mentally-retardedplan/1.png" class="">
+<h2 id="1-VPS申请"><a href="#1-VPS申请" class="headerlink" title="1.VPS申请"></a>1.VPS申请</h2><p>目前谷歌VPS可以免费试用一年，不过申请有点复杂，需要自备梯子以及visa/master信用卡（预扣费1美元认证，不入账的）。其它VPS的开通请自行百度。</p>
+<h3 id="1-1申请账号"><a href="#1-1申请账号" class="headerlink" title="1.1申请账号"></a>1.1申请账号</h3><p>访问<a target="_blank" rel="noopener" href="https://cloud.google.com/" title="谷歌云">谷歌云</a>，右上角点击免费试用。按照提示填写注册信息、绑卡即可。</p>
+<img src="/articles/home-for-the-mentally-retardedplan/2.png" class="">
+
+<p>注册完后登陆控制台，点击左上角可以展开菜单栏，常用的有三项：结算、Compute Engine、VPC网络。</p>
+<img src="/articles/home-for-the-mentally-retardedplan/3.png" class="">
+
+<p>要注意的是，谷歌的免费一年指的就是赠送300$，有效期一年，期间按实际使用资源计费（扣完赠金不会自动扣信用卡的）。所以我们就不要乱用资源了，也可以常常点“结算”看到账户余额有及有效期了。一般我们启用最低配的VM是5$一个月，12个月60$，然后240$作为流量开销，大概240$/(0.23$/GB)=1043GB，完全足够使用了，详细可看<a target="_blank" rel="noopener" href="https://cloud.google.com/compute/pricing" title="谷歌云价目表">价格表</a></p>
+<img src="/articles/home-for-the-mentally-retardedplan/4.png" class="">
+
+<h3 id="1-2初步配置"><a href="#1-2初步配置" class="headerlink" title="1.2初步配置"></a>1.2初步配置</h3><p>接下来进行初步的设置，使得我们可以使用客户端登陆进行管理，毕竟谷歌自带的是网页版工具，得爬梯子才能用，十分的不方便。</p>
+<p>①菜单栏-&gt;Compute Engine-&gt;VM实例-&gt;创建实例</p>
+<img src="/articles/home-for-the-mentally-retardedplan/5.png" class="">
+
+<blockquote>
+<p>Tips：我实测asia-east1系列节点已经没有以前人们说的那么低时延，地区us-weast1系列时延还低点（好像目前还能免费使用），所以根据个人爱好选择吧。</p>
+</blockquote>
+<p>②创建SSH密钥，添加到谷歌云</p>
+<p>1）打开SecureCRT（7.1.1版本），Tools-&gt;Create Public Key</p>
+<img src="/articles/home-for-the-mentally-retardedplan/6.png" class="">
+
+<p>2）Key type选择RSA</p>
+<img src="/articles/home-for-the-mentally-retardedplan/7.png" class="">
+
+<p>3）填写Passphrase，不用填，填了的话secureCRT貌似有时候会要求输这个东东，如果设置的话别忘记了。</p>
+<img src="/articles/home-for-the-mentally-retardedplan/8.png" class="">
+
+<p>4）默认1024即可</p>
+<img src="/articles/home-for-the-mentally-retardedplan/9.png" class="">
+
+<p>5）选择目录保存，目录会生成一个Private key和一个Public key，Public key是我们要上传到谷歌云的</p>
+<img src="/articles/home-for-the-mentally-retardedplan/10.png" class="">
+
+<p>6）最后会提示是否作为SecureCRT的全局公匙，先选择否，我们稍后建立连接的时候再关联</p>
+<img src="/articles/home-for-the-mentally-retardedplan/11.png" class="">
+
+<p>7）找到刚才的目录，用记事本打开Identity.pub，可以看到一串ssh-rsa开头的字符串</p>
+<img src="/articles/home-for-the-mentally-retardedplan/12.png" class="">
+
+<p>8）返回谷歌云控制台，菜单栏-&gt;Compute Engine-&gt;元数据</p>
+<img src="/articles/home-for-the-mentally-retardedplan/13.png" class="">
+
+<p>9）点SSH密钥选项卡，添加一项，然后填入步骤7）的字符串+“空格”+用户名（自定义一个，比如smzdm），保存</p>
+<img src="/articles/home-for-the-mentally-retardedplan/14.png" class="">
+
+<p>10）菜单栏-&gt;VPC网络-&gt;外部IP地址，可以找到VPS主机的IP地址35.229.245.242。设置静态（类型下拉选择静态即可，提示输入名称随便输即可），不然重启后VPS主机的IP可能发生变化</p>
+<img src="/articles/home-for-the-mentally-retardedplan/15.png" class="">
+
+<img src="/articles/home-for-the-mentally-retardedplan/16.png" class="">
+
+<p>11）菜单栏-&gt;VPC网络-&gt;防火墙规则</p>
+<img src="/articles/home-for-the-mentally-retardedplan/17.png" class="">
+
+<p>12）新增一条openvpn入站规则</p>
+<img src="/articles/home-for-the-mentally-retardedplan/18.png" class="">
+
+<p>13）新增一条出站不限制的规则</p>
+<img src="/articles/home-for-the-mentally-retardedplan/19.png" class="">
+
+<p>③securteCRT登陆</p>
+<p>1）打开securtCRT，File-&gt;Quick Connect</p>
+<img src="/articles/home-for-the-mentally-retardedplan/20.png" class="">
+
+<p>2）Hostname填VPS地址，选中PublicKey，点Properties</p>
+<img src="/articles/home-for-the-mentally-retardedplan/21.png" class="">
+
+<p>3）选择之前创建的私匙</p>
+<img src="/articles/home-for-the-mentally-retardedplan/22.png" class="">
+
+<p>4）添加完私匙后会回到Quick Connect面板，点Connect连接</p>
+<img src="/articles/home-for-the-mentally-retardedplan/23.png" class="">
+
+<p>5）输入谷歌云添加SSH密钥步骤第9）步定义的用户名（公用电脑上请勿勾选Save username，并不要保留私匙）</p>
+<img src="/articles/home-for-the-mentally-retardedplan/24.png" class="">
+
+<p>6）成功登陆界面</p>
+<img src="/articles/home-for-the-mentally-retardedplan/25.png" class="">
+
+<h2 id="2-域名申请"><a href="#2-域名申请" class="headerlink" title="2.域名申请"></a>2.域名申请</h2><h3 id="2-1-购买域名"><a href="#2-1-购买域名" class="headerlink" title="2.1.购买域名"></a>2.1.购买域名</h3><p>腾讯云、阿里云经常有活动，club、xyz首年都是几块钱。</p>
+<img src="/articles/home-for-the-mentally-retardedplan/26.png" class="">
+
+<p>注册过程不再详述，购买过程有个实名认证的步骤，微信扫码支付1分钱即可，很方便。</p>
+<h3 id="2-2实名审核"><a href="#2-2实名审核" class="headerlink" title="2.2实名审核"></a>2.2实名审核</h3><p>购买后腾讯云会邮件通知域名审核，点击链接前往即可，需要填写个人联系信息以及上传身份证拍照。虽然是写着要几个工作日，我提交之后大概2小时就通过审核了，效率不错。</p>
+<img src="/articles/home-for-the-mentally-retardedplan/27.png" class="">
+
+<h3 id="2-3配置域名解析"><a href="#2-3配置域名解析" class="headerlink" title="2.3配置域名解析"></a>2.3配置域名解析</h3><p>①登陆<a target="_blank" rel="noopener" href="https://console.cloud.tencent.com/" title="腾讯云控制台">控制台</a>主页，在使用中的云产品点击域名管理。</p>
+<img src="/articles/home-for-the-mentally-retardedplan/28.png" class="">
+
+<p>②点击解析</p>
+<img src="/articles/home-for-the-mentally-retardedplan/29.png" class="">
+
+<p>③添加www主机记录，记录值填VPS地址35.229.245.242，用于后续与天猫精灵home NLU对接</p>
+<img src="/articles/home-for-the-mentally-retardedplan/30.png" class="">
+
+<p>④点击添加记录，主机记录选直接解析主机域名，记录值填VPS地址35.229.245.242，用于后续VPN互联</p>
+<img src="/articles/home-for-the-mentally-retardedplan/31.png" class="">
+
+<p>⑤win+r，运行cmd，输入ping 你的域名，可以看到解析已生效（有时候生效时间会需要几分钟）</p>
+<img src="/articles/home-for-the-mentally-retardedplan/32.png" class="">
+
+<img src="/articles/home-for-the-mentally-retardedplan/33.png" class="">
+
+<p>⑥这时，secureCRT可以改用域名登陆，在新的电脑上用就不用输IP啦</p>
+<img src="/articles/home-for-the-mentally-retardedplan/34.png" class="">
+
+<h2 id="3-VPN部署"><a href="#3-VPN部署" class="headerlink" title="3.VPN部署"></a>3.VPN部署</h2><h3 id="3-0-securCRT设置"><a href="#3-0-securCRT设置" class="headerlink" title="3.0.securCRT设置"></a>3.0.securCRT设置</h3><p>①把终端的编码改成UTF-8，不然中文字符会显示乱码</p>
+<img src="/articles/home-for-the-mentally-retardedplan/35.png" class="">
+
+<p>②可以顺便改下显示效果，个人习惯黑底绿字</p>
+<img src="/articles/home-for-the-mentally-retardedplan/36.png" class="">
+
+<h3 id="3-1-VPS部分"><a href="#3-1-VPS部分" class="headerlink" title="3.1.VPS部分"></a>3.1.VPS部分</h3><p>①打开secureCRT，登陆VPS。可以看到命令提示符前的是$，是处于普通用户模式</p>
+<img src="/articles/home-for-the-mentally-retardedplan/37.png" class="">
+
+<p>②登陆VPS，输入sudo su，切换到特权模式，光标会出现#号（登陆后默认执行一次即可，后续不再提及此操作）</p>
+<img src="/articles/home-for-the-mentally-retardedplan/38.png" class="">
+
+<p>②时间同步<br>VPS安装系统默认开启了，就不用另外设置了。我们另外设置一下时区，不然时间看起来怪怪的。</p>
+<p>1）<code>#tzselect</code></p>
+<p>依次输入数字选Asia-&gt;China-&gt;Beijing</p>
+<img src="/articles/home-for-the-mentally-retardedplan/39.png" class="">
+
+<p>2）<code>#cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime</code></p>
+<blockquote>
+<p>Tips：secureCRT粘贴的快捷键是SHIFT+INS（DEL上面的按键）。复制命令不需要复制”#”号</p>
+</blockquote>
+<p>3）<code>#vi /etc/timezone</code><br>删除原内容</p>
+<img src="/articles/home-for-the-mentally-retardedplan/40.png" class="">
+
+<p>增加Asia/Shanghai，保存退出</p>
+<img src="/articles/home-for-the-mentally-retardedplan/41.png" class="">
+
+<blockquote>
+<p>Tips：在这简单简单普及下vi命令，vi是一个linux下的文本编辑工具，像常用windows的记事本。由于系统没有图形界面，只能用键盘操作，所以一开始会十分的不习惯，不过后续的配置都需要使用到vi。打开vi后，默认是非编辑模式的，也就是敲字是敲不进的，往往还会触发vi的快捷键，导致莫名其妙的结果。所以建议打开vi后，立刻按下i键进入编辑模式，就可以正常地敲字了；编辑完毕后，先按Esc退出编辑模式，然后输”:wq”回车保存或者”:q!”不保存退出。</p>
+</blockquote>
+<p>③开启由转发功能</p>
+<p>1）<code>#vi /etc/sysctl.conf</code></p>
+<p>找到#net.ipv4.ip_forward = 1行，删除”#”，保存退出 Tips：#是注释符，注释后程序不会读取这条配置项。</p>
+<img src="/articles/home-for-the-mentally-retardedplan/42.png" class="">
+
+<p>2）<code>#sysctl -p</code></p>
+<p>使能配置</p>
+<p>③防火墙添加允许ssh</p>
+<p>1）<code>#ufw allow ssh</code><br>默认防火墙是关的，我们也不用开了，这只是防止意外开了防火墙连不上去</p>
+<p>④增加软件源</p>
+<p>1）<code>#vi /etc/apt/sources.list</code></p>
+<p>在末位增加一行<code>deb http://mirrors.kernel.org/ubuntu artful main</code>，保存。</p>
+<img src="/articles/home-for-the-mentally-retardedplan/43.png" class="">
+
+<blockquote>
+<p>Tips：增加这个源是为了安装最新版本的OpenVPN，不然安装版本是2.3.10</p>
+</blockquote>
+<img src="/articles/home-for-the-mentally-retardedplan/44.png" class="">
+
+<p>2）<code>#apt-get update</code></p>
+<p>apt-get update 更新软件源中的所有软件列表</p>
+<img src="/articles/home-for-the-mentally-retardedplan/45.png" class="">
+
+<p>⑤安装openvpn以及easy-rsa</p>
+<p>1）<code>#apt-get install openvpn easy-rsa</code></p>
+<p>按y确认就会自动完成安装，so easy</p>
+<img src="/articles/home-for-the-mentally-retardedplan/46.png" class="">
+
+<p>⑥创建CA证书</p>
+<p>1）<code>#make-cadir ~/openvpn-ca</code></p>
+<p>复制 easy-rsa 模板到 home 目录</p>
+<img src="/articles/home-for-the-mentally-retardedplan/47.png" class="">
+
+<blockquote>
+<p>Tips：等同#mkdir ~/openvpn-ca；#cp -r /usr/share/easy-rsa/*  ~/openvpn-ca </p>
+</blockquote>
+<p>2）<code>#cd ~/openvpn-ca</code></p>
+<p>进入 openvpn-ca 目录</p>
+<img src="/articles/home-for-the-mentally-retardedplan/48.png" class="">
+
+<p>3）<code>#vi vars</code></p>
+<p>vi编辑目录下的vars文件，设置CA证书参数</p>
+<img src="/articles/home-for-the-mentally-retardedplan/49.png" class="">
+
+<p>末尾找到</p>
+<img src="/articles/home-for-the-mentally-retardedplan/50.png" class="">
+
+<p>将=号后面修改为任意的值</p>
+<img src="/articles/home-for-the-mentally-retardedplan/51.png" class="">
+
+<p>保存(Esc-&gt;:wq-&gt;回车)</p>
+<p>4）<code>#source vars</code></p>
+<p>会有NOTE提示</p>
+<img src="/articles/home-for-the-mentally-retardedplan/52.png" class="">
+
+<p>5）<code>#./clean-all</code></p>
+<p>清除之前的配置以及生成的证书</p>
+<p>6）<code>#./build-ca</code></p>
+<p>启动创建过程</p>
+<img src="/articles/home-for-the-mentally-retardedplan/53.png" class="">
+
+<p>一路回车即可，即完成了CA证书的创建</p>
+<p>⑦创建服务器端证书、密钥</p>
+<p>1）<code>#./build-key-server server</code></p>
+<img src="/articles/home-for-the-mentally-retardedplan/54.png" class="">
+
+<p>​继续一路回车，直到出现这个确认提示（不小心按多了回车的话就要重复执行一次命令了。。）</p>
+<img src="/articles/home-for-the-mentally-retardedplan/55.png" class="">
+
+<p>最后会让你确认两次，输入y，回车即可</p>
+<img src="/articles/home-for-the-mentally-retardedplan/56.png" class="">
+
+<p>2）<code>#./build-dh</code></p>
+<p>生成HMAC 签名，好像是加密通讯通道的东东，可能需要等待几分钟</p>
+<img src="/articles/home-for-the-mentally-retardedplan/57.png" class="">
+
+<p>3）<code>#openvpn --genkey --secret keys/ta.key</code></p>
+<p>生成ta.key</p>
+<img src="/articles/home-for-the-mentally-retardedplan/58.png" class="">
+
+<p>⑦创建客户端证书、密钥</p>
+<p>1）<code>#./build-key clientA</code></p>
+<img src="/articles/home-for-the-mentally-retardedplan/59.png" class="">
+
+<p>依然一路回车，最后输两次y确认</p>
+<img src="/articles/home-for-the-mentally-retardedplan/60.png" class="">
+
+<blockquote>
+<p>Tips：可以多创建多几组证书、密钥对<br><code>./build-key clientB</code><br><code>./build-key clientC</code></p>
+</blockquote>
+<p>⑧检查刚刚生成的证书、密钥对</p>
+<p>1）<code>#cd ~/openvpn-ca/keys</code></p>
+<p>该目录是之前步骤生成的证书及密钥保存目录</p>
+<p>2）<code>#ls</code></p>
+<p>ls一下，看到ca、server、clientA等名字的文件</p>
+<img src="/articles/home-for-the-mentally-retardedplan/61.png" class="">
+
+<blockquote>
+<p>Tips：<br>服务器端需要用到的文件有：<br>1    ca.crt<br>2    ca.key<br>3    dh2048.pem (如果最初的变量KEY_SIZE设为1024，这里就是dh1024.pem)<br>4    server.crt<br>5    server.key<br>6    ta.key (如果不开启tls-auth，则无需该文件)<br>客户端clientA需要用到的文件有：<br>1    ca.crt<br>2    clientA.crt<br>3    clientA.key (名称clientA根据个人设置可能有所不同)<br>4    ta.key (如果不开启tls-auth，则无需该文件)</p>
+</blockquote>
+<p>⑨配置OpenVPN服务器端</p>
+<p>1）<code>#cp ca.crt ca.key server.crt server.key ta.key dh2048.pem /etc/openvpn</code></p>
+<p>注意当前目录是~/openvpn-ca/keys，是生成证书保存的目录，后续需要回到该目录拷贝证书到客户端机器</p>
+<img src="/articles/home-for-the-mentally-retardedplan/62.png" class="">
+
+<p>2）<code>#gunzip -c /usr/share/doc/openvpn/examples/sample-config-files/server.conf.gz | sudo tee /etc/openvpn/server.conf</code></p>
+<p>复制一个配置模板文件</p>
+<p>3）<code>#vi /etc/openvpn/server.conf</code></p>
+<p>修改配置文件</p>
+<p>i.网段默认是10.8.0.0，如果网段与你家的网段一样就需要修改。</p>
+<img src="/articles/home-for-the-mentally-retardedplan/63.png" class="">
+
+<p>ii.找一行client-config-dir ccd，去掉前面的”;”取消注释</p>
+<img src="/articles/home-for-the-mentally-retardedplan/64.png" class="">
+
+<p>4）<code>#mkdir /etc/openvpn/ccd</code><br>创建客户端配置目录</p>
+<img src="/articles/home-for-the-mentally-retardedplan/65.png" class="">
+
+<p>5）<code>#vi /etc/openvpn/ccd/clientA</code></p>
+<p>新建一个命名为客户端名字的配置文件，指定该客户端的IP，内容填ifconfig-push 10.8.0.2 10.8.0.1</p>
+<img src="/articles/home-for-the-mentally-retardedplan/66.png" class="">
+
+<blockquote>
+<p>Tips：服务器IP是网段第一个IP，10.8.0.1，10.8.0.2是客户端IP</p>
+</blockquote>
+<p>4）<code>#systemctl start openvpn@server</code></p>
+<p>启动OpenVPN服务</p>
+<p>5）<code>#systemctl enable openvpn@server</code></p>
+<p>设置自启动</p>
+<h3 id="2、家庭服务器部分"><a href="#2、家庭服务器部分" class="headerlink" title="2、家庭服务器部分"></a>2、家庭服务器部分</h3><p>服务器系统大家自行发挥，这里以Ubuntu 16.04为例。为什么选Ubuntu，因为简单，安装过程可以选上LAMP部件，直接为后面的对接做好准备。</p>
+<p>①安装</p>
+<p>具体过程省略，下载<a target="_blank" rel="noopener" href="https://www.ubuntu.com/download/server" title="ubuntu下载地址">服务器版本</a>即可。安装过程注意选上LAMP以及OpenSSH即可。</p>
+<img src="/articles/home-for-the-mentally-retardedplan/67.png" class="">
+
+<p>①secureCRT登陆家庭服务器</p>
+<p>1）安装好Ubuntu，SSH服务是已经开启了，直接连接登陆即可。</p>
+<blockquote>
+<p>Tips：如果不知道服务器IP，输入ifconfig命令查看eth0</p>
+</blockquote>
+<p>②安装VPN</p>
+<p>1）<code>#vi /etc/apt/sources.list</code></p>
+<p>同VPS安装同一版本的OpenVPN，增加软件源，在末位增加一行deb <code>http://mirrors.kernel.org/ubuntu artful main</code>，保存。</p>
+<img src="/articles/home-for-the-mentally-retardedplan/68.png" class="">
+
+<p>2）<code>#apt-get update</code></p>
+<p>apt-get update 更新软件源中的所有软件列表</p>
+<img src="/articles/home-for-the-mentally-retardedplan/69.png" class="">
+
+<p>3）<code>#apt-get install openvpn</code></p>
+<p>客户端只安装openvpn即可</p>
+<img src="/articles/home-for-the-mentally-retardedplan/70.png" class="">
+
+<p>③拷贝证书、钥匙</p>
+<p>由于证书、钥匙是在VPS上，通过sftp取有点麻烦，我们可以用图形化的工具winscp来拷贝，还有一种省事的办法就是直接拷贝文件的内容。如先前介绍，我们需要VPS的~/openvpn-ca/keys目录下ca.crt、clientA.crt、clientA.key、ta.key这四个文件。</p>
+<p>1）<code>#vi /etc/openvpn/ca.crt</code></p>
+<p>新建空白的ca.crt</p>
+<img src="/articles/home-for-the-mentally-retardedplan/71.png" class="">
+
+<p>2）VPS上：<code>#vi ~/openvpn-ca/keys/ca.crt</code></p>
+<img src="/articles/home-for-the-mentally-retardedplan/72.png" class="">
+
+<p>鼠标拖选，CTRL+INS复制</p>
+<p>3）回到本地服务器，SHIFT+INS粘贴，保存</p>
+<img src="/articles/home-for-the-mentally-retardedplan/73.png" class="">
+
+<p>4）类似地，新建好clientA.crt、clientA.key、ta.key</p>
+<p>5)<code>#ls /etc/openvpn/</code></p>
+<p>最后ls检查一下是否齐全</p>
+<img src="/articles/home-for-the-mentally-retardedplan/74.png" class="">
+
+<p>④配置</p>
+<p>1）<code>#cp /usr/share/doc/openvpn/examples/sample-config-files/client.conf /etc/openvpn/client.conf</code></p>
+<p>拷贝一份模板文件</p>
+<img src="/articles/home-for-the-mentally-retardedplan/75.png" class="">
+
+<p>2）<code>#vi /etc/openvpn/server.conf</code></p>
+<p>修改配置文件，有两处要改动的</p>
+<p>i.<br>remote my-server-1 1194，”my-server-1”替换成你的VPS IP地址或者域名</p>
+<img src="/articles/home-for-the-mentally-retardedplan/76.png" class="">
+
+<p>ii.<br>Cert client.crt, “ client.crt”替换成步骤③复制证书的名称（clientA.crt)<br>Key client.key, “client.key”替换成步骤③复制钥匙的名称（clientA.key)</p>
+<img src="/articles/home-for-the-mentally-retardedplan/77.png" class="">
+
+<p>⑤启用连接</p>
+<p>1）<code>#systemctl restart openvpn@client</code></p>
+<p>Tips：client是/etc/openvpn目录下配置文件的名称</p>
+<p>2）<code>#systemctl enable openvpn@client</code></p>
+<p>设置自启动</p>
+<p>3）<code>#ping 10.8.0.1</code></p>
+<p>测试连通，如配置无误可以正常访问</p>
+<img src="/articles/home-for-the-mentally-retardedplan/78.png" class="">
+
+<blockquote>
+<p>Tips：可以用securCRT新打开一个连接，使用#tail -f /var/log/syslog即时显示日志来观察错误提示。</p>
+</blockquote>
+<img src="/articles/home-for-the-mentally-retardedplan/79.png" class="">
+
+<p>​至此，基础网络已经准备完毕。</p>
+<p>参考文章传送门：</p>
+<p>1、<a target="_blank" rel="noopener" href="http://blog.51cto.com/ljohn/1961343" title="OpenVPN2.4.3 安装部署文档（实战）">OpenVPN2.4.3 安装部署文档（实战）</a></p>
+<p>2、<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/21434968" title="怎样在 Ubuntu 16.04 上安装 OpenVPN 服务">怎样在 Ubuntu 16.04 上安装 OpenVPN 服务 </a></p>
+<p>3、<a target="_blank" rel="noopener" href="http://blog.csdn.net/cai742925624/article/details/45483571" title="深入OpenVPN的配置 ">深入OpenVPN的配置</a></p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>cnk700i
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://ljr.im/articles/home-for-the-mentally-retardedplan/" title="智障家居初战-网络篇">https://ljr.im/articles/home-for-the-mentally-retardedplan/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/%E5%A4%A9%E7%8C%AB%E7%B2%BE%E7%81%B5/" rel="tag"><i class="fa fa-tag"></i> 天猫精灵</a>
+              <a href="/tags/%E6%99%BA%E8%83%BD%E5%AE%B6%E5%B1%85/" rel="tag"><i class="fa fa-tag"></i> 智能家居</a>
+              <a href="/tags/openvpn/" rel="tag"><i class="fa fa-tag"></i> openvpn</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/articles/intellectually-impaired-home-battlenetwork/" rel="prev" title="智障家居初战-方案篇">
+      <i class="fa fa-chevron-left"></i> 智障家居初战-方案篇
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/articles/intellectually-impaired-home-battlematching/" rel="next" title="智障家居初战-对接篇">
+      智障家居初战-对接篇 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-VPS%E7%94%B3%E8%AF%B7"><span class="nav-text">1.VPS申请</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1%E7%94%B3%E8%AF%B7%E8%B4%A6%E5%8F%B7"><span class="nav-text">1.1申请账号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2%E5%88%9D%E6%AD%A5%E9%85%8D%E7%BD%AE"><span class="nav-text">1.2初步配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E5%9F%9F%E5%90%8D%E7%94%B3%E8%AF%B7"><span class="nav-text">2.域名申请</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E8%B4%AD%E4%B9%B0%E5%9F%9F%E5%90%8D"><span class="nav-text">2.1.购买域名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2%E5%AE%9E%E5%90%8D%E5%AE%A1%E6%A0%B8"><span class="nav-text">2.2实名审核</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3%E9%85%8D%E7%BD%AE%E5%9F%9F%E5%90%8D%E8%A7%A3%E6%9E%90"><span class="nav-text">2.3配置域名解析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-VPN%E9%83%A8%E7%BD%B2"><span class="nav-text">3.VPN部署</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-0-securCRT%E8%AE%BE%E7%BD%AE"><span class="nav-text">3.0.securCRT设置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-VPS%E9%83%A8%E5%88%86"><span class="nav-text">3.1.VPS部分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2%E3%80%81%E5%AE%B6%E5%BA%AD%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%83%A8%E5%88%86"><span class="nav-text">2、家庭服务器部分</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="cnk700i"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">cnk700i</p>
+  <div class="site-description" itemprop="description">虽然没用技术赚到钱，至少让生活更有趣吧</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">38</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/cnk700i" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cnk700i" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:liangjiarong@gmail.com" title="E-Mail → mailto:liangjiarong@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://jq.qq.com/?_wv=1027&k=5mCE2MH" title="QQ → https:&#x2F;&#x2F;jq.qq.com&#x2F;?_wv&#x3D;1027&amp;k&#x3D;5mCE2MH" rel="noopener" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-rss"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">cnk700i</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">154k</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.id);
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            let target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    let { app_id, app_key, server_url } = {"enable":true,"app_id":"D6eniJJLIQb3z1eCLum0aUsC-MdYXbMMI","app_key":"eqYfUABMvuNoBGflLYsdYcK3","server_url":null,"security":true};
+    function fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    let api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

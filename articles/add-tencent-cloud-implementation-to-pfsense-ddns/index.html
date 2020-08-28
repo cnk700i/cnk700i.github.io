@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"ljr.im","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="pfSense的DDNS服务不支持腾讯云，那自己改造一下。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="为pfSense的DDNS增加腾讯云的实现">
+<meta property="og:url" content="https://ljr.im/articles/add-tencent-cloud-implementation-to-pfsense-ddns/index.html">
+<meta property="og:site_name" content="星路">
+<meta property="og:description" content="pfSense的DDNS服务不支持腾讯云，那自己改造一下。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-12-04T13:09:00.000Z">
+<meta property="article:modified_time" content="2020-08-28T13:34:25.000Z">
+<meta property="article:author" content="cnk700i">
+<meta property="article:tag" content="pfSense">
+<meta property="article:tag" content="DDNS">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://ljr.im/articles/add-tencent-cloud-implementation-to-pfsense-ddns/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>为pfSense的DDNS增加腾讯云的实现 | 星路</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-137999457-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-137999457-1');
+      }
+    </script>
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?dc919d77bfa18b55261c23c656062137";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">星路</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">追寻那一缕星光，在漆黑夜晚前行</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ljr.im/articles/add-tencent-cloud-implementation-to-pfsense-ddns/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="cnk700i">
+      <meta itemprop="description" content="虽然没用技术赚到钱，至少让生活更有趣吧">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="星路">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          为pfSense的DDNS增加腾讯云的实现
+        </h1>
+
+        <div class="post-meta">
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-12-04 13:09:00" itemprop="dateCreated datePublished" datetime="2018-12-04T13:09:00+00:00">2018-12-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-08-28 13:34:25" itemprop="dateModified" datetime="2020-08-28T13:34:25+00:00">2020-08-28</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">网络</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/articles/add-tencent-cloud-implementation-to-pfsense-ddns/" class="post-meta-item leancloud_visitors" data-flag-title="为pfSense的DDNS增加腾讯云的实现" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>5.8k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>5 分钟</span>
+            </span>
+            <div class="post-description">pfSense的DDNS服务不支持腾讯云，那自己改造一下。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>前几天刚换了电信宽带，终于有了公网IP，摆脱了移动的大内网，打通家里网络的方案又多几种选择。以前用过花生壳之类的免费DDNS，是挺方便的，但得用服务商的二级域名，没自己的域名用起来自由。家里的路由用的pfSense有DDNS服务，但不支持腾讯云。想着pfSense是开源的，之前申请Let’s encrypt泛域名证书的时候又调试过腾讯云的API了，改造改造难度应该不大，虽然没研究过pfSense的代码，但还是有信心约估个半天可以完成的。于是乎开工：读代码、定位功能模块还算顺利，但调试还是掉坑了，为了把php的调试日志调出来昨晚研究到近2点，最后不得不放弃。今天早上单独调试好模块后，再三确认嵌入的代码，运行后还好能正常工作了，哪天有空再回头研究调试的事情吧。</p>
+<hr>
+<a id="more"></a>
+
+
+<h2 id="1-准备"><a href="#1-准备" class="headerlink" title="1.准备"></a>1.准备</h2><p>1)工作流程分析</p>
+<p>配置DDNS服务-&gt;pfSense监测WANIP变化-&gt;调用API修改”A”记录-&gt;最后通过域名解析服务器获取最新IP</p>
+<p>2)需要改造内容</p>
+<ul>
+<li>前台的编辑页面：增加腾讯云类型的选项、显示相关的输入选项</li>
+<li>后台的处理逻辑：增加腾讯云类型的处理分支、相关的更新记录方法</li>
+</ul>
+<p>3)复用之前的腾讯云云解析接口</p>
+<p><a href="https://ljr.im/articles/lets-encrypt-wildcard-certificate-renewal-and-distribution/" title="Let&#39;s Encrypt通配符证书续期及分发">文章传送门</a>和<a target="_blank" rel="noopener" href="https://github.com/cnk700i/blog-attachment/blob/master/certbot-dns-hook/certbot-dns-qcloud/qcloud.php" title="腾讯云云解析接口封装">QcloudDns类下载</a></p>
+<h2 id="2-过程"><a href="#2-过程" class="headerlink" title="2.过程"></a>2.过程</h2><h3 id="2-1-前端页面"><a href="#2-1-前端页面" class="headerlink" title="2.1. 前端页面"></a>2.1. 前端页面</h3><ul>
+<li>修改/usr/local/www/services_dyndns_edit.php  <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 增加qcloud类型客户端的需要显示的选项</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">setVisible</span>(<span class="params">service</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">switch</span> (service) &#123;</span><br><span class="line">            <span class="comment"># ……省略……               </span></span><br><span class="line">            <span class="keyword">case</span> <span class="string">&quot;qcloud&quot;</span>:</span><br><span class="line">                hideGroupInput(<span class="string">&#x27;domainname&#x27;</span>, <span class="literal">false</span>); <span class="comment"># 域名</span></span><br><span class="line">                hideInput(<span class="string">&#x27;resultmatch&#x27;</span>, <span class="literal">true</span>);</span><br><span class="line">                hideInput(<span class="string">&#x27;updateurl&#x27;</span>, <span class="literal">true</span>);</span><br><span class="line">                hideInput(<span class="string">&#x27;requestif&#x27;</span>, <span class="literal">true</span>);</span><br><span class="line">                hideCheckbox(<span class="string">&#x27;curl_ipresolve_v4&#x27;</span>, <span class="literal">true</span>);</span><br><span class="line">                hideCheckbox(<span class="string">&#x27;curl_ssl_verifypeer&#x27;</span>, <span class="literal">true</span>);</span><br><span class="line">                hideInput(<span class="string">&#x27;host&#x27;</span>, <span class="literal">false</span>); <span class="comment"># 主机名</span></span><br><span class="line">                hideInput(<span class="string">&#x27;mx&#x27;</span>, <span class="literal">false</span>); <span class="comment"># mx值</span></span><br><span class="line">                hideCheckbox(<span class="string">&#x27;wildcard&#x27;</span>, <span class="literal">true</span>);</span><br><span class="line">                hideCheckbox(<span class="string">&#x27;proxied&#x27;</span>, <span class="literal">true</span>);</span><br><span class="line">                hideInput(<span class="string">&#x27;zoneid&#x27;</span>, <span class="literal">true</span>);</span><br><span class="line">                hideInput(<span class="string">&#x27;ttl&#x27;</span>, <span class="literal">false</span>); <span class="comment"># ttl值</span></span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="comment"># ……省略……</span></span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>INFO：该功能函数作用是根据不同类型的客户端，在页面显示不同的配置选项。另外用户名、密码选项默认显示，不需要设置</strong></p>
+</blockquote>
+</li>
+</ul>
+<h3 id="2-2-后端处理"><a href="#2-2-后端处理" class="headerlink" title="2.2. 后端处理"></a>2.2. 后端处理</h3><ul>
+<li><p>修改/etc/inc/services.inc</p>
+  <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># DYNDNS_PROVIDER_VALUES、DYNDNS_PROVIDER_DESCRIPTIONS两个字符串常量的定义中，加入qcloud。注意要加入分隔符，并且保证位置序号一致。</span></span><br><span class="line"><span class="comment"># ……省略……</span></span><br><span class="line">define(<span class="string">&#x27;DYNDNS_PROVIDER_VALUES&#x27;</span>, <span class="string">&#x27;all-inkl azure azurev6 citynetwork cloudflare cloudflare-v6 cloudns custom custom-v6 digitalocean dnsexit dnsimple dnsmadeeasy dnsomatic dreamhost dreamhost-v6 duiadns duiadns-v6 dyndns dyndns-custom dyndns-static dyns easydns eurodns freedns freedns-v6 glesys godaddy godaddy-v6 googledomains gratisdns he-net he-net-v6 he-net-tunnelbroker hover loopia namecheap noip noip-free ods opendns ovh-dynhost qcloud route53 route53-v6 selfhost spdyn spdyn-v6 zoneedit&#x27;</span>);</span><br><span class="line">define(<span class="string">&#x27;DYNDNS_PROVIDER_DESCRIPTIONS&#x27;</span>, <span class="string">&#x27;All-Inkl.com,Azure DNS,Azure DNS (v6),City Network,Cloudflare,Cloudflare (v6),ClouDNS,Custom,Custom (v6),DigitalOcean,DNSexit,DNSimple,DNS Made Easy,DNS-O-Matic,DreamHost,Dreamhost (v6),DuiaDns.net,DuiaDns.net (v6),DynDNS (dynamic),DynDNS (custom),DynDNS (static),DyNS,easyDNS,Euro Dns,freeDNS,freeDNS (v6),GleSYS,GoDaddy,GoDaddy (v6),Google Domains,GratisDNS,HE.net,HE.net (v6),HE.net Tunnelbroker,Hover,Loopia,Namecheap,No-IP,No-IP (free),ODS.org,OpenDNS,OVH DynHOST,qcloud,Route 53,Route 53 (v6),SelfHost,SPDYN,SPDYN (v6),ZoneEdit&#x27;</span>);</span><br><span class="line"><span class="comment"># ……省略……</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>INFO：services_dyndns_edit.php页面的根据这两个常量生成的类型列表。</strong></p>
+</blockquote>
+</li>
+<li><p>修改/etc/inc/dyndns.class</p>
+  <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 第一个switch ($this-&gt;_dnsService)，在&#x27;azurev6&#x27;分支前加入&#x27;qcloud&#x27;分支</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">updatedns</span></span>&#123;</span><br><span class="line">    <span class="comment"># ……省略……</span></span><br><span class="line">    <span class="keyword">switch</span> (<span class="keyword">$this</span>-&gt;_dnsService)&#123;</span><br><span class="line">        <span class="comment"># ……省略……</span></span><br><span class="line">        <span class="keyword">case</span> <span class="string">&#x27;qcloud&#x27;</span>: <span class="comment"># 增加这个即可，会执行$this-&gt;_update();</span></span><br><span class="line">        <span class="keyword">case</span>  <span class="string">&#x27;azurev6&#x27;</span>:</span><br><span class="line">            <span class="keyword">$this</span>-&gt;_update();</span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">$this</span>-&gt;_dnsDummyUpdateDone == <span class="literal">true</span>) &#123;</span><br><span class="line">                <span class="comment">// If a dummy update was needed, then sleep a while and do the update again to put the proper address back.</span></span><br><span class="line">                <span class="comment">// Some providers (e.g. No-IP free accounts) need to have at least 1 address change every month.</span></span><br><span class="line">                <span class="comment">// If the address has not changed recently, or the user did &quot;Force Update&quot;, then the code does</span></span><br><span class="line">                <span class="comment">// a dummy address change for providers like this.</span></span><br><span class="line">                sleep(<span class="number">10</span>);</span><br><span class="line">                <span class="keyword">$this</span>-&gt;_update();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="comment"># ……省略……</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment"># ……省略……</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>INFO：该处判断服务并出发更新操作。</strong></p>
+</blockquote>
+</li>
+</ul>
+<pre><code><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment"># 第二个switch ($this-&gt;_dnsService)，加入&#x27;qcloud&#x27;分支，位置在&#x27;default&#x27;之前即可。</span></span><br><span class="line"> <span class="function"><span class="keyword">function</span> <span class="title">_update</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">     <span class="comment"># ……省略……</span></span><br><span class="line">     <span class="keyword">switch</span> (<span class="keyword">$this</span>-&gt;_dnsService)&#123;</span><br><span class="line">         <span class="comment"># ……省略……</span></span><br><span class="line">         <span class="keyword">case</span> <span class="string">&#x27;qcloud&#x27;</span>:</span><br><span class="line">             <span class="comment">/* tencent cloud dyndns */</span></span><br><span class="line">             $secretId = <span class="keyword">$this</span>-&gt;_dnsUser; <span class="comment">#</span></span><br><span class="line">             $secretKey = <span class="keyword">$this</span>-&gt;_dnsPass; <span class="comment">#</span></span><br><span class="line">             $domain = <span class="keyword">$this</span>-&gt;_dnsDomain; <span class="comment">#</span></span><br><span class="line">             $subDomain = <span class="keyword">$this</span>-&gt;_dnsHost; <span class="comment">#</span></span><br><span class="line">             $recordType = <span class="string">&#x27;A&#x27;</span>;</span><br><span class="line">             $ip = <span class="keyword">$this</span>-&gt;_dnsIP;</span><br><span class="line">             $ttl = <span class="keyword">$this</span>-&gt;_dnsTTL;</span><br><span class="line">             $mx = <span class="keyword">$this</span>-&gt;_dnsMX;</span><br><span class="line">             $obj = <span class="keyword">new</span> QcloudDns($secretId, $secretKey);</span><br><span class="line">	$data = $obj-&gt;ListRecords($domain);</span><br><span class="line">	$is_newRecord = <span class="literal">true</span>;</span><br><span class="line">	<span class="keyword">if</span>($data[<span class="string">&quot;code&quot;</span>] == <span class="number">0</span>)&#123;</span><br><span class="line">		$data = $data[<span class="string">&quot;data&quot;</span>][<span class="string">&quot;records&quot;</span>];</span><br><span class="line">		<span class="keyword">if</span> (is_array($data)) &#123;</span><br><span class="line">			<span class="keyword">foreach</span> ($data <span class="keyword">as</span> $v) &#123;</span><br><span class="line">				<span class="keyword">if</span> ($v[<span class="string">&quot;name&quot;</span>] == $subDomain) &#123;</span><br><span class="line">					$recordId = $v[<span class="string">&quot;id&quot;</span>];</span><br><span class="line">					$result = $obj-&gt;UpdateRecord($domain, $recordId, $subDomain, $recordType, $recordLine = <span class="string">&#x27;默认&#x27;</span>, $ip, $ttl = <span class="number">600</span>, $mx = <span class="number">0</span>);</span><br><span class="line">					$is_newRecord = <span class="literal">false</span>;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span>($is_newRecord)&#123;</span><br><span class="line">				$result = $obj-&gt;CreateRecord($domain, $subDomain, $recordType, $recordLine = <span class="string">&#x27;默认&#x27;</span>, $ip, $ttl = <span class="number">600</span>, $mx = <span class="number">0</span>);</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">$this</span>-&gt;_checkStatus(<span class="number">0</span>, $result, <span class="literal">null</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">		<span class="keyword">$this</span>-&gt;_checkStatus(<span class="number">0</span>, $data,<span class="literal">null</span>);</span><br><span class="line">	&#125;</span><br><span class="line">             <span class="keyword">break</span>;</span><br><span class="line"><span class="keyword">default</span>:</span><br><span class="line">             <span class="keyword">break</span>;</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="comment"># ……省略……</span></span><br><span class="line"> &#125;</span><br><span class="line"> <span class="comment"># ……省略……</span></span><br></pre></td></tr></table></figure>
+&gt; __INFO：该处实现获取腾讯云API配置信息、更新IP操作。__
+
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 第三个switch ($this-&gt;_dnsService)，加入&#x27;qcloud&#x27;分支，位置在&#x27;default&#x27;之前即可。</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">_checkStatus</span>(<span class="params">$ch, $data, $header</span>) </span>&#123;</span><br><span class="line">    <span class="comment"># ……省略……</span></span><br><span class="line">    <span class="keyword">switch</span> (<span class="keyword">$this</span>-&gt;_dnsService)&#123;</span><br><span class="line">        <span class="comment"># ……省略……</span></span><br><span class="line">        <span class="keyword">case</span> <span class="string">&#x27;qcloud&#x27;</span>:</span><br><span class="line">        $data = json_encode($data);</span><br><span class="line">        <span class="keyword">if</span> (preg_match(<span class="string">&quot;/Success/i&quot;</span>, $data)) &#123;</span><br><span class="line">            $status = $status_intro . $success_str . gettext(<span class="string">&quot;IP Address Updated Successfully!&quot;</span>);</span><br><span class="line">            $successful_update = <span class="literal">true</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            $status = $status_intro . <span class="string">&quot;(&quot;</span> . gettext(<span class="string">&quot;Unknown Response&quot;</span>) . <span class="string">&quot;)&quot;</span>;</span><br><span class="line">            log_error($status_intro . gettext(<span class="string">&quot;PAYLOAD:&quot;</span>) . <span class="string">&quot; &quot;</span> . $data);</span><br><span class="line">            <span class="keyword">$this</span>-&gt;_debug($data);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">        <span class="comment"># ……省略……</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment"># ……省略……</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+&gt; __INFO：该处根据腾讯云返回的信息判断是否更新成功并输出日志。为了简单点，这里不对错误原因一一分析。__
+
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 将所有的if($this-&gt;_dnsService != &#x27;ods&#x27;)判断语句，加入&#x27;qcloud&#x27;类型</span></span><br><span class="line"><span class="comment"># ……省略……</span></span><br><span class="line"><span class="keyword">if</span> (!in_array(<span class="keyword">$this</span>-&gt;_dnsService, <span class="keyword">array</span>(<span class="string">&#x27;ods&#x27;</span>,<span class="string">&#x27;qcloud&#x27;</span>)))&#123;</span><br><span class="line">    <span class="comment"># ……省略……</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment"># ……省略……</span></span><br></pre></td></tr></table></figure>
+&gt; __INFO：原来代码&#39;ods&#39;类型的服务使用特殊的处理流程，跳过通用的curl构造处理流程。新加的&#39;qcloud&#39;直接使用QcloudDns类方法，也不需要用到原来的curl处理流程，所以也加进忽略列表。__
+
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 最后加入QcloudDns类定义代码</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">QcloudDns</span> </span>&#123;</span><br><span class="line">    <span class="comment"># ……省略……</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+&gt; __INFO：也可以做个文件引用。__</code></pre>
+<hr>
+<h2 id="3-小结"><a href="#3-小结" class="headerlink" title="3.小结"></a>3.小结</h2><ul>
+<li>php的配置文件php.ini由/etc/rc.php_ini_setup脚本生成，每次重启会覆盖。</li>
+<li>sshd的配置文件sshd_config由/etc/sshd脚本生成，每次重启会覆盖；secureCRT7版本不支持默认的钥匙交换协议，可以在配置文件增加旧方法，简单点就升级secureCRT版本。</li>
+</ul>
+<hr>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>cnk700i
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://ljr.im/articles/add-tencent-cloud-implementation-to-pfsense-ddns/" title="为pfSense的DDNS增加腾讯云的实现">https://ljr.im/articles/add-tencent-cloud-implementation-to-pfsense-ddns/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/pfSense/" rel="tag"><i class="fa fa-tag"></i> pfSense</a>
+              <a href="/tags/DDNS/" rel="tag"><i class="fa fa-tag"></i> DDNS</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/articles/plugins-and-changes-upgrade-the-infrared-function-of-home-assistant-official-blog-air-conditioner-companion-plugin/" rel="prev" title="【插件·改】升级Home Assistant官方博联和空调伴侣插件的红外功能">
+      <i class="fa fa-chevron-left"></i> 【插件·改】升级Home Assistant官方博联和空调伴侣插件的红外功能
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/articles/rollover-series-universal-access-platform-for-smart-speakers/" rel="next" title="【翻车系列】智能音箱通用接入平台">
+      【翻车系列】智能音箱通用接入平台 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%87%86%E5%A4%87"><span class="nav-text">1.准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E8%BF%87%E7%A8%8B"><span class="nav-text">2.过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E5%89%8D%E7%AB%AF%E9%A1%B5%E9%9D%A2"><span class="nav-text">2.1. 前端页面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E5%90%8E%E7%AB%AF%E5%A4%84%E7%90%86"><span class="nav-text">2.2. 后端处理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%B0%8F%E7%BB%93"><span class="nav-text">3.小结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="cnk700i"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">cnk700i</p>
+  <div class="site-description" itemprop="description">虽然没用技术赚到钱，至少让生活更有趣吧</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">38</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/cnk700i" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cnk700i" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:liangjiarong@gmail.com" title="E-Mail → mailto:liangjiarong@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://jq.qq.com/?_wv=1027&k=5mCE2MH" title="QQ → https:&#x2F;&#x2F;jq.qq.com&#x2F;?_wv&#x3D;1027&amp;k&#x3D;5mCE2MH" rel="noopener" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-rss"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">cnk700i</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">154k</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.id);
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            let target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    let { app_id, app_key, server_url } = {"enable":true,"app_id":"D6eniJJLIQb3z1eCLum0aUsC-MdYXbMMI","app_key":"eqYfUABMvuNoBGflLYsdYcK3","server_url":null,"security":true};
+    function fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    let api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

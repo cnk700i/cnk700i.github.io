@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"ljr.im","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="使用Grafana展示zabbix监控数据。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Zabbix+Grafana数据展示">
+<meta property="og:url" content="https://ljr.im/articles/zabbix-grafana-data-show/index.html">
+<meta property="og:site_name" content="星路">
+<meta property="og:description" content="使用Grafana展示zabbix监控数据。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ljr.im/articles/zabbix-grafana-data-show/c2_p1_%E7%99%BB%E9%99%86.png">
+<meta property="og:image" content="https://ljr.im/articles/zabbix-grafana-data-show/c2.1_p1_%E5%90%AF%E7%94%A8%E6%8F%92%E4%BB%B61.png">
+<meta property="og:image" content="https://ljr.im/articles/zabbix-grafana-data-show/c2.1_p2_%E5%90%AF%E7%94%A8%E6%8F%92%E4%BB%B62.png">
+<meta property="og:image" content="https://ljr.im/articles/zabbix-grafana-data-show/c2.1_p3_%E9%85%8D%E7%BD%AE%E6%95%B0%E6%8D%AE%E6%BA%901.png">
+<meta property="og:image" content="https://ljr.im/articles/zabbix-grafana-data-show/c2.1_p4_%E9%85%8D%E7%BD%AE%E6%95%B0%E6%8D%AE%E6%BA%902.png">
+<meta property="og:image" content="https://ljr.im/articles/zabbix-grafana-data-show/c2.1_p5_%E9%85%8D%E7%BD%AE%E6%95%B0%E6%8D%AE%E6%BA%903.png">
+<meta property="og:image" content="https://ljr.im/articles/zabbix-grafana-data-show/c2.1_p6_%E4%BF%9D%E5%AD%98%E6%B5%8B%E8%AF%95.png">
+<meta property="og:image" content="https://ljr.im/articles/zabbix-grafana-data-show/c2.2_p1_%E5%AF%BC%E5%85%A5%E4%B8%BB%E6%9C%BA%E6%A8%A1%E6%9D%BF1.png">
+<meta property="og:image" content="https://ljr.im/articles/zabbix-grafana-data-show/c2.2_p2_%E5%AF%BC%E5%85%A5%E4%B8%BB%E6%9C%BA%E6%A8%A1%E6%9D%BF2.png">
+<meta property="og:image" content="https://ljr.im/articles/zabbix-grafana-data-show/c2.2_p3_%E6%89%93%E5%BC%80dashboard.png">
+<meta property="og:image" content="https://ljr.im/articles/zabbix-grafana-data-show/c2.2_p3_%E4%B8%BB%E6%9C%BA%E7%9B%91%E6%8E%A7%E7%95%8C%E9%9D%A2.png">
+<meta property="og:image" content="https://ljr.im/articles/zabbix-grafana-data-show/c2.3_p1_%E5%AF%BC%E5%85%A5%E6%A8%A1%E6%9D%BF1.png">
+<meta property="og:image" content="https://ljr.im/articles/zabbix-grafana-data-show/c2.3_p2_%E5%AF%BC%E5%85%A5%E6%A8%A1%E6%9D%BF2.png">
+<meta property="og:image" content="https://ljr.im/articles/zabbix-grafana-data-show/c2.3_p3_%E5%AF%BC%E5%85%A5%E6%A8%A1%E6%9D%BF3.png">
+<meta property="og:image" content="https://ljr.im/articles/zabbix-grafana-data-show/c2.3_p4_%E4%BA%A4%E6%8D%A2%E6%9C%BA%E7%9B%91%E6%8E%A7%E7%95%8C%E9%9D%A2.png">
+<meta property="og:image" content="https://ljr.im/articles/zabbix-grafana-data-show/c2.4_p1_%E5%8F%98%E9%87%8F%E9%85%8D%E7%BD%AE%E5%85%A5%E5%8F%A31.png">
+<meta property="og:image" content="https://ljr.im/articles/zabbix-grafana-data-show/c2.4_p2_%E5%8F%98%E9%87%8F%E9%85%8D%E7%BD%AE%E5%85%A5%E5%8F%A32.png">
+<meta property="og:image" content="https://ljr.im/articles/zabbix-grafana-data-show/c2.4_p3_%E7%BC%96%E8%BE%91%E5%9B%BE%E5%BD%A2%E5%85%A5%E5%8F%A3.png">
+<meta property="og:image" content="https://ljr.im/articles/zabbix-grafana-data-show/c2.4_p4_%E8%AE%BE%E5%AE%9A%E6%9F%A5%E8%AF%A2%E9%A1%B9.png">
+<meta property="article:published_time" content="2019-08-20T20:00:00.000Z">
+<meta property="article:modified_time" content="2020-08-28T13:29:44.000Z">
+<meta property="article:author" content="cnk700i">
+<meta property="article:tag" content="Zabbix">
+<meta property="article:tag" content="Grafana">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ljr.im/articles/zabbix-grafana-data-show/c2_p1_%E7%99%BB%E9%99%86.png">
+
+<link rel="canonical" href="https://ljr.im/articles/zabbix-grafana-data-show/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Zabbix+Grafana数据展示 | 星路</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-137999457-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-137999457-1');
+      }
+    </script>
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?dc919d77bfa18b55261c23c656062137";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">星路</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">追寻那一缕星光，在漆黑夜晚前行</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ljr.im/articles/zabbix-grafana-data-show/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="cnk700i">
+      <meta itemprop="description" content="虽然没用技术赚到钱，至少让生活更有趣吧">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="星路">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Zabbix+Grafana数据展示
+        </h1>
+
+        <div class="post-meta">
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-08-20 20:00:00" itemprop="dateCreated datePublished" datetime="2019-08-20T20:00:00+00:00">2019-08-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-08-28 13:29:44" itemprop="dateModified" datetime="2020-08-28T13:29:44+00:00">2020-08-28</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%BF%90%E7%BB%B4/" itemprop="url" rel="index"><span itemprop="name">运维</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/articles/zabbix-grafana-data-show/" class="post-meta-item leancloud_visitors" data-flag-title="Zabbix+Grafana数据展示" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+            <div class="post-description">使用Grafana展示zabbix监控数据。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>因工作需要搜了一些监控解决方案，发现zabbix还是挺多人推荐的，于是乎记录一下学习过程。<a href="https://ljr.im/articles/first-test-zabbix-monitoring-solution/" title="初试zabbix监控方案">上篇</a>已实现了设备数据采集，虽然zabbix自身也可以使用图形进行可视化展示，但用起来不太顺手，使用依旧是广受推荐的grafana进行展示。</p>
+<hr>
+<a id="more"></a>
+<h2 id="0-环境"><a href="#0-环境" class="headerlink" title="0.环境"></a>0.环境</h2><ul>
+<li>ubuntu 18.04</li>
+<li>docker-ce 19.03.1</li>
+<li>docker-compose 1.24.1</li>
+<li>zabbix server 4.2.5</li>
+<li>zabbix agent 1:4.2.5-1+bionic</li>
+<li>grafana v6.3.2</li>
+</ul>
+<h2 id="1-grafana部署"><a href="#1-grafana部署" class="headerlink" title="1.grafana部署##"></a>1.grafana部署##</h2><p>依旧是docker-compose编排，加入之前的即可</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># docker-compose.yaml</span></span><br><span class="line"><span class="attr">volumes:</span></span><br><span class="line">  <span class="attr">grafana-data:</span></span><br><span class="line">  <span class="attr">grafana-etc:</span></span><br><span class="line">  <span class="attr">grafana-logs:</span></span><br><span class="line">  <span class="attr">grafana-home:</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">grafana:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">grafana</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">grafana/grafana</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="comment"># - /data/grafana/plugins:/var/lib/grafana/plugins # 离线安装插件文件夹</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;grafana-data:/var/lib/grafana&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;grafana-etc:/etc/grafana/&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;grafana-logs:/var/log/grafana&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;grafana-home:/usr/share/grafana&quot;</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;monitor-app&#x27;</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;3000:3000&#x27;</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;GF_INSTALL_PLUGINS=alexanderzobnin-zabbix-app&quot;</span> <span class="comment"># 安装zabbix插件，需联网</span></span><br><span class="line">    <span class="string">&lt;&lt;:</span> <span class="string">*logging-setting-template</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>INFO: 在volumes、services层级加入相对应的配置即可。</strong></p>
+</blockquote>
+<hr>
+<h2 id="2-配置"><a href="#2-配置" class="headerlink" title="2.配置"></a>2.配置</h2><p>访问http://宿主机ip:3000，登录。默认用户密码为<code>admin</code>:<code>admin</code></p>
+ 
+  <img src="/articles/zabbix-grafana-data-show/c2_p1_%E7%99%BB%E9%99%86.png" class="" title="登陆">
+
+
+<h3 id="2-1-配置数据源"><a href="#2-1-配置数据源" class="headerlink" title="2.1.配置数据源"></a>2.1.配置数据源</h3><p>grafana通过zabbix的接口获取数据。</p>
+<ul>
+<li><p>启用zabbix插件</p>
+ 
+  <img src="/articles/zabbix-grafana-data-show/c2.1_p1_%E5%90%AF%E7%94%A8%E6%8F%92%E4%BB%B61.png" class="" title="启用插件1">
+
+ 
+  <img src="/articles/zabbix-grafana-data-show/c2.1_p2_%E5%90%AF%E7%94%A8%E6%8F%92%E4%BB%B62.png" class="" title="启用插件2">
+
+</li>
+<li><p>配置zabbix信息</p>
+ 
+  <img src="/articles/zabbix-grafana-data-show/c2.1_p3_%E9%85%8D%E7%BD%AE%E6%95%B0%E6%8D%AE%E6%BA%901.png" class="" title="配置数据源1">
+
+ 
+  <img src="/articles/zabbix-grafana-data-show/c2.1_p4_%E9%85%8D%E7%BD%AE%E6%95%B0%E6%8D%AE%E6%BA%902.png" class="" title="配置数据源2">
+
+ 
+  <img src="/articles/zabbix-grafana-data-show/c2.1_p5_%E9%85%8D%E7%BD%AE%E6%95%B0%E6%8D%AE%E6%BA%903.png" class="" title="配置数据源3">
+
+ 
+  <img src="/articles/zabbix-grafana-data-show/c2.1_p6_%E4%BF%9D%E5%AD%98%E6%B5%8B%E8%AF%95.png" class="" title="保存测试">
+
+
+</li>
+</ul>
+<h3 id="2-2-主机仪表盘模板"><a href="#2-2-主机仪表盘模板" class="headerlink" title="2.2.主机仪表盘模板"></a>2.2.主机仪表盘模板</h3><p>zabbix插件自带有仪表盘模板，可以适配zabbix中官方模板所采集的数据。</p>
+<ul>
+<li><p>导入主机模板</p>
+ 
+  <img src="/articles/zabbix-grafana-data-show/c2.2_p1_%E5%AF%BC%E5%85%A5%E4%B8%BB%E6%9C%BA%E6%A8%A1%E6%9D%BF1.png" class="" title="导入主机模板1">
+
+ 
+  <img src="/articles/zabbix-grafana-data-show/c2.2_p2_%E5%AF%BC%E5%85%A5%E4%B8%BB%E6%9C%BA%E6%A8%A1%E6%9D%BF2.png" class="" title="导入主机模板2">
+
+</li>
+<li><p>打开仪表盘界面</p>
+ 
+  <img src="/articles/zabbix-grafana-data-show/c2.2_p3_%E6%89%93%E5%BC%80dashboard.png" class="" title="打开dashboard">
+
+ 
+  <img src="/articles/zabbix-grafana-data-show/c2.2_p3_%E4%B8%BB%E6%9C%BA%E7%9B%91%E6%8E%A7%E7%95%8C%E9%9D%A2.png" class="" title="主机监控界面">
+
+
+</li>
+</ul>
+<h3 id="2-3-交换机仪表盘模板"><a href="#2-3-交换机仪表盘模板" class="headerlink" title="2.3.交换机仪表盘模板"></a>2.3.交换机仪表盘模板</h3><ul>
+<li>导入交换机模板，这里是我做的一个模板，需要配合ziabbix模板使用，<a target="_blank" rel="noopener" href="https://github.com/cnk700i/blog-attachment/tree/master/zabbix-grafana_templates" title="模板下载">下载地址</a> 
+  <img src="/articles/zabbix-grafana-data-show/c2.3_p1_%E5%AF%BC%E5%85%A5%E6%A8%A1%E6%9D%BF1.png" class="" title="导入模板1">
+
+ 
+  <img src="/articles/zabbix-grafana-data-show/c2.3_p2_%E5%AF%BC%E5%85%A5%E6%A8%A1%E6%9D%BF2.png" class="" title="导入模板2">
+
+ 
+  <img src="/articles/zabbix-grafana-data-show/c2.3_p3_%E5%AF%BC%E5%85%A5%E6%A8%A1%E6%9D%BF3.png" class="" title="导入模板3">
+</li>
+<li>交换机监控信息 
+  <img src="/articles/zabbix-grafana-data-show/c2.3_p4_%E4%BA%A4%E6%8D%A2%E6%9C%BA%E7%9B%91%E6%8E%A7%E7%95%8C%E9%9D%A2.png" class="" title="交换机监控界面">
+
+
+</li>
+</ul>
+<h3 id="2-4-配置项简介"><a href="#2-4-配置项简介" class="headerlink" title="2.4.配置项简介"></a>2.4.配置项简介</h3><ul>
+<li><p>变量Variables，配置好的变量会在仪表盘界面左上方作为选择项出现，对应的值可以传到具体图形的查询项Query，这样图形的内容也会发生变化。</p>
+ 
+  <img src="/articles/zabbix-grafana-data-show/c2.4_p1_%E5%8F%98%E9%87%8F%E9%85%8D%E7%BD%AE%E5%85%A5%E5%8F%A31.png" class="" title="变量配置入口1">
+
+ 
+  <img src="/articles/zabbix-grafana-data-show/c2.4_p2_%E5%8F%98%E9%87%8F%E9%85%8D%E7%BD%AE%E5%85%A5%E5%8F%A32.png" class="" title="变量配置入口2">
+
+</li>
+<li><p>查询项Query，图形所展示的数据。</p>
+ 
+  <img src="/articles/zabbix-grafana-data-show/c2.4_p3_%E7%BC%96%E8%BE%91%E5%9B%BE%E5%BD%A2%E5%85%A5%E5%8F%A3.png" class="" title="编辑图形入口">
+
+ 
+  <img src="/articles/zabbix-grafana-data-show/c2.4_p4_%E8%AE%BE%E5%AE%9A%E6%9F%A5%E8%AF%A2%E9%A1%B9.png" class="" title="设定查询项">
+
+
+</li>
+</ul>
+<blockquote>
+<p><strong>INFO：grafana的图形配置涉及很多调整，个人了解有限很难说清楚，其实多摸索下基本就懂了。</strong></p>
+</blockquote>
+<hr>
+<h2 id="3-小结"><a href="#3-小结" class="headerlink" title="3.小结"></a>3.小结</h2><ul>
+<li>grafana中zabbix的数据组织层次为“群组”-“主机”-“应用集合”-“监控项”，这样可以定位具体要展示的数据。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>cnk700i
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://ljr.im/articles/zabbix-grafana-data-show/" title="Zabbix+Grafana数据展示">https://ljr.im/articles/zabbix-grafana-data-show/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/Zabbix/" rel="tag"><i class="fa fa-tag"></i> Zabbix</a>
+              <a href="/tags/Grafana/" rel="tag"><i class="fa fa-tag"></i> Grafana</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/articles/initial-test-zabbix-monitoring-program/" rel="prev" title="初试Zabbix监控方案">
+      <i class="fa fa-chevron-left"></i> 初试Zabbix监控方案
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/articles/zabbix-wechat-enterprise-account-push-alarm/" rel="next" title="Zabbix+微信企业号推送告警">
+      Zabbix+微信企业号推送告警 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0-%E7%8E%AF%E5%A2%83"><span class="nav-text">0.环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-grafana%E9%83%A8%E7%BD%B2"><span class="nav-text">1.grafana部署##</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E9%85%8D%E7%BD%AE"><span class="nav-text">2.配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E9%85%8D%E7%BD%AE%E6%95%B0%E6%8D%AE%E6%BA%90"><span class="nav-text">2.1.配置数据源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E4%B8%BB%E6%9C%BA%E4%BB%AA%E8%A1%A8%E7%9B%98%E6%A8%A1%E6%9D%BF"><span class="nav-text">2.2.主机仪表盘模板</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E4%BB%AA%E8%A1%A8%E7%9B%98%E6%A8%A1%E6%9D%BF"><span class="nav-text">2.3.交换机仪表盘模板</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-%E9%85%8D%E7%BD%AE%E9%A1%B9%E7%AE%80%E4%BB%8B"><span class="nav-text">2.4.配置项简介</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%B0%8F%E7%BB%93"><span class="nav-text">3.小结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="cnk700i"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">cnk700i</p>
+  <div class="site-description" itemprop="description">虽然没用技术赚到钱，至少让生活更有趣吧</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">38</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/cnk700i" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cnk700i" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:liangjiarong@gmail.com" title="E-Mail → mailto:liangjiarong@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://jq.qq.com/?_wv=1027&k=5mCE2MH" title="QQ → https:&#x2F;&#x2F;jq.qq.com&#x2F;?_wv&#x3D;1027&amp;k&#x3D;5mCE2MH" rel="noopener" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-rss"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">cnk700i</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">154k</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.id);
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            let target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    let { app_id, app_key, server_url } = {"enable":true,"app_id":"D6eniJJLIQb3z1eCLum0aUsC-MdYXbMMI","app_key":"eqYfUABMvuNoBGflLYsdYcK3","server_url":null,"security":true};
+    function fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    let api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

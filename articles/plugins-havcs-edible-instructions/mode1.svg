@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- 由 Microsoft Visio, SVG Export 生成 模式一示意图.svg 页-1 -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events"
+		xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="5.32885in" height="3.09191in"
+		viewBox="0 0 383.677 222.618" xml:space="preserve" color-interpolation-filters="sRGB" class="st19">
+	<v:documentProperties v:langID="2052" v:metric="true" v:viewMarkup="false"/>
+
+	<style type="text/css">
+	<![CDATA[
+		.st1 {fill:#4672c4;stroke:#c7c8c8;stroke-width:0.25}
+		.st2 {fill:#ed7d31;stroke:#c7c8c8;stroke-width:0.25}
+		.st3 {fill:#feffff;font-family:等线;font-size:1.00001em;font-weight:bold}
+		.st4 {font-size:1em}
+		.st5 {fill:#feffff;font-family:等线;font-size:0.833336em;font-weight:bold}
+		.st6 {marker-end:url(#mrkr5-22);marker-start:url(#mrkr5-20);stroke:#4672c4;stroke-linecap:round;stroke-linejoin:round;stroke-width:1}
+		.st7 {fill:#4672c4;fill-opacity:1;stroke:#4672c4;stroke-opacity:1;stroke-width:0.28409090909091}
+		.st8 {fill:none;stroke:none;stroke-width:0.25}
+		.st9 {fill:#ffffff;font-family:等线;font-size:1.00001em;font-weight:bold}
+		.st10 {fill:url(#grad0-29);stroke:#d06d29;stroke-dasharray:5.25,3.75;stroke-width:0.75}
+		.st11 {fill:#d06d29;font-family:等线;font-size:1.00001em;font-weight:bold}
+		.st12 {fill:#ffffff;stroke:none;stroke-linecap:butt;stroke-width:7.2}
+		.st13 {fill:#3d64ac;font-family:等线;font-size:0.666664em;font-weight:bold}
+		.st14 {fill:#000000;font-family:等线;font-size:0.666664em;font-weight:bold}
+		.st15 {stroke:#ff0000;stroke-dasharray:7,5,0,5;stroke-linecap:round;stroke-linejoin:round;stroke-width:1}
+		.st16 {fill:#ffffff;stroke:none;stroke-width:0.25}
+		.st17 {fill:#ff0000;font-family:等线;font-size:0.833336em;font-weight:bold}
+		.st18 {fill:#ff0000;font-family:等线;font-size:1.16666em;font-weight:bold}
+		.st19 {fill:none;fill-rule:evenodd;font-size:12px;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+	]]>
+	</style>
+
+	<defs id="Patterns_And_Gradients">
+		<linearGradient id="grad0-29" x1="0" y1="0" x2="1" y2="0" gradientTransform="rotate(60 0.5 0.5)">
+			<stop offset="0" stop-color="#fbece7" stop-opacity="1"/>
+			<stop offset="0.24" stop-color="#fdf5f3" stop-opacity="1"/>
+			<stop offset="0.54" stop-color="#feffff" stop-opacity="1"/>
+		</linearGradient>
+	</defs>
+	<defs id="Markers">
+		<g id="lend5">
+			<path d="M 2 1 L 0 0 L 1.98117 -0.993387 C 1.67173 -0.364515 1.67301 0.372641 1.98465 1.00043 " style="stroke:none"/>
+		</g>
+		<marker id="mrkr5-20" class="st7" v:arrowType="5" v:arrowSize="2" v:setback="5.8" refX="5.8" orient="auto"
+				markerUnits="strokeWidth" overflow="visible">
+			<use xlink:href="#lend5" transform="scale(3.52) "/>
+		</marker>
+		<marker id="mrkr5-22" class="st7" v:arrowType="5" v:arrowSize="2" v:setback="6.16" refX="-6.16" orient="auto"
+				markerUnits="strokeWidth" overflow="visible">
+			<use xlink:href="#lend5" transform="scale(-3.52,-3.52) "/>
+		</marker>
+	</defs>
+	<g v:mID="0" v:index="1" v:groupContext="foregroundPage">
+		<title>页-1</title>
+		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="8.50394"
+				v:shadowOffsetY="-8.50394"/>
+		<v:layer v:name="连接线" v:index="0"/>
+		<g id="group1-1" transform="translate(94.6884,-48.6669)" v:mID="1" v:groupContext="group">
+			<v:custProps>
+				<v:cp v:nameU="ShapeClass" v:lbl="ShapeClass" v:prompt="" v:type="0" v:format="" v:sortKey="" v:invis="true"
+						v:ask="false" v:langID="2052" v:cal="0" v:val="VT4(位置)"/>
+				<v:cp v:nameU="ShapeType" v:lbl="ShapeType" v:prompt="" v:type="0" v:format="" v:sortKey="" v:invis="true"
+						v:ask="false" v:langID="2052" v:cal="0" v:val="VT4(云)"/>
+			</v:custProps>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+				<v:ud v:nameU="ShapeClass" v:prompt="" v:val="VT0(5):26"/>
+				<v:ud v:nameU="SolSH" v:prompt="" v:val="VT15({BF0433D9-CD73-4EB5-8390-8653BE590246}):41"/>
+				<v:ud v:nameU="visLegendShape" v:prompt="" v:val="VT0(2):26"/>
+			</v:userDefs>
+			<title>云</title>
+			<g id="shape2-2" v:mID="2" v:groupContext="shape" transform="translate(0,-24.1898)">
+				<title>工作表.2</title>
+				<path d="M97.83 175.32 C97.22 169.96 92.35 165.77 86.36 165.77 C84.66 165.77 83.06 166.13 81.61 166.73 C78.79 161.47
+							 72.97 157.61 62.03 157.92 C47.82 158.33 31 164.72 27.62 176.07 C23.57 176.84 20.97 179.04 19.41 181.96
+							 C18.78 181.9 18.14 181.86 17.48 181.86 C8.13 181.86 0.94 188.68 0.53 197.09 C0 207.97 8.12 212.32 17.48
+							 212.32 C18.82 212.32 20.11 212.17 21.36 211.91 C23.31 213.18 25.84 213.95 28.62 213.95 C31.19 213.95
+							 33.55 213.29 35.43 212.18 C39.03 218.31 46.44 222.62 54.97 222.11 C63.96 221.59 69.35 219.68 72.53 216.72
+							 C72.73 216.7 72.92 216.7 73.12 216.67 C83.16 215.39 87.58 212.78 89 208.5 C89.27 208.5 89.54 208.51
+							 89.8 208.51 C102.83 208.51 113.39 204.7 113.39 191.38 C113.39 183.97 106.88 177.71 97.83 175.32 Z"
+						class="st1"/>
+			</g>
+		</g>
+		<g id="shape4-4" v:mID="4" v:groupContext="shape" transform="translate(323.4,-75.596)">
+			<title>正方形.4</title>
+			<desc>音箱组件 HTTP</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="29.7638" cy="192.854" width="59.53" height="59.5276"/>
+			<rect x="0" y="163.09" width="59.5276" height="59.5276" class="st2"/>
+			<text x="5.76" y="189.25" class="st3" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>音箱组件<v:newlineChar/><tspan
+						x="15.22" dy="1.2em" class="st4">HTTP</tspan></text>		</g>
+		<g id="group5-8" transform="translate(0.25,-84.1)" v:mID="5" v:groupContext="group">
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<title>圆柱形</title>
+			<desc>音箱</desc>
+			<g id="shape6-9" v:mID="6" v:groupContext="shape">
+				<title>工作表.6</title>
+				<v:userDefs>
+					<v:ud v:nameU="ControlHalfHeight" v:prompt="" v:val="VT0(0.11811023622047):24"/>
+					<v:ud v:nameU="FillForegnd" v:prompt="" v:val="VT5(1)"/>
+					<v:ud v:nameU="ControlHalfHeight" v:prompt="" v:val="VT0(0.059055117223317):1"/>
+					<v:ud v:nameU="FillForegnd" v:prompt="" v:val="VT5(#4672c4)"/>
+				</v:userDefs>
+				<path d="M0 218.37 A21.2598 4.25197 -180 0 0 42.52 218.37 L42.52 184.35 L0 184.35 L0 218.37 Z" class="st1"/>
+			</g>
+			<g id="shape5-11" v:mID="5" v:groupContext="groupContent">
+				<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+				<v:textRect cx="21.2598" cy="201.358" width="42.52" height="42.5197"/>
+				<ellipse cx="21.2598" cy="184.35" rx="21.2598" ry="4.25197" class="st1"/>
+				<text x="11.26" y="204.36" class="st5" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>音箱</text>			</g>
+		</g>
+		<g id="shape8-14" v:mID="8" v:groupContext="shape" v:layerMember="0" transform="translate(42.7697,-98.2732)">
+			<title>动态连接线</title>
+			<path d="M5.8 215.53 L6.16 215.53 L48.35 215.53" class="st6"/>
+		</g>
+		<g id="shape10-23" v:mID="10" v:groupContext="shape" transform="translate(115.948,-95.3598)">
+			<title>工作表.10</title>
+			<desc>音箱云平台</desc>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="35.4331" cy="212.618" width="70.87" height="20"/>
+			<rect x="0" y="202.618" width="70.8661" height="20" class="st8"/>
+			<text x="5.43" y="216.22" class="st9" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>音箱云平台</text>		</g>
+		<g id="shape35-26" v:mID="35" v:groupContext="shape" transform="translate(323.4,-142.84)">
+			<title>正方形.35</title>
+			<desc>Oauth</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="29.7638" cy="192.854" width="59.53" height="59.5276"/>
+			<path d="M0 222.62 L59.53 222.62 L59.53 163.09 L0 163.09 L0 222.62 Z" class="st10"/>
+			<text x="12.94" y="196.45" class="st11" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>Oauth</text>		</g>
+		<g id="shape36-31" v:mID="36" v:groupContext="shape" v:layerMember="0" transform="translate(151.381,-137.131)">
+			<title>动态连接线.36</title>
+			<desc>HTTP</desc>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="93.7871" cy="185.728" width="40" height="17.6036"/>
+			<path d="M0 216.82 L0 216.46 L0 187.14 L165.86 187.14" class="st6"/>
+			<rect v:rectContext="textBkgnd" x="84.0936" y="180.928" width="19.3867" height="9.59985" class="st12"/>
+			<text x="84.09" y="188.13" class="st13" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>HTTP</text>		</g>
+		<g id="shape40-40" v:mID="40" v:groupContext="shape" transform="translate(156.156,-172.21)">
+			<title>工作表.40</title>
+			<desc>oauth消息</desc>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="41.1024" cy="212.618" width="82.21" height="20"/>
+			<rect x="0" y="202.618" width="82.2047" height="20" class="st8"/>
+			<text x="22.52" y="216.22" class="st14" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>oauth消息</text>		</g>
+		<g id="shape43-43" v:mID="43" v:groupContext="shape" transform="translate(198.675,-75.596)">
+			<title>工作表.43</title>
+			<desc>音箱命令消息</desc>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="41.1024" cy="212.618" width="82.21" height="20"/>
+			<rect x="0" y="202.618" width="82.2047" height="20" class="st8"/>
+			<text x="17.1" y="216.22" class="st14" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>音箱命令消息</text>		</g>
+		<g id="shape52-46" v:mID="52" v:groupContext="shape" transform="translate(492.159,8.91142) rotate(90)">
+			<title>工作表.52</title>
+			<path d="M0 222.62 L161.28 222.62" class="st15"/>
+		</g>
+		<g id="shape56-49" v:mID="56" v:groupContext="shape" transform="translate(224.858,-125.675)">
+			<title>工作表.56</title>
+			<desc>具有公网IP 音箱云平台可访问</desc>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="47.5176" cy="212.618" width="95.04" height="20"/>
+			<rect x="0" y="202.618" width="95.0353" height="20" class="st16"/>
+			<text x="23.14" y="209.62" class="st17" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>具有公网IP<v:newlineChar/><tspan
+						x="7.52" dy="1.2em" class="st4">音箱云平台可访问</tspan></text>		</g>
+		<g id="shape58-53" v:mID="58" v:groupContext="shape" transform="translate(204.344,-202.368)">
+			<title>工作表.58</title>
+			<desc>互联网← →家</desc>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="51.7696" cy="212.618" width="103.54" height="20"/>
+			<rect x="0" y="202.618" width="103.539" height="20" class="st8"/>
+			<text x="5.92" y="216.82" class="st18" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>互联网←   →家</text>		</g>
+		<g id="shape104-56" v:mID="104" v:groupContext="shape" transform="translate(10.0304,-23.785)">
+			<title>正方形.104</title>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<rect x="0" y="212.556" width="10.0622" height="10.0622" class="st2"/>
+		</g>
+		<g id="shape105-58" v:mID="105" v:groupContext="shape" transform="translate(22.9272,-18.8161)">
+			<title>工作表.105</title>
+			<desc>插件功能模块</desc>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="29.7638" cy="212.618" width="59.53" height="20"/>
+			<rect x="0" y="202.618" width="59.5276" height="20" class="st8"/>
+			<text x="5.76" y="216.22" class="st13" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>插件功能模块</text>		</g>
+		<g id="shape106-61" v:mID="106" v:groupContext="shape" transform="translate(10.0304,-5.21892)">
+			<title>正方形.106</title>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<path d="M0 222.62 L10.06 222.62 L10.06 212.56 L0 212.56 L0 222.62 Z" class="st10"/>
+		</g>
+		<g id="shape107-64" v:mID="107" v:groupContext="shape" transform="translate(22.9272,-0.25)">
+			<title>工作表.107</title>
+			<desc>Home Assistant 功能模块</desc>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="51.7696" cy="212.618" width="103.54" height="20"/>
+			<rect x="0" y="202.618" width="103.539" height="20" class="st8"/>
+			<text x="6.36" y="216.22" class="st13" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>Home Assistant 功能模块</text>		</g>
+		<g id="shape130-67" v:mID="130" v:groupContext="shape" transform="translate(5.91929,-34.9661)">
+			<title>工作表.130</title>
+			<desc>图例:</desc>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="29.7638" cy="212.618" width="59.53" height="20"/>
+			<rect x="0" y="202.618" width="59.5276" height="20" class="st8"/>
+			<text x="4" y="216.22" class="st13" v:langID="2052"><v:paragraph/><v:tabList/>图例:</text>		</g>
+		<g id="shape143-70" v:mID="143" v:groupContext="shape" v:layerMember="0" transform="translate(208.011,-98.2732)">
+			<title>动态连接线.143</title>
+			<desc>HTTP</desc>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="57.6944" cy="215.531" width="40" height="17.6036"/>
+			<path d="M5.8 215.53 L6.16 215.53 L109.23 215.53" class="st6"/>
+			<rect v:rectContext="textBkgnd" x="48.001" y="210.731" width="19.3867" height="9.59985" class="st12"/>
+			<text x="48" y="217.93" class="st13" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>HTTP</text>		</g>
+		<g id="shape144-79" v:mID="144" v:groupContext="shape" transform="translate(28.5965,-78.9819)">
+			<title>工作表.144</title>
+			<desc>音箱命令消息</desc>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="41.1024" cy="212.618" width="82.21" height="20"/>
+			<rect x="0" y="202.618" width="82.2047" height="20" class="st8"/>
+			<text x="17.1" y="216.22" class="st14" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>音箱命令消息</text>		</g>
+	</g>
+</svg>

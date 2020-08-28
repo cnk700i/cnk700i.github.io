@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"ljr.im","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="经过半年折腾，语音控制的设想也算初步实现了，不过现在的整体方案较当初规划有不少变化，正好整理一下填一下半年前挖的坑。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="智障家居初战-语音控制篇(基于Node-RED对接)">
+<meta property="og:url" content="https://ljr.im/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/index.html">
+<meta property="og:site_name" content="星路">
+<meta property="og:description" content="经过半年折腾，语音控制的设想也算初步实现了，不过现在的整体方案较当初规划有不少变化，正好整理一下填一下半年前挖的坑。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-09-16T09:55:00.000Z">
+<meta property="article:modified_time" content="2020-08-28T13:36:20.000Z">
+<meta property="article:author" content="cnk700i">
+<meta property="article:tag" content="Home Assistant">
+<meta property="article:tag" content="Node-RED">
+<meta property="article:tag" content="智能家居">
+<meta property="article:tag" content="Alexa">
+<meta property="article:tag" content="Echo">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://ljr.im/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>智障家居初战-语音控制篇(基于Node-RED对接) | 星路</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-137999457-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-137999457-1');
+      }
+    </script>
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?dc919d77bfa18b55261c23c656062137";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">星路</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">追寻那一缕星光，在漆黑夜晚前行</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ljr.im/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="cnk700i">
+      <meta itemprop="description" content="虽然没用技术赚到钱，至少让生活更有趣吧">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="星路">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          智障家居初战-语音控制篇(基于Node-RED对接)
+        </h1>
+
+        <div class="post-meta">
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-09-16 09:55:00" itemprop="dateCreated datePublished" datetime="2018-09-16T09:55:00+00:00">2018-09-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-08-28 13:36:20" itemprop="dateModified" datetime="2020-08-28T13:36:20+00:00">2020-08-28</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%85%B6%E5%AE%83/" itemprop="url" rel="index"><span itemprop="name">其它</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/" class="post-meta-item leancloud_visitors" data-flag-title="智障家居初战-语音控制篇(基于Node-RED对接)" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+            <div class="post-description">经过半年折腾，语音控制的设想也算初步实现了，不过现在的整体方案较当初规划有不少变化，正好整理一下填一下半年前挖的坑。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>现在的整体方案较当初设想有不少变化，首先是中控系统由domoticz换成了Home Assistant（Home Assistant的界面更好看）；另外是语音控制终端由天猫精灵换成了Echo音箱（阿里搞什么实人认证，不想折腾了）；控制点、采集点由esp8266模块换成了sonoff模块（sonoff集成度更好、取电也更方便）和米家的产品（米家的使用体验好是好，就是贵）。<br>本篇主要介绍：Echo音箱与Home Assistant的对接以及全流程测试。</p>
+<hr>
+<a id="more"></a>
+<h2 id="1-HA"><a href="#1-HA" class="headerlink" title="1.HA"></a>1.HA</h2><h3 id="1-1安装"><a href="#1-1安装" class="headerlink" title="1.1安装"></a>1.1安装</h3><p>建议ubuntu环境安装，<a target="_blank" rel="noopener" href="https://bbs.hassbian.com/thread-27-1-1.html" title="[基础教程] （20180630更新）Ubuntu安装HomeAssistant教程（ubuntu17.10无坑版）">参考教程</a>。</p>
+<h3 id="2-2终端设备"><a href="#2-2终端设备" class="headerlink" title="2.2终端设备"></a>2.2终端设备</h3><p>准备一个可控制的“智能”设备，在此以sonoff为例，可以<a href="https://ljr.im/articles/sonoff-basic-switch-brush-based-on-appdaemonhome-assistant-tasmota-equipped-with-illuminance-infrared-sensor-for-automatic-control-of-lights/" title="基于Appdaemon+Homeassistant的Sonoff basic开关刷Tasmota搭载光照度+红外传感器实现自动化控灯">参考教程</a>章节1-3准备一个。</p>
+<h3 id="3-3控制api"><a href="#3-3控制api" class="headerlink" title="3.3控制api"></a>3.3控制api</h3><p>后续对接服务调用HA的api进行控制，使用chrome浏览器的postman插件进行测试。</p>
+<p><code>http://&#123;[HA服务器ip]&#125;:8123/api/services/switch/turn_on?api_password=&#123;[HA密码]&#125;</code></p>
+<p><code>&#123;&#39;entity_id&#39;:&#39;switch.template&#39;&#125;</code></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//响应样例</span></span><br><span class="line">[&#123;</span><br><span class="line">  <span class="string">&quot;attributes&quot;</span>: &#123;</span><br><span class="line">      <span class="string">&quot;friendly_name&quot;</span>: <span class="string">&quot;测试&quot;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">&quot;context&quot;</span>: &#123;</span><br><span class="line">      <span class="string">&quot;id&quot;</span>: <span class="string">&quot;1898701755c24dd58c41df43d32fa4d1&quot;</span>,</span><br><span class="line">      <span class="string">&quot;user_id&quot;</span>: <span class="literal">null</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">&quot;entity_id&quot;</span>: <span class="string">&quot;switch.template&quot;</span>,</span><br><span class="line">  <span class="string">&quot;last_changed&quot;</span>: <span class="string">&quot;2018-09-14T03:32:28.422597+00:00&quot;</span>,</span><br><span class="line">  <span class="string">&quot;last_updated&quot;</span>: <span class="string">&quot;2018-09-14T03:32:28.422597+00:00&quot;</span>,</span><br><span class="line">  <span class="string">&quot;state&quot;</span>: <span class="string">&quot;on&quot;</span></span><br><span class="line">&#125;]</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-Echo音箱"><a href="#2-Echo音箱" class="headerlink" title="2.Echo音箱"></a>2.Echo音箱</h2><p>前往开发者平台创建一个自定义技能，并关联到Echo，这样Echo就能将我们的语音指令翻译成Json格式指令并发送到我们指定的接口服务器。后续再根据指令调用HA的api来对终端设备进行控制。</p>
+<h3 id="2-1创建skill"><a href="#2-1创建skill" class="headerlink" title="2.1创建skill"></a>2.1创建skill</h3><ul>
+<li><p><a target="_blank" rel="noopener" href="https://developer.amazon.com/alexa/console/ask" title="Amazon开发者平台">登陆开发者平台</a></p>
+</li>
+<li><p>点击右侧”Create Skill”按钮</p>
+</li>
+</ul>
+
+
+<ul>
+<li>输入技能名称，类型选”Custom”，点击”Create Skill”按钮。</li>
+</ul>
+
+
+<blockquote>
+<p><strong>DEBUG：其实更建议选”Smart Home”，Amazon定义好了很多标准属性，更加适合智能家居场景，不过指令的处理需要使用AWS Lamaba，不能用自己的服务。</strong></p>
+</blockquote>
+<ul>
+<li>默认第一个即可，点击”Choose”继续。</li>
+</ul>
+
+
+<ul>
+<li>“Build”标签页加载如下，在这我们对Skill进行配置，可以看到1-4步骤是必须的。</li>
+</ul>
+
+
+<h4 id="2-1-1-Invocation"><a href="#2-1-1-Invocation" class="headerlink" title="2.1.1 Invocation"></a>2.1.1 Invocation</h4><ul>
+<li>点击左侧面板”Invocation”，设置调用名称，默认是和技能名称一样。</li>
+</ul>
+
+
+<blockquote>
+<p><strong>INFO：设置完毕点击”Save Model”保存，后续不再提及。</strong></p>
+</blockquote>
+<h4 id="2-1-2-Intent"><a href="#2-1-2-Intent" class="headerlink" title="2.1.2 Intent"></a>2.1.2 Intent</h4><ul>
+<li>点击左侧面板”Intents”，打开页面中点击”Add Intent”。</li>
+</ul>
+
+
+<ul>
+<li>创建一个意图。假设我们目的是控制灯，创建一个”LightControll”意图。</li>
+</ul>
+
+
+<blockquote>
+<p><strong>DEBUG：意图（intent）是在语言处理模块与执行模块之间传递信息的一种比较通用的格式标准，可以简单认为是用户命令的形式化描述。</strong></p>
+</blockquote>
+<blockquote>
+<p><strong>INFO：意图名称”LightControll”会传递给接口服务器，然后我们就知道这是控制灯。</strong></p>
+</blockquote>
+<ul>
+<li>一个意图需要设置Sample Utterances和Intent Slots。</li>
+</ul>
+
+
+<blockquote>
+<p><strong>INFO：Sample Utterances是不同的说话样例，比如我们关灯可以说“打开厨房的灯”和“把厨房的灯打开”。然后Intent Slots是说话样例中的变量，我们“打开厨房的灯”、“打开客厅的灯”，“客厅”、“厨房”就是一个位置变量，用一个Slot代替。</strong></p>
+</blockquote>
+<ul>
+<li>在这我创建两种话例：”turn {sate} the {zone} light”、”turn the {zone} light {state}”Utterances。其中包含两个变量{state}，代表开灯还是关灯；{zone}，代表灯的位置。</li>
+</ul>
+
+
+<blockquote>
+<p><strong>DEBUG：当增加的话例中含有{xxx}，会自动创建对应名称的slot。</strong></p>
+</blockquote>
+<ul>
+<li>还要为slot设置类型，点击左侧面板”Slot Types”，然后点击”Add Slot Type”。</li>
+</ul>
+
+
+<ul>
+<li>自定义即可，输入名称”CUSTOM_ZONE”，点击”Create custom slot type”。</li>
+</ul>
+
+
+<ul>
+<li>依次添加”kitchen”和”living room”，作为测试就不添加多了。</li>
+</ul>
+
+
+<blockquote>
+<p><strong>DEBUG：如果设置同义词”SYNONYMS”，那应该设置”ID”，这样对接服务器根据”ID”来判断具体位置。</strong></p>
+</blockquote>
+<ul>
+<li>类似添加”CUSTOM_STATE”，两个值”on”、”off”分别对应开、关，。</li>
+</ul>
+
+
+<ul>
+<li>点击左侧面板”LightControll” Intent返回先前页面，为”zone”、”state”设置SLOT TYPE。</li>
+</ul>
+
+
+<ul>
+<li>点击上方”Save Model”，再点击”Build Model”，需要等待一段时间。</li>
+</ul>
+
+
+
+<h3 id="2-2配置"><a href="#2-2配置" class="headerlink" title="2.2配置"></a>2.2配置</h3><h4 id="2-2-1-Endpoint"><a href="#2-2-1-Endpoint" class="headerlink" title="2.2.1 Endpoint"></a>2.2.1 Endpoint</h4><ul>
+<li>点击左侧面板”Endpoint”，点击HTTPS，输入接口服务器的API地址<code>https://&#123;[你的域名]&#125;/gate</code>。下拉框是选择证书类型，一般选<code>My development endpoint is a sub-domain of a domain that has a wildcard certificate from a certificate authority.</code></li>
+</ul>
+
+
+<blockquote>
+<p><strong>DEBUG：我们服务器与Alexa Skill服务器对接的网址，负责处理Json指令请求，具体实现见4.2章节。</strong><br><strong>WARN：需要使用HTTPS以及默认的443端口。</strong></p>
+</blockquote>
+<h4 id="2-2-2-ACCOUNT-LINKING"><a href="#2-2-2-ACCOUNT-LINKING" class="headerlink" title="2.2.2 ACCOUNT LINKING"></a>2.2.2 ACCOUNT LINKING</h4><ul>
+<li>点击左侧面板”ACCOUNT LINKING”，打开开关，选择”Auth Code Grant”</li>
+</ul>
+
+
+<ul>
+<li>“Authorization URI”填<code>https://&#123;[你的域名]&#125;/authorize.php</code>；”Access Token URI”填<code>https://&#123;[你的域名]&#125;/token.php</code>；”Client ID”填<code>alexa</code>；”Client Secret”填<code>alexa</code>；”Client Authentication Scheme”选择<code>Credentials in request body</code>；”Redirect URLs”中挑选一个（选择一个可以ping通的域名即可）。</li>
+</ul>
+<blockquote>
+<p><strong>INFO：认证服务网址的内容见3.1章节</strong></p>
+</blockquote>
+
+
+<h4 id="2-2-3-Oauth服务"><a href="#2-2-3-Oauth服务" class="headerlink" title="2.2.3 Oauth服务"></a>2.2.3 Oauth服务</h4><p>参考<a href="https://ljr.im/articles/mentally-retarded-home-first-battle-docking-articles/" title="智障家居初战-对接篇">教程2.2.②章节</a>创建好数据库，增加一个用户即可。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#Ubuntu</span></span><br><span class="line">mysql -u root -p <span class="comment">#登陆Mysql</span></span><br><span class="line">&gt; use oauth; <span class="comment">#选择数据库</span></span><br><span class="line">&gt; INSERT INTO oauth_clients (client_id, client_secret, redirect_uri) VALUES(<span class="string">&quot;alexa&quot;</span>,<span class="string">&quot;alexa&quot;</span>,<span class="string">&quot;https://pitangui.amazon.com/api/skill/link/xxx&quot;</span>); <span class="comment">#增加认证用户（信息与上小节设置一致）</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="3-对接"><a href="#3-对接" class="headerlink" title="3.对接"></a>3.对接</h2><h3 id="3-1公网服务"><a href="#3-1公网服务" class="headerlink" title="3.1公网服务"></a>3.1公网服务</h3><p>参考<a href="https://ljr.im/articles/mentally-retarded-home-first-battle-network-articles/" title="智障家居初战-网络篇">教程</a>部署公网访问服务器，其中oauth认证服务采用之前的即可。之前设置接口服务器的API网址为<code>https://&#123;[你的域名]&#125;/gate</code>，接下来只要apache2将请求转发给Node-Red服务器即可。<br><a href="https://ljr.im/articles/docker-installation-using-nodered-practice/" title="docker安装使用Node-RED实践">Node-Red安装参考教程</a></p>
+<ul>
+<li>apache2配置，假设Node-Red的访问地址是<code>http://192.168.0.100:1880</code>。<ol>
+<li><code># a2enmod proxy</code></li>
+<li><code># vi /etc/apache2/sites-available/default-ssl.conf</code></li>
+<li>在&lt;VirtualHost&gt;&lt;/VirtualHost&gt;标签内加入<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">ProxyPass</span> <span class="string">/gate</span> <span class="string">http://192.168.0.100:1880/gate</span></span><br><span class="line"><span class="string">ProxyPassReverse</span> <span class="string">/gate</span> <span class="string">http://192.168.0.100:1880/gate</span></span><br></pre></td></tr></table></figure></li>
+<li><code># service apache2 restart</code><blockquote>
+<p><strong>WARN：注意不要把根目录/进行反向代理，不然外网可以访问Node-Red了。</strong></p>
+</blockquote>
+</li>
+</ol>
+</li>
+</ul>
+<ul>
+<li><p>Node-red配置，设置登陆密码，加强安全。</p>
+<ol>
+<li><code># docker exec -it &#123;[Node-Red容器名]&#125; bash</code></li>
+<li><code>root@xxxx# node -e &quot;console.log(require(&#39;bcryptjs&#39;).hashSync(process.argv[1], 8));&quot; password</code><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@xxxx<span class="comment"># $2a$08$BpwjQlfQEtuT8z5ZfwiTqeDBauNkMeVYMl4vbNrmxd89o1/WeGtRm</span></span><br></pre></td></tr></table></figure></li>
+<li><code>root@xxxx# vi /data/settings.js</code></li>
+<li>找到adminAuth，注释掉adminAuth，password处填第2步生成的字符串。<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">adminAuth: &#123;</span><br><span class="line">type: <span class="string">&quot;credentials&quot;</span>,</span><br><span class="line">users: [&#123;</span><br><span class="line">    username: <span class="string">&quot;&#123;[用户名]&#125;&quot;</span>,</span><br><span class="line">    password: <span class="string">&quot;&#123;[密码]&#125;&quot;</span>,</span><br><span class="line">    permissions: <span class="string">&quot;*&quot;</span></span><br><span class="line">&#125;]</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure></li>
+<li>返回到宿主机，<code># doecker restart &#123;[Node-Red容器名]&#125;</code>使配置生效。<blockquote>
+<p><strong>DEBUG：配置password保存的是加密后的字符串。</strong></p>
+</blockquote>
+</li>
+</ol>
+</li>
+</ul>
+<h2 id="4-业务处理"><a href="#4-业务处理" class="headerlink" title="4.业务处理"></a>4.业务处理</h2><p>Node-Red搭建业务处理节点，因篇幅有限，加上本人对Alexa的交互了解有限，所以在此只介绍下大体处理流程，详细的实现还是要耐心去看看官方的文档。</p>
+
+
+<blockquote>
+<p><strong>DEBUG：采用Node-Red进行对接的最大的好处就是灵活扩展，基本流程上扩充即可，可以一边学习一边不断完善。</strong></p>
+</blockquote>
+<h2 id="5-联调"><a href="#5-联调" class="headerlink" title="5.联调"></a>5.联调</h2><ul>
+<li>打开<a target="_blank" rel="noopener" href="https://alexa.amazon.com/" title="Echo设备管理页面">Echo设备管理页面</a>，左侧点击’Skills’，然后点击右上角’Your Skills’。</li>
+</ul>
+
+
+<ul>
+<li>点击’ALL SKILLS’，可以看到开发的技能。</li>
+</ul>
+
+
+<ul>
+<li>点击’ENABLE’启用技能，会跳转到授权页面。</li>
+</ul>
+
+
+<ul>
+<li>认证成功会返回如下页面。</li>
+</ul>
+
+
+<ul>
+<li>返回开发者平台的技能页面，在上方点击’Test’标签打开测试页面，输入指令可以进行测试。</li>
+</ul>
+
+
+<ul>
+<li>文字指令测试正常，可以进行真机测试。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>cnk700i
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://ljr.im/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/" title="智障家居初战-语音控制篇(基于Node-RED对接)">https://ljr.im/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/Home-Assistant/" rel="tag"><i class="fa fa-tag"></i> Home Assistant</a>
+              <a href="/tags/Node-RED/" rel="tag"><i class="fa fa-tag"></i> Node-RED</a>
+              <a href="/tags/%E6%99%BA%E8%83%BD%E5%AE%B6%E5%B1%85/" rel="tag"><i class="fa fa-tag"></i> 智能家居</a>
+              <a href="/tags/Alexa/" rel="tag"><i class="fa fa-tag"></i> Alexa</a>
+              <a href="/tags/Echo/" rel="tag"><i class="fa fa-tag"></i> Echo</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/articles/meet-hexo-from-scratch/" rel="prev" title="从零开始认识hexo">
+      <i class="fa fa-chevron-left"></i> 从零开始认识hexo
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/articles/lets-encrypt-wildcard-certificate-renewal-and-distribution/" rel="next" title="Let's Encrypt通配符证书续期及分发">
+      Let's Encrypt通配符证书续期及分发 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-HA"><span class="nav-text">1.HA</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1%E5%AE%89%E8%A3%85"><span class="nav-text">1.1安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2%E7%BB%88%E7%AB%AF%E8%AE%BE%E5%A4%87"><span class="nav-text">2.2终端设备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3%E6%8E%A7%E5%88%B6api"><span class="nav-text">3.3控制api</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Echo%E9%9F%B3%E7%AE%B1"><span class="nav-text">2.Echo音箱</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1%E5%88%9B%E5%BB%BAskill"><span class="nav-text">2.1创建skill</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-1-Invocation"><span class="nav-text">2.1.1 Invocation</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-2-Intent"><span class="nav-text">2.1.2 Intent</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2%E9%85%8D%E7%BD%AE"><span class="nav-text">2.2配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-1-Endpoint"><span class="nav-text">2.2.1 Endpoint</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-2-ACCOUNT-LINKING"><span class="nav-text">2.2.2 ACCOUNT LINKING</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-3-Oauth%E6%9C%8D%E5%8A%A1"><span class="nav-text">2.2.3 Oauth服务</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%AF%B9%E6%8E%A5"><span class="nav-text">3.对接</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1%E5%85%AC%E7%BD%91%E6%9C%8D%E5%8A%A1"><span class="nav-text">3.1公网服务</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E4%B8%9A%E5%8A%A1%E5%A4%84%E7%90%86"><span class="nav-text">4.业务处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E8%81%94%E8%B0%83"><span class="nav-text">5.联调</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="cnk700i"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">cnk700i</p>
+  <div class="site-description" itemprop="description">虽然没用技术赚到钱，至少让生活更有趣吧</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">38</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/cnk700i" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cnk700i" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:liangjiarong@gmail.com" title="E-Mail → mailto:liangjiarong@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://jq.qq.com/?_wv=1027&k=5mCE2MH" title="QQ → https:&#x2F;&#x2F;jq.qq.com&#x2F;?_wv&#x3D;1027&amp;k&#x3D;5mCE2MH" rel="noopener" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-rss"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">cnk700i</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">154k</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.id);
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            let target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    let { app_id, app_key, server_url } = {"enable":true,"app_id":"D6eniJJLIQb3z1eCLum0aUsC-MdYXbMMI","app_key":"eqYfUABMvuNoBGflLYsdYcK3","server_url":null,"security":true};
+    function fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    let api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

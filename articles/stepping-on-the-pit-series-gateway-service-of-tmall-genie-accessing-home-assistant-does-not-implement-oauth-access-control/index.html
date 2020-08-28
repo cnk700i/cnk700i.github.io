@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"ljr.im","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="解决天猫精灵OAuth验证问题。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【踩坑系列】天猫精灵接入Home Assistant的网关服务没有实现OAuth访问控制">
+<meta property="og:url" content="https://ljr.im/articles/stepping-on-the-pit-series-gateway-service-of-tmall-genie-accessing-home-assistant-does-not-implement-oauth-access-control/index.html">
+<meta property="og:site_name" content="星路">
+<meta property="og:description" content="解决天猫精灵OAuth验证问题。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-04-21T12:34:00.000Z">
+<meta property="article:modified_time" content="2020-08-28T13:41:27.000Z">
+<meta property="article:author" content="cnk700i">
+<meta property="article:tag" content="Home Assistant">
+<meta property="article:tag" content="天猫精灵">
+<meta property="article:tag" content="OAuth">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://ljr.im/articles/stepping-on-the-pit-series-gateway-service-of-tmall-genie-accessing-home-assistant-does-not-implement-oauth-access-control/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【踩坑系列】天猫精灵接入Home Assistant的网关服务没有实现OAuth访问控制 | 星路</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-137999457-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-137999457-1');
+      }
+    </script>
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?dc919d77bfa18b55261c23c656062137";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">星路</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">追寻那一缕星光，在漆黑夜晚前行</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ljr.im/articles/stepping-on-the-pit-series-gateway-service-of-tmall-genie-accessing-home-assistant-does-not-implement-oauth-access-control/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="cnk700i">
+      <meta itemprop="description" content="虽然没用技术赚到钱，至少让生活更有趣吧">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="星路">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【踩坑系列】天猫精灵接入Home Assistant的网关服务没有实现OAuth访问控制
+        </h1>
+
+        <div class="post-meta">
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-04-21 12:34:00" itemprop="dateCreated datePublished" datetime="2018-04-21T12:34:00+00:00">2018-04-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-08-28 13:41:27" itemprop="dateModified" datetime="2020-08-28T13:41:27+00:00">2020-08-28</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Home-Assistant/" itemprop="url" rel="index"><span itemprop="name">Home Assistant</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/articles/stepping-on-the-pit-series-gateway-service-of-tmall-genie-accessing-home-assistant-does-not-implement-oauth-access-control/" class="post-meta-item leancloud_visitors" data-flag-title="【踩坑系列】天猫精灵接入Home Assistant的网关服务没有实现OAuth访问控制" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+            <div class="post-description">解决天猫精灵OAuth验证问题。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>最近在研究天猫精灵接入，根据大神的指引天猫精灵接入HomeAssistant【智能家居技能接入，非webhook调用】，也可以顺利控制yeelight。但发现有一个问题，没有实现OAuth访问控制。即天猫精灵服务器使用获取的token来访问gate.php，OAuth服务器应该进行校验，校验通过后才执行来自天猫精灵服务器的请求。</p>
+</blockquote>
+<hr>
+<a id="more"></a>
+<h2 id="1-准备"><a href="#1-准备" class="headerlink" title="1.准备"></a>1.准备</h2><ul>
+<li>[系列教程][1]</li>
+</ul>
+<h2 id="2-过程"><a href="#2-过程" class="headerlink" title="2.过程"></a>2.过程</h2><h3 id="2-1-校验功能"><a href="#2-1-校验功能" class="headerlink" title="2.1.校验功能"></a>2.1.校验功能</h3><p>1）根据oauth2-server-php<a target="_blank" rel="noopener" href="http://bshaffer.github.io/oauth2-server-php-docs/cookbook/" title="oauth2-server-php Step-By-Step Walkthrough">官方教程</a>，应该增加如下的Resource Controller代码进行校验。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// include our OAuth2 Serverobject</span></span><br><span class="line"><span class="keyword">require_once</span> <span class="keyword">__DIR__</span>.<span class="string">&#x27;/server.php&#x27;</span>;</span><br><span class="line"><span class="comment">// Handle a request to a resourceand authenticate the access token</span></span><br><span class="line"><span class="keyword">if</span> (!$server-&gt;verifyResourceRequest(OAuth2\Request::createFromGlobals())) &#123;</span><br><span class="line">    $server-&gt;getResponse()-&gt;send();</span><br><span class="line">    <span class="keyword">die</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">echo</span> json_encode(<span class="keyword">array</span>(<span class="string">&#x27;success&#x27;</span>=&gt; <span class="literal">true</span>, <span class="string">&#x27;message&#x27;</span>=&gt; <span class="string">&#x27;You accessed myAPIs!&#x27;</span>));</span><br></pre></td></tr></table></figure>
+<p>2）但将代码加到gate.php头部，总是验证不通过，经过分析天猫精灵对接api以及研读OAuth2的代码发现了问题。</p>
+<ul>
+<li>天猫精灵服务器使用POST方式，以JSON格式（CONTENT_TYPE=’application/json’）传递数据，其中token值在$json-&gt;payload-&gt;accessToken</li>
+<li>而OAuth服务器处理方式是：<ul>
+<li>接收保存JSON数据，通过标识符’access_token’，即$json-&gt;access_token取的token值来判断是否授权
+  </li>
+<li>verifyResourceRequest()进行方法校验时，判断是POST请求方式的话，需要满足CONTENT_TYPE=’application/x-www-form-urlencoded’，否则判断失败</li>
+</ul>
+</li>
+</ul>
+<p>3）最终Resource Controller的代码调整如下（当然也可以修改oauth2-server-php相关的处理逻辑代码处理）：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">require_once</span> <span class="keyword">__DIR__</span>.<span class="string">&#x27;/server.php&#x27;</span>;</span><br><span class="line"><span class="comment">// Handle a request to a resource and authenticate the access token</span></span><br><span class="line">$request = OAuth2\Request::createFromGlobals();</span><br><span class="line">$response =<span class="keyword">new</span> OAuth2\Response();</span><br><span class="line">$poststr = file_get_contents(<span class="string">&quot;php://input&quot;</span>);  <span class="comment">//获取天猫精灵服务器请求内容</span></span><br><span class="line">$obj = json_decode($poststr); <span class="comment">//转换成json对象</span></span><br><span class="line">$request-&gt;request=array_merge(<span class="keyword">array</span>(<span class="string">&#x27;access_token&#x27;</span>=&gt;$obj-&gt;payload-&gt;accessToken),$request-&gt;request);  <span class="comment">//根据天猫精灵服务器请求的token值，在OAuth2的request-&gt;request对象重新构建一个access_token值</span></span><br><span class="line">$request-&gt;server[<span class="string">&#x27;CONTENT_TYPE&#x27;</span>]=<span class="string">&quot;application/x-www-form-urlencoded&quot;</span>; <span class="comment">//重新设置request-&gt;server的CONTENT_TYPE值为&#x27;application/x-www-form-urlencoded&#x27;</span></span><br><span class="line"><span class="keyword">if</span>(!$server-&gt;verifyResourceRequest($request,$response)) &#123;</span><br><span class="line">    $server-&gt;getResponse()-&gt;send();</span><br><span class="line">    <span class="keyword">die</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>4）最后，在所有需要访问控制的页面开头的地方都应该加上如上代码即可，比如gate.php。</p>
+<h3 id="2-2-token问题"><a href="#2-2-token问题" class="headerlink" title="2.2.token问题"></a>2.2.token问题</h3><p>修改server.php</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//server.php</span></span><br><span class="line">$server = <span class="keyword">new</span> OAuth2\Server($storage, <span class="keyword">array</span>(</span><br><span class="line">        <span class="string">&#x27;access_lifetime&#x27;</span>=&gt;<span class="number">86400</span>  <span class="comment">//token有效期，单位s</span></span><br><span class="line">        ));</span><br><span class="line"><span class="comment">//顺便先把允许刷新token的功能开启了</span></span><br><span class="line">$server-&gt;addGrantType(<span class="keyword">new</span> OAuth2\GrantType\RefreshToken($storage, <span class="keyword">array</span>(</span><br><span class="line">    <span class="string">&#x27;always_issue_new_refresh_token&#x27;</span> =&gt; <span class="literal">true</span></span><br><span class="line">    )));</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>INFO：天猫精灵服务器貌似在token过期后不会自动刷新（虽然api上说是有），过期需要重新在网页登陆授权，所以可以设置有效期长一点，默认的是3600s。</strong></p>
+</blockquote>
+<hr>
+<p>[1]: </p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>cnk700i
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://ljr.im/articles/stepping-on-the-pit-series-gateway-service-of-tmall-genie-accessing-home-assistant-does-not-implement-oauth-access-control/" title="【踩坑系列】天猫精灵接入Home Assistant的网关服务没有实现OAuth访问控制">https://ljr.im/articles/stepping-on-the-pit-series-gateway-service-of-tmall-genie-accessing-home-assistant-does-not-implement-oauth-access-control/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/Home-Assistant/" rel="tag"><i class="fa fa-tag"></i> Home Assistant</a>
+              <a href="/tags/%E5%A4%A9%E7%8C%AB%E7%B2%BE%E7%81%B5/" rel="tag"><i class="fa fa-tag"></i> 天猫精灵</a>
+              <a href="/tags/OAuth/" rel="tag"><i class="fa fa-tag"></i> OAuth</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/articles/intellectually-impaired-home-battlematching/" rel="prev" title="智障家居初战-对接篇">
+      <i class="fa fa-chevron-left"></i> 智障家居初战-对接篇
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/articles/stepping-on-the-pit-series-sony-x77-cannot-play-tts-in-home-assistant/" rel="next" title="【踩坑系列】Home Assistant中索尼x77无法播放tts">
+      【踩坑系列】Home Assistant中索尼x77无法播放tts <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%87%86%E5%A4%87"><span class="nav-text">1.准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E8%BF%87%E7%A8%8B"><span class="nav-text">2.过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E6%A0%A1%E9%AA%8C%E5%8A%9F%E8%83%BD"><span class="nav-text">2.1.校验功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-token%E9%97%AE%E9%A2%98"><span class="nav-text">2.2.token问题</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="cnk700i"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">cnk700i</p>
+  <div class="site-description" itemprop="description">虽然没用技术赚到钱，至少让生活更有趣吧</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">38</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/cnk700i" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cnk700i" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:liangjiarong@gmail.com" title="E-Mail → mailto:liangjiarong@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://jq.qq.com/?_wv=1027&k=5mCE2MH" title="QQ → https:&#x2F;&#x2F;jq.qq.com&#x2F;?_wv&#x3D;1027&amp;k&#x3D;5mCE2MH" rel="noopener" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-rss"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">cnk700i</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">154k</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.id);
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            let target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    let { app_id, app_key, server_url } = {"enable":true,"app_id":"D6eniJJLIQb3z1eCLum0aUsC-MdYXbMMI","app_key":"eqYfUABMvuNoBGflLYsdYcK3","server_url":null,"security":true};
+    function fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    let api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

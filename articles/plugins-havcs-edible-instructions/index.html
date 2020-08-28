@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"ljr.im","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="HAVCS使用说明集合石。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【插件】HAVCS食用说明">
+<meta property="og:url" content="https://ljr.im/articles/plugins-havcs-edible-instructions/index.html">
+<meta property="og:site_name" content="星路">
+<meta property="og:description" content="HAVCS使用说明集合石。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ljr.im/articles/plugins-havcs-edible-instructions/mode1.svg">
+<meta property="og:image" content="https://ljr.im/articles/plugins-havcs-edible-instructions/mode2.svg">
+<meta property="og:image" content="https://ljr.im/articles/plugins-havcs-edible-instructions/mode3.svg">
+<meta property="article:published_time" content="2020-03-27T21:00:00.000Z">
+<meta property="article:modified_time" content="2020-08-28T17:09:42.000Z">
+<meta property="article:author" content="cnk700i">
+<meta property="article:tag" content="Home Assistant">
+<meta property="article:tag" content="插件">
+<meta property="article:tag" content="智能音箱">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ljr.im/articles/plugins-havcs-edible-instructions/mode1.svg">
+
+<link rel="canonical" href="https://ljr.im/articles/plugins-havcs-edible-instructions/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【插件】HAVCS食用说明 | 星路</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-137999457-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-137999457-1');
+      }
+    </script>
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?dc919d77bfa18b55261c23c656062137";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">星路</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">追寻那一缕星光，在漆黑夜晚前行</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ljr.im/articles/plugins-havcs-edible-instructions/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="cnk700i">
+      <meta itemprop="description" content="虽然没用技术赚到钱，至少让生活更有趣吧">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="星路">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【插件】HAVCS食用说明
+        </h1>
+
+        <div class="post-meta">
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-thumbtack"></i>
+              </span>
+              <span class="post-meta-item-text">
+                <font color=66CCFF>置顶</font>
+              </span>
+            </span>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-27 21:00:00" itemprop="dateCreated datePublished" datetime="2020-03-27T21:00:00+00:00">2020-03-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-08-28 17:09:42" itemprop="dateModified" datetime="2020-08-28T17:09:42+00:00">2020-08-28</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Home-Assistant/" itemprop="url" rel="index"><span itemprop="name">Home Assistant</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/articles/plugins-havcs-edible-instructions/" class="post-meta-item leancloud_visitors" data-flag-title="【插件】HAVCS食用说明" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+            <div class="post-description">HAVCS使用说明集合石。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>折腾语音音箱接入控制家里设备从开始构想到现在已经两年有多了：一开始是用别人的<a href="https://ljr.im/articles/intellectually-impaired-home-battlematching/" title="智障家居初战-对接篇">PHP版天猫精灵网关</a>尝了鲜；然后有了想整合多个音箱平台接入的想法，于是尝试搭建过<a href="https://ljr.im/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/" title="智障家居初战-语音控制篇(基于Node-RED对接)">nodered版本网关</a>；再后来想着自定义技能方式更方便不同平台的接入，又折腾出一个<a href="https://ljr.im/articles/rollover-series-universal-access-platform-for-smart-speakers/" title="【翻车系列】智能音箱通用接入平台">整合版PHP网关</a>并想着提供APP技能方便使用，结果审核翻车了，考虑到自用部署过于复杂就没发布了；然后恰好碰上单平台插件版网关的出现，然后做了HAVCS整合插件，为了进一步简化使用，目前迭代了2个版本，考虑到使用方法变化较大，特意整了这个汇总版的说明。</p>
+<hr>
+<a id="more"></a>
+
+<h2 id="1-HAVCS是什么"><a href="#1-HAVCS是什么" class="headerlink" title="1. HAVCS是什么"></a>1. HAVCS是什么</h2><p><strong>含义：</strong><br>HAVCS全称为Home Assistant Voice Control Skill，诣在提供Home Assistant对接音箱平台的能力，通过在Home Assistant上运行本插件，可对接音箱厂家的技能开放平台（自建技能或用线上技能），响应音箱指令控制相关设备。<br><strong>本插件实际上由两大功能模块组成：</strong></p>
+<ul>
+<li><p>MQTT对接服务<br>配合本人搭建的mqtt中转服务，可以将音箱云平台的音箱命令消息、oauth消息转发到无公网环境下家中的Home Assistant。</p>
+</li>
+<li><p>音箱组件<br>即智能音箱本地网关插件，对音箱云平台的音箱命令消息进行解析、处理，可以初始化为HTTP网关服务与音箱云平台直接对接。<br><strong>有三种使用模式，适合不同场景的接入：</strong></p>
+</li>
+<li><p>模式一 http模式</p>
+<ul>
+<li>生成音箱http网关，通过<code>平台自建的测试技能</code>接入</li>
+<li>适合家庭宽带<code>有公网ip</code>或<code>已实现内网穿透</code>场景下使用</li>
+<li><strong>建议有条件、不怕折腾就用这个，留服务资源给有需要的人</strong><img src="/articles/plugins-havcs-edible-instructions/mode1.svg" class="" title="模式一"></li>
+</ul>
+</li>
+<li><p>模式二 http proxy模式</p>
+<ul>
+<li>生成音箱http网关，同时使用mqtt代理穿透内网访问，通过<code>平台自建的测试技能</code>接入</li>
+<li>适合家庭宽带<code>无公网ip</code>场景下使用</li>
+<li><strong>临时提供，视服务资源情况会停止</strong><img src="/articles/plugins-havcs-edible-instructions/mode2.svg" class="" title="模式二"></li>
+</ul>
+</li>
+<li><p>模式三 skill模式</p>
+<ul>
+<li>通过<code>官方音箱APP技能</code>接入，目前技能已上线<code>叮咚、天猫精灵、小度</code></li>
+<li>适合<code>无公网</code>、<code>简单接入</code>场景使用</li>
+<li><strong>服务资源有限不能保证稳定</strong><img src="/articles/plugins-havcs-edible-instructions/mode3.svg" class="" title="模式三"></li>
+</ul>
+</li>
+<li><p>各模式难度指数<br>模式一：★★★★☆<br>模式二：★★☆☆☆<br>模式三：★☆☆☆☆</p>
+</li>
+</ul>
+<hr>
+<h2 id="2-教程传送门"><a href="#2-教程传送门" class="headerlink" title="2. 教程传送门"></a>2. 教程传送门</h2><ul>
+<li>HAVCS v1：&nbsp;<a href="https://ljr.im/articles/plugin-integration-of-smart-speakers-into-home-assistant/" title="【插件】智能音箱接入Home Assistant整合">&gt;使用说明</a>&emsp;&emsp;<a target="_blank" rel="noopener" href="https://github.com/cnk700i/havcs/archive/v0.98.zip" title="HAVCS v1">&gt;下载地址</a><br>基于单插件版本简单整合、设备信息通过customize.yml配置</li>
+<li>HAVCS v2：&nbsp;<a href="https://ljr.im/articles/plugin-smart-speaker-access-home-assistant-integration-plus/" title="【插件】智能音箱接入Home Assistant整合Plus">&gt;使用说明</a>&emsp;&emsp;<a target="_blank" rel="noopener" href="https://github.com/cnk700i/havcs/releases/tag/v0.101" title="HAVCS v2">&gt;下载地址</a><br>初步统一设备定义、设备信息通过独立havcs.yml配置</li>
+<li>HAVCS v3：&nbsp;<a href="https://ljr.im/articles/plugin-smart-speaker-access-home-assistant-integration-plusplus/" title="【插件】智能音箱接入Home Assistant整合PlusPlus">&gt;使用说明</a>&emsp;&emsp;<a target="_blank" rel="noopener" href="https://github.com/cnk700i/havcs" title="HAVCS v3">&gt;下载地址</a><br>实现全UI管理：集成方式配置插件、web网页管理设备</li>
+</ul>
+<h2 id="3-关于自建技能"><a href="#3-关于自建技能" class="headerlink" title="3. 关于自建技能"></a>3. 关于自建技能</h2><p>自建技能需要额外两个步骤，因涉及较多的知识及不同的环境存在差异，本人只能作简单指引</p>
+<ul>
+<li><p>将本地HA服务网址发布到公网<br>申请域名、申请域名https证书、路由器设置DDNS（域名绑定）、路由器设置端口转发访问HA</p>
+</li>
+<li><p>音箱技能平台的配置<br>平台需要填写三种url：授权地址，Token地址，Service地址。根据选用授权地址不同，有以下两种填写方案：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#方案一 使用HA自带的授权页面</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#授权页面网址</span></span><br><span class="line"><span class="string">https://&#123;你的域名及端口&#125;/auth/authorize</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#Token页面网址</span></span><br><span class="line"><span class="string">https://&#123;你的域名及端口&#125;/havcs/auth/token（v3版）</span></span><br><span class="line"><span class="string">https://&#123;你的域名及端口&#125;/havcs_auth（v2版）</span></span><br><span class="line"><span class="string">https://&#123;你的域名及端口&#125;/aihome_auth（v1版）</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#WebService（服务网关）网址</span></span><br><span class="line"><span class="string">https://&#123;你的域名及端口&#125;/havcs/service（v3版）</span></span><br><span class="line"><span class="string">https://&#123;你的域名及端口&#125;/havcs_auth（v2版）</span></span><br><span class="line"><span class="string">https://&#123;你的域名及端口&#125;/aihome_service（v1版）</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#Client Id，填回调地址域名那一串即可（HA要求格式）</span></span><br><span class="line"><span class="string">小度：https://xiaodu.baidu.com</span></span><br><span class="line"><span class="string">天猫：https://open.bot.tmall.com</span></span><br><span class="line"><span class="string">叮咚：不支持，因为平台不允许client_id为&quot;https://&quot;开头</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#Client Secret</span></span><br><span class="line"><span class="string">随便填写，不做校验</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#方案二 使用插件的授权页面（v3 2020.04.05后版本增加）</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#授权页面网址</span></span><br><span class="line"><span class="string">https://&#123;你的域名及端口&#125;/havcs/auth/authorize</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#Token页面网址</span></span><br><span class="line"><span class="string">https://&#123;你的域名及端口&#125;/havcs/auth/token</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#WebService（服务网关）网址</span></span><br><span class="line"><span class="string">https://&#123;你的域名及端口&#125;/havcs/service</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#Client Id，在插件配置文件定义</span></span><br><span class="line"><span class="string">与插件（配置文件）所设置的一致</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#Client Secret，在插件配置文件定义</span></span><br><span class="line"><span class="string">与插件（配置文件）所设置的一致</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>实践建议</p>
+<ul>
+<li>外网服务地址需要使用https，https证书使用腾讯云、阿里云或者Let’s Encrypt等兼容性好的，并注意有效期</li>
+<li>部署nginx或apache反向代理访问HA，在nginx上配置https，本地可以保留http访问HA</li>
+<li>先本地测试可访问插件授权页面（插件正常启动），再外网测试（手机数据链接访问）可访问插件授权页面（反代正常工作）</li>
+<li>如无外网访问HA需求，建议使用插件授权页面，只反代/havcs/层级uri到公网</li>
+</ul>
+</li>
+<li><p>详细设置可参考以下教程<br><a target="_blank" rel="noopener" href="https://bbs.hassbian.com/thread-9309-1-1.html" title="小度音箱接入hass详细过程">小度音箱接入hass详细过程</a><br><a target="_blank" rel="noopener" href="https://bbs.hassbian.com/thread-5417-1-1.html" title="小度音箱接入HomeAssistant采用自带OAuth访问控制">小度音箱接入HomeAssistant采用自带OAuth访问控制</a></p>
+</li>
+</ul>
+<h2 id="4-设备信息v2至v3迁移"><a href="#4-设备信息v2至v3迁移" class="headerlink" title="4. 设备信息v2至v3迁移"></a>4. 设备信息v2至v3迁移</h2><p>v3版本的属性有一些小调整，可以将v2版本的<code>&#123;HA配置目录&#125;/havcs.yml</code>里面旧的设备信息按照新格式调整好后，保存为<code>&#123;HA配置目录&#125;/havcs-ui.yml</code>，执行一次<code>havcs.reload</code>服务，即可在网页设备管理界面看到新的设备信息。</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>cnk700i
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://ljr.im/articles/plugins-havcs-edible-instructions/" title="【插件】HAVCS食用说明">https://ljr.im/articles/plugins-havcs-edible-instructions/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/Home-Assistant/" rel="tag"><i class="fa fa-tag"></i> Home Assistant</a>
+              <a href="/tags/%E6%8F%92%E4%BB%B6/" rel="tag"><i class="fa fa-tag"></i> 插件</a>
+              <a href="/tags/%E6%99%BA%E8%83%BD%E9%9F%B3%E7%AE%B1/" rel="tag"><i class="fa fa-tag"></i> 智能音箱</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/articles/nginx-configure-url-forwarding/" rel="prev" title="Nginx配置url转发">
+      <i class="fa fa-chevron-left"></i> Nginx配置url转发
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/articles/plugin-smart-speaker-access-home-assistant-integration-plusplus/" rel="next" title="【插件】智能音箱接入Home Assistant整合PlusPlus">
+      【插件】智能音箱接入Home Assistant整合PlusPlus <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-HAVCS%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-text">1. HAVCS是什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E6%95%99%E7%A8%8B%E4%BC%A0%E9%80%81%E9%97%A8"><span class="nav-text">2. 教程传送门</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%85%B3%E4%BA%8E%E8%87%AA%E5%BB%BA%E6%8A%80%E8%83%BD"><span class="nav-text">3. 关于自建技能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E8%AE%BE%E5%A4%87%E4%BF%A1%E6%81%AFv2%E8%87%B3v3%E8%BF%81%E7%A7%BB"><span class="nav-text">4. 设备信息v2至v3迁移</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="cnk700i"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">cnk700i</p>
+  <div class="site-description" itemprop="description">虽然没用技术赚到钱，至少让生活更有趣吧</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">38</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/cnk700i" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cnk700i" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:liangjiarong@gmail.com" title="E-Mail → mailto:liangjiarong@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://jq.qq.com/?_wv=1027&k=5mCE2MH" title="QQ → https:&#x2F;&#x2F;jq.qq.com&#x2F;?_wv&#x3D;1027&amp;k&#x3D;5mCE2MH" rel="noopener" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-rss"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">cnk700i</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">154k</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.id);
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            let target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    let { app_id, app_key, server_url } = {"enable":true,"app_id":"D6eniJJLIQb3z1eCLum0aUsC-MdYXbMMI","app_key":"eqYfUABMvuNoBGflLYsdYcK3","server_url":null,"security":true};
+    function fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    let api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

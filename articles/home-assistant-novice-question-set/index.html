@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"ljr.im","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="总结记录一些自己从小白摸索过来觉得比较有用的信息。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Home Assistant新手问题集">
+<meta property="og:url" content="https://ljr.im/articles/home-assistant-novice-question-set/index.html">
+<meta property="og:site_name" content="星路">
+<meta property="og:description" content="总结记录一些自己从小白摸索过来觉得比较有用的信息。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-09-07T18:09:00.000Z">
+<meta property="article:modified_time" content="2020-08-28T13:22:20.000Z">
+<meta property="article:author" content="cnk700i">
+<meta property="article:tag" content="Home Assistant">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://ljr.im/articles/home-assistant-novice-question-set/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Home Assistant新手问题集 | 星路</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-137999457-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-137999457-1');
+      }
+    </script>
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?dc919d77bfa18b55261c23c656062137";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">星路</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">追寻那一缕星光，在漆黑夜晚前行</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ljr.im/articles/home-assistant-novice-question-set/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="cnk700i">
+      <meta itemprop="description" content="虽然没用技术赚到钱，至少让生活更有趣吧">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="星路">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Home Assistant新手问题集
+        </h1>
+
+        <div class="post-meta">
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-09-07 18:09:00" itemprop="dateCreated datePublished" datetime="2019-09-07T18:09:00+00:00">2019-09-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-08-28 13:22:20" itemprop="dateModified" datetime="2020-08-28T13:22:20+00:00">2020-08-28</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Home-Assistant/" itemprop="url" rel="index"><span itemprop="name">Home Assistant</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/articles/home-assistant-novice-question-set/" class="post-meta-item leancloud_visitors" data-flag-title="Home Assistant新手问题集" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+            <div class="post-description">总结记录一些自己从小白摸索过来觉得比较有用的信息。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>不定期更新。</p>
+<hr>
+<a id="more"></a>
+
+<h2 id="1-目录位置"><a href="#1-目录位置" class="headerlink" title="1. 目录位置"></a>1. 目录位置</h2><p>Home Assistant有两个主要的目录，一个是配置目录，有configuration.yaml(配置文件)、.storage(组件信息存储文件夹)、home-assistant.log（程序运行日志）等；一个是安装目录，放置有程序核心代码及官方组件代码（components目录）。</p>
+<ul>
+<li><p>windows</p>
+<ul>
+<li>安装目录<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 新建.bat文件运行</span></span><br><span class="line">@<span class="built_in">echo</span> off</span><br><span class="line">rem 在PATH变量中查找Python安装包路径</span><br><span class="line"><span class="built_in">set</span> string=%PATH%</span><br><span class="line"><span class="built_in">set</span> targetstr=<span class="string">&quot;site-packages&quot;</span></span><br><span class="line">:split</span><br><span class="line"><span class="keyword">for</span> /f <span class="string">&quot;tokens=1,* delims=;&quot;</span> %%i <span class="keyword">in</span> (<span class="string">&quot;%string%&quot;</span>) <span class="keyword">do</span> (</span><br><span class="line"><span class="built_in">echo</span> %%i | findstr %targetstr%</span><br><span class="line"><span class="built_in">set</span> string=%%j</span><br><span class="line">)</span><br><span class="line"><span class="keyword">if</span> not <span class="string">&quot;%string%&quot;</span>==<span class="string">&quot;&quot;</span> goto split</span><br><span class="line">pause</span><br></pre></td></tr></table></figure></li>
+<li>配置目录<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># cmd命令行执行</span></span><br><span class="line"><span class="built_in">echo</span> %APPDATA%/.homeassistant</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>linux（直接安装方式）</p>
+<ul>
+<li>安装目录<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># root用户运行</span></span><br><span class="line">find / -name homeassistant | grep -E <span class="string">&#x27;site-packages|dist-packages&#x27;</span></span><br></pre></td></tr></table></figure></li>
+<li>配置目录<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># root用户运行</span></span><br><span class="line">find / -name configuration.yaml</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>linux（docker手动拉取镜像运行）</p>
+<ul>
+<li>安装目录（容器）：<code>/usr/src/homeassistant/homeassistant</code></li>
+<li>配置目录（容器）：<code>/config</code></li>
+</ul>
+</li>
+<li><p>linux（hassio）</p>
+<ul>
+<li>安装目录（容器）：<code>/usr/src/homeassistant/homeassistant</code></li>
+<li>配置目录（容器）：<code>/config</code></li>
+<li>配置目录（宿主机）：<code>/usr/share/hassio/homeassistant</code></li>
+</ul>
+<blockquote>
+<p><strong>INFO：hassio实际也是通过容器跑homeassistant。</strong></p>
+</blockquote>
+</li>
+</ul>
+<hr>
+<h2 id="2-安装插件（自定义组件）"><a href="#2-安装插件（自定义组件）" class="headerlink" title="2. 安装插件（自定义组件）"></a>2. 安装插件（自定义组件）</h2><p>Home Assistant各种各样的功能以插件的形式提供，目前配置方法还是以文本编辑为主，分两步走。</p>
+<ul>
+<li>把下载的插件目录放到<code>[配置目录]/custom_components/</code>文件夹下，确认<code>__init__.py</code>文件位于<code>[配置目录]/custom_components/[插件名称]/__init__.py</code></li>
+<li>编辑<code>[HA配置目录]/configuration.yaml</code>加入相应的配置信息启用</li>
+</ul>
+<p>__WARN：没有custom_components文件夹则新建一个。__</p>
+<hr>
+<h2 id="3-调试及查看程序运行日志"><a href="#3-调试及查看程序运行日志" class="headerlink" title="3. 调试及查看程序运行日志"></a>3. 调试及查看程序运行日志</h2><p>组件开发一般都设置有不同级别的日志信息输出，一般日常运行在info级别，调式时候应改为debug级别。</p>
+<ul>
+<li><p>设置组件运行日志的生成规则，更详细说明看<a target="_blank" rel="noopener" href="https://www.home-assistant.io/components/logger/" title="logger组件">官方文档</a></p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># [HA配置目录]/configuration.yaml</span></span><br><span class="line"><span class="attr">logger:</span></span><br><span class="line">  <span class="attr">default:</span> <span class="string">error</span>  <span class="comment"># 提高所有组件的默认级别，调试完后改回info（预设）</span></span><br><span class="line">  <span class="attr">logs:</span>           <span class="comment"># 设定指定组件的级别，debug有更详细的输出</span></span><br><span class="line">    <span class="string">custom_components.[插件名称]:</span> <span class="string">debug</span> <span class="comment"># 不需要[]符号</span></span><br></pre></td></tr></table></figure>
+<p><strong>INFO：把不想看的组件级别调高，把想看的组件级别调低（更多输出），有助于排查指定插件问题。</strong></p>
+</li>
+<li><p>查看日志</p>
+<ul>
+<li><p>web浏览器方式：<code>“开发者工具”-&gt; “信息”-&gt; LOAD FULL HOME ASSISTANT LOG</code></p>
+</li>
+<li><p>查看日志文件方式：<code>tail -f [HA配置目录]/home-assistant.log</code></p>
+<p><strong>INFO：该文件程序每次启动会重新生成；也可以直接用文本编辑器打开观看。</strong></p>
+</li>
+<li><p>docker日志方式，宿主机运行命令：<code>docker logs [容器名/容器ID] -f --tail 1</code></p>
+<p><strong>INFO：可以再指令后增加”| grep”进一步筛选输出。</strong></p>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="4-控制历史数据生成"><a href="#4-控制历史数据生成" class="headerlink" title="4. 控制历史数据生成"></a>4. 控制历史数据生成</h2><p>Home Assistant运行占用空间主要是各类entity的历史数据，可以通过recorder组件控制生成，更详细的使用说明建议看<a target="_blank" rel="noopener" href="https://www.home-assistant.io/components/recorder/" title="recorder组件">官方文档</a>。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">recorder:</span></span><br><span class="line">  <span class="comment"># db_url: # 设定把数据存到另外的数据库服务器也可以有效减少本机空间的占用</span></span><br><span class="line">  <span class="attr">purge_interval:</span> <span class="number">3</span>     <span class="comment"># 每X天执行一次清理，重启会重置</span></span><br><span class="line">  <span class="attr">purge_keep_days:</span> <span class="number">15</span>   <span class="comment"># 历史数据保存的天数</span></span><br><span class="line">  <span class="attr">exclude:</span>              <span class="comment"># 不记录的放这里</span></span><br><span class="line">    <span class="attr">domains:</span>            <span class="comment"># 按域名过滤</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">automation</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">weblink</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">updater</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">input_text</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">input_select</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">input_boolean</span></span><br><span class="line">    <span class="attr">entities:</span>           <span class="comment"># 按entity ID过滤，比如这里将某些不需要记录的sun、或者sensor</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">sun.sun</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">sensor.last_boot</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">sensor.date</span></span><br><span class="line">  <span class="comment"># include:            # 也可以不设置exclude，只设置include，则只有指定的domian</span></span><br><span class="line">  <span class="comment">#   domains:</span></span><br><span class="line">  <span class="comment">#     - </span></span><br><span class="line">  <span class="comment">#   entities:</span></span><br><span class="line">  <span class="comment">#     - </span></span><br></pre></td></tr></table></figure>
+<p><strong>INFO：exclude与include可以一起使用，规则是先判断include再判断exclude（应该）。</strong></p>
+<hr>
+<h2 id="5-容器与宿主机拷贝文件"><a href="#5-容器与宿主机拷贝文件" class="headerlink" title="5. 容器与宿主机拷贝文件"></a>5. 容器与宿主机拷贝文件</h2><p>很多HA都是跑在docker上，配置目录可以通过映射方式（bind）方便地在宿主机目录访问，但如果想要查看或修改安装目录的源码，则可以用命令拷贝出来。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 拷贝宿主机文件至容器</span></span><br><span class="line"><span class="string">docker</span> <span class="string">cp</span> [<span class="string">本机目录</span>] [<span class="string">容器名/容器ID</span>]<span class="string">:[容器目录]</span></span><br><span class="line"><span class="comment"># 拷贝容器文件至宿主机</span></span><br><span class="line"><span class="string">docker</span> <span class="string">cp</span> [<span class="string">容器名/容器ID</span>]<span class="string">:[容器目录]</span> [<span class="string">本机目录</span>]</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="6-换源"><a href="#6-换源" class="headerlink" title="6. 换源"></a>6. 换源</h2><p>软件的更新源一般在国外服务器，经常蜗牛速度，换国内源可以大大提升体验，以下方法如不适用，可以搜索网上更详细的教程。</p>
+<ul>
+<li><p>pip</p>
+<ul>
+<li>linux，直接用命令创建，哪个用户运行HA就用哪个用户执行<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p ~/.pip/ &amp;&amp; \</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;[global]&quot;</span> &gt; ~/.pip/pip.conf &amp;&amp; \</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;index-url = http://mirrors.aliyun.com/pypi/simple/&quot;</span> &gt;&gt; ~/.pip/pip.conf &amp;&amp; \</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;[install]&quot;</span> &gt;&gt; ~/.pip/pip.conf &amp;&amp; \</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;trusted-host = mirrors.aliyun.com&quot;</span> &gt;&gt; ~/.pip/pip.conf</span><br></pre></td></tr></table></figure></li>
+<li>windows，CMD命令行下执行命令创建<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> -p <span class="variable">%APPDATA%</span>\.pip &amp;&amp; ^</span><br><span class="line"><span class="built_in">echo</span> [global] &gt; <span class="variable">%APPDATA%</span>\.pip\pip.ini &amp;&amp; ^</span><br><span class="line"><span class="built_in">echo</span> index-url = http://mirrors.aliyun.com/pypi/simple/ &gt;&gt; <span class="variable">%APPDATA%</span>\.pip\pip.ini &amp;&amp; ^</span><br><span class="line"><span class="built_in">echo</span> [install] &gt;&gt; <span class="variable">%APPDATA%</span>\.pip\pip.ini &amp;&amp; ^</span><br><span class="line"><span class="built_in">echo</span> trusted-host = mirrors.aliyun.com &gt;&gt; <span class="variable">%APPDATA%</span>\.pip\pip.ini</span><br></pre></td></tr></table></figure>
+<strong>INFO：也可以自行创建文件再添加内容。</strong></li>
+</ul>
+</li>
+<li><p>linux，一般可以用命令替换网址就能使用</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Debian 需root权限</span></span><br><span class="line">sed -i <span class="string">&quot;s@http://\(security.debian.org\|deb.debian.org\)@http://mirrors.aliyun.com@g&quot;</span> /etc/apt/sources.list</span><br><span class="line"><span class="comment"># Ubuntu 需root权限</span></span><br><span class="line">sed -i <span class="string">&quot;s@http://\(security.ubuntu.com\|archive.ubuntu.com\)@http://mirrors.aliyun.com@g&quot;</span> /etc/apt/sources.list</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>docker，在配置文件中增加内容</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/docker/deamon.json</span><br></pre></td></tr></table></figure>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// /etc/docker/deamon.json</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;registry-mirrors&quot;</span>: [</span><br><span class="line">    <span class="string">&quot;https://registry.docker-cn.com&quot;</span>,</span><br><span class="line">    <span class="string">&quot;http://hub-mirror.c.163.com&quot;</span></span><br><span class="line">  ],</span><br><span class="line">  <span class="attr">&quot;dns&quot;</span>: [<span class="string">&quot;8.8.8.8&quot;</span>,<span class="string">&quot;8.8.4.4&quot;</span>] <span class="comment">// 换成你常用的DNS地址</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>INFO：在/etc/resolv.conf设置DNS经常会被覆盖，建议在daemon.json中指定</strong></p>
+</li>
+</ul>
+<hr>
+<h2 id="7-时间不对"><a href="#7-时间不对" class="headerlink" title="7.时间不对"></a>7.时间不对</h2><p>一般用docker方式跑HA会出现时间慢8小时，这是由于镜像的时区为UTC，修改为CST即可。</p>
+<ul>
+<li>首次运行容器，docker run加入参数<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 方式1.指定环境变量</span></span><br><span class="line">-e <span class="string">&quot;TZ=Asia/Shanghai&quot;</span></span><br><span class="line"><span class="comment"># 方式2.把宿主机的已配置好的文件覆盖掉容器的文件</span></span><br><span class="line">-v <span class="string">&quot;/etc/localtime:/etc/localtime:ro&quot;</span></span><br></pre></td></tr></table></figure></li>
+<li>已在运行容器，进入容器修改<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="built_in">exec</span> -it [容器名/容器id] sh</span><br><span class="line">容器内执行命令：</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;Asia/Shanghai&quot;</span> &gt; /etc/timezone</span><br><span class="line">dpkg-reconfigure -f noninteractive tzdata</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<hr>
+<h2 id="10068-其它"><a href="#10068-其它" class="headerlink" title="10068. 其它"></a>10068. 其它</h2><ul>
+<li>入门教程建议看HAChina的<a target="_blank" rel="noopener" href="https://www.hachina.io/docs/321.html" title="HA文档">教程</a>，很全面也够详细。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>cnk700i
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://ljr.im/articles/home-assistant-novice-question-set/" title="Home Assistant新手问题集">https://ljr.im/articles/home-assistant-novice-question-set/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/Home-Assistant/" rel="tag"><i class="fa fa-tag"></i> Home Assistant</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/articles/zabbix-wechat-enterprise-account-push-alarm/" rel="prev" title="Zabbix+微信企业号推送告警">
+      <i class="fa fa-chevron-left"></i> Zabbix+微信企业号推送告警
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/articles/visual-studio-code-debugging-home-assistant-wsl-version/" rel="next" title="Visual Studio Code调试Home Assistant代码（WSL版）">
+      Visual Studio Code调试Home Assistant代码（WSL版） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E7%9B%AE%E5%BD%95%E4%BD%8D%E7%BD%AE"><span class="nav-text">1. 目录位置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E5%AE%89%E8%A3%85%E6%8F%92%E4%BB%B6%EF%BC%88%E8%87%AA%E5%AE%9A%E4%B9%89%E7%BB%84%E4%BB%B6%EF%BC%89"><span class="nav-text">2. 安装插件（自定义组件）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E8%B0%83%E8%AF%95%E5%8F%8A%E6%9F%A5%E7%9C%8B%E7%A8%8B%E5%BA%8F%E8%BF%90%E8%A1%8C%E6%97%A5%E5%BF%97"><span class="nav-text">3. 调试及查看程序运行日志</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E6%8E%A7%E5%88%B6%E5%8E%86%E5%8F%B2%E6%95%B0%E6%8D%AE%E7%94%9F%E6%88%90"><span class="nav-text">4. 控制历史数据生成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E5%AE%B9%E5%99%A8%E4%B8%8E%E5%AE%BF%E4%B8%BB%E6%9C%BA%E6%8B%B7%E8%B4%9D%E6%96%87%E4%BB%B6"><span class="nav-text">5. 容器与宿主机拷贝文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E6%8D%A2%E6%BA%90"><span class="nav-text">6. 换源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-%E6%97%B6%E9%97%B4%E4%B8%8D%E5%AF%B9"><span class="nav-text">7.时间不对</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10068-%E5%85%B6%E5%AE%83"><span class="nav-text">10068. 其它</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="cnk700i"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">cnk700i</p>
+  <div class="site-description" itemprop="description">虽然没用技术赚到钱，至少让生活更有趣吧</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">38</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/cnk700i" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cnk700i" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:liangjiarong@gmail.com" title="E-Mail → mailto:liangjiarong@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://jq.qq.com/?_wv=1027&k=5mCE2MH" title="QQ → https:&#x2F;&#x2F;jq.qq.com&#x2F;?_wv&#x3D;1027&amp;k&#x3D;5mCE2MH" rel="noopener" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-rss"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">cnk700i</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">154k</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.id);
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            let target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    let { app_id, app_key, server_url } = {"enable":true,"app_id":"D6eniJJLIQb3z1eCLum0aUsC-MdYXbMMI","app_key":"eqYfUABMvuNoBGflLYsdYcK3","server_url":null,"security":true};
+    function fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    let api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

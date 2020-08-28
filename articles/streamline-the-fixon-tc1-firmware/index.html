@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"ljr.im","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="趁着折腾刷斐讯TC1固件的机会，简单体验了一把MiCO的开发。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="精简下斐讯TC1固件">
+<meta property="og:url" content="https://ljr.im/articles/streamline-the-fixon-tc1-firmware/index.html">
+<meta property="og:site_name" content="星路">
+<meta property="og:description" content="趁着折腾刷斐讯TC1固件的机会，简单体验了一把MiCO的开发。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-04-23T21:38:00.000Z">
+<meta property="article:modified_time" content="2020-08-28T13:31:33.000Z">
+<meta property="article:author" content="cnk700i">
+<meta property="article:tag" content="MQTT">
+<meta property="article:tag" content="TC1">
+<meta property="article:tag" content="MiCO">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://ljr.im/articles/streamline-the-fixon-tc1-firmware/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>精简下斐讯TC1固件 | 星路</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-137999457-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-137999457-1');
+      }
+    </script>
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?dc919d77bfa18b55261c23c656062137";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">星路</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">追寻那一缕星光，在漆黑夜晚前行</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ljr.im/articles/streamline-the-fixon-tc1-firmware/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="cnk700i">
+      <meta itemprop="description" content="虽然没用技术赚到钱，至少让生活更有趣吧">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="星路">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          精简下斐讯TC1固件
+        </h1>
+
+        <div class="post-meta">
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-04-23 21:38:00" itemprop="dateCreated datePublished" datetime="2019-04-23T21:38:00+00:00">2019-04-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-08-28 13:31:33" itemprop="dateModified" datetime="2020-08-28T13:31:33+00:00">2020-08-28</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Home-Assistant/" itemprop="url" rel="index"><span itemprop="name">Home Assistant</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/articles/streamline-the-fixon-tc1-firmware/" class="post-meta-item leancloud_visitors" data-flag-title="精简下斐讯TC1固件" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.8k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+            <div class="post-description">趁着折腾刷斐讯TC1固件的机会，简单体验了一把MiCO的开发。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>某天百度发现有大佬把斐讯TC1的<a target="_blank" rel="noopener" href="https://github.com/a2633063/zTC1" title="zTC1">固件</a>(基于MiCO开发)给做出来了，犹豫再三还是剁手了，因为家里的排插真的好多了，又需要新的编程器。不过真香，六插孔+USB充电确实实用。想着原来固件的功能有的自己用不上，看了下代码结构挺简单的，于是精简了一下功能，分享下折腾记录吧。</p>
+<hr>
+<a id="more"></a>
+<h2 id="0-update"><a href="#0-update" class="headerlink" title="0. update"></a>0. update</h2><ul>
+<li>2019-09-27<br>经反馈会有断外网重启的bug，查看代码貌似只有SNTP同步时间会联外网，于是尝试调整了一下SNTP相关代码（编译固件也可以把<code>main.c</code>的<code>sntp_init();</code>去掉不要sntp功能），要是还解决不了我也木办法了{摊手}</li>
+</ul>
+<h2 id="1-改动说明"><a href="#1-改动说明" class="headerlink" title="1. 改动说明"></a>1. 改动说明</h2><p>基于原固件v0.10进行修改：</p>
+<ul>
+<li>设定WIFI和MQTT设置直接烧录，懒得再装APP了</li>
+<li>去掉UDP通信功能，只保留MQTT通信功能</li>
+<li>去掉插座命名、定时功能，这块用Home Assistant来管理</li>
+<li>MQTT通信协议根据自己使用习惯进行了调整：调整topic、增加上线下线通知、使用qos</li>
+<li>把编译的warning警告基本去掉了</li>
+</ul>
+<blockquote>
+<p><strong>WARING：因为精简掉UDP通信协议，使用上会造成不方便，精简带来的好处实际也不明显，请自行权衡。</strong></p>
+</blockquote>
+<hr>
+<h2 id="2-编译环境"><a href="#2-编译环境" class="headerlink" title="2. 编译环境"></a>2. 编译环境</h2><p>使用docker，docker安装方法<a href="https://ljr.im/articles/docker-installation-using-nodered-practice/" title="docker安装使用Node-RED实践">传送门</a>。</p>
+<ul>
+<li><p>拉一个python2.7的镜像</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull python:2-slim-stretch</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启动容器并进入容器</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#自己调整主机映射目录/home/mico；容器内工程目录设置为/workdir，可根据喜好调整，但注意后续命令也要调整。</span></span><br><span class="line">docker run -it --name mico -v /home/mico:/workdir python:2-slim-stretch bash</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>DEBUG：后续进入容器可以用命令docker exec -it mico bash，更多docker命令介绍<a href="https://ljr.im/articles/the-four-stages-of-docker-from-entry-to-pit/" title="docker从入门到入坑的四个阶段">传送门</a>。</strong></p>
+</blockquote>
+</li>
+<li><p>更新源、安装软件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#容器bash</span></span><br><span class="line">apt update &amp;&amp; apt install git wget lib32ncurses5</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>INFO：一个坑，不安装lib32ncurses5库编译会报”arm-none-eabi-gcc: not found”错误。</strong></p>
+</blockquote>
+</li>
+<li><p>python bin</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ln -s /usr/<span class="built_in">local</span>/bin/python /usr/bin/python</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>INFO：一个坑，不设置软链接编译会报”/usr/bin/python: not found”错误。</strong></p>
+</blockquote>
+</li>
+<li><p>安装MiCo编译环境（mico-cube、MiCoder）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#容器bash</span></span><br><span class="line">pip install mico-cube &amp;&amp; \</span><br><span class="line"><span class="built_in">cd</span> /workdir &amp;&amp; \</span><br><span class="line">wget http://firmware.mxchip.com/MiCoder_v1.1.Linux.tar.gz &amp;&amp; \</span><br><span class="line">tar -zxf MiCoder_v1.1.Linux.tar.gz &amp;&amp; \</span><br><span class="line">rm MiCoder_v1.1.Linux.tar.gz &amp;&amp; \</span><br><span class="line">mico config --global MICODER /workdir/MiCoder</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>DEBUG：mico-cube是MXCHIP的MiCO项目开发管理工具包；MiCoder是MiCO编译和调试系统必须的工具软件包。</strong></p>
+</blockquote>
+</li>
+</ul>
+<hr>
+<h2 id="3-编译固件"><a href="#3-编译固件" class="headerlink" title="3.编译固件"></a>3.编译固件</h2><ul>
+<li><p>创建一个空项目，名为TC1，自己开发则自定义</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#容器bash</span></span><br><span class="line"><span class="built_in">cd</span> /workdir &amp;&amp; \</span><br><span class="line">mico new TC1 --create-only</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>INFO：命令执行完后，会在当前目录生成名称为TC1项目目录。</strong></p>
+</blockquote>
+</li>
+<li><p>添加mico-os组件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#容器bash</span></span><br><span class="line"><span class="built_in">cd</span> /workdir/TC1 &amp;&amp; \</span><br><span class="line">mico add https://code.aliyun.com/mico/mico-os.git/<span class="comment">#6c465211d3ff8797cd835e400ec54a06530dd476</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>INFO：需要在项目目录下执行。</strong></p>
+</blockquote>
+</li>
+<li><p>添加项目代码，代码目录在项目目录下的<code>项目同名目录</code>，/workdir/TC1/TC1，自己开发则自定义</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#容器bash</span></span><br><span class="line">git <span class="built_in">clone</span> https://github.com/cnk700i/tc1_mqtt.git &amp;&amp; \</span><br><span class="line">mv tc1_mqtt/TC1 . &amp;&amp; \</span><br><span class="line">rm tc1_mqtt -r</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>DEBUG：下载zip解压后再拷贝进去也可以。</strong></p>
+</blockquote>
+</li>
+<li><p>设置WiFi及MQTT，修改项目代码main.h文件</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//自定义</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZTC_NAME <span class="meta-string">&quot;tc1_%s&quot;</span>                       <span class="comment">//设备名称模板，默认生成的设备名称为tc1_&#123;&#123;MAC地址&#125;&#125;，PS：如修改要保留%s，将填充MAC地址</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CONFIG_SSID <span class="meta-string">&quot;wifi_ssid&quot;</span>                 <span class="comment">//WiFi名称</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CONFIG_USER_KEY <span class="meta-string">&quot;wifi_password&quot;</span>         <span class="comment">//WiFi密码</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CONFIG_MQTT_IP <span class="meta-string">&quot;mqtt_ip&quot;</span>                <span class="comment">//MQTT服务器IP</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CONFIG_MQTT_PORT 1883                   <span class="comment">//MQTT服务器端口     </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CONFIG_MQTT_USER <span class="meta-string">&quot;mqtt_user&quot;</span>            <span class="comment">//MQTT用户名</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CONFIG_MQTT_PASSWORD <span class="meta-string">&quot;mqtt_password&quot;</span>    <span class="comment">//MQTT密码</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> STATE_UPDATE_INTERVAL 10000             <span class="comment">//功率上报间隔，单位ms</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MQTT_CLIENT_SUB_TOPIC   <span class="meta-string">&quot;cmnd/%s&quot;</span>       <span class="comment">//命令控制接收topic，%s取ZTC_NAME（默认tc1_&#123;&#123;MAC地址&#125;&#125;），PS：请勿修改此处，可修改ZTC_NAME</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MQTT_CLIENT_PUB_TOPIC   <span class="meta-string">&quot;stat/%s&quot;</span>       <span class="comment">//状态信息topic，%s取ZTC_NAME（默认tc1_&#123;&#123;MAC地址&#125;&#125;），PS：请勿修改此处，可修改ZTC_NAME</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> USER_CONFIG_VERSION 3                   <span class="comment">//修改为与上次固件不同，触发重新加载信息（线刷可忽略）</span></span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>编译项目代码</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#容器bash</span></span><br><span class="line"><span class="comment">#/workdir/TC1</span></span><br><span class="line">mico make TC1@MK3031@moc</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<hr>
+<h2 id="4-刷固件"><a href="#4-刷固件" class="headerlink" title="4.刷固件"></a>4.刷固件</h2><ul>
+<li>编译成功后的固件文件<ul>
+<li><code>/workdir/TC1/build/TC1@MK3031@moc/binary/TC1@MK3031@moc.all.bin</code>，用于线刷</li>
+<li><code>/workdir/TC1/build/TC1@MK3031@moc/binary/TC1@MK3031@moc.ota.bin</code>，用于OTA</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p><strong>INFO：主机映射目录/home/mico/TC1/build/TC1@MK3031@moc/binary内可找到固件。</strong></p>
+</blockquote>
+<ul>
+<li><p>线刷方法略，见原固件教程的<a target="_blank" rel="noopener" href="https://github.com/a2633063/zTC1/wiki/%E5%9B%BA%E4%BB%B6%E7%83%A7%E5%BD%95" title="固件烧录">固件烧录</a></p>
+</li>
+<li><p>OTA则使用MQTT客户端，例如MQTT.fx，发送消息给TC1触发OTA。</p>
+<ul>
+<li>topic<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;cmnd/tc1_&#123;&#123;MAC地址&#125;&#125;&quot;（如修改设备名称模板ZTC_NAME，则填写&quot;cmnd/&#123;&#123;设备名称&#125;&#125;&quot;）</span><br></pre></td></tr></table></figure></li>
+<li>content<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;setting&quot;</span>:</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">&quot;ota&quot;</span>:<span class="string">&quot;&#123;&#123;ota.bin的http下载地址&#125;&#125;&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>WARN：可以用Http File Server之类的免安装工具搭建http服务器，使用浏览器测试打开链接可以直接下载bin文件。另外文件名不要含特殊符号。</strong></p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="5-接入homeassistant"><a href="#5-接入homeassistant" class="headerlink" title="5.接入homeassistant"></a>5.接入homeassistant</h2><p>启用homeassistant的mqtt组件的自动发现，重启HA，再重启TC1（断电再接电）。<br>  <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;<span class="string">HA配置目录</span>&#125;&#125;<span class="string">/configuration.yaml</span></span><br><span class="line"><span class="attr">mqtt:</span></span><br><span class="line"><span class="attr">mqtt:</span></span><br><span class="line">  <span class="comment"># MQTT Broker的IP地址或者域名</span></span><br><span class="line">  <span class="attr">broker:</span> <span class="string">xx</span></span><br><span class="line">  <span class="comment"># MQTT Broker的端口号，缺省为1883</span></span><br><span class="line">  <span class="attr">port:</span> <span class="string">xx</span></span><br><span class="line">  <span class="comment"># 用户名</span></span><br><span class="line">  <span class="attr">username:</span> <span class="string">xx</span></span><br><span class="line">  <span class="comment"># 密码</span></span><br><span class="line">  <span class="attr">password:</span> <span class="string">xx</span></span><br><span class="line">  <span class="comment"># 自动发现</span></span><br><span class="line">  <span class="attr">discovery:</span> <span class="literal">true</span></span><br><span class="line">  <span class="comment"># 自动发现topic前缀，与固件设置的一致</span></span><br><span class="line">  <span class="attr">discovery_prefix:</span> <span class="string">homeassistant</span></span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>__INFO：TC1在启动的时候往&#123;&#123;discovery_prefix&#125;&#125;/&#123;&#123;component&#125;&#125;/&#123;&#123;node_id&#125;&#125;/&#123;&#123;object_id&#125;&#125;/config发送配置信息，HA根据配置信息生成entity。__</p>
+</blockquote>
+<hr>
+<h2 id="5-小结"><a href="#5-小结" class="headerlink" title="5.小结"></a>5.小结</h2><ul>
+<li>MiCo开发平台比之前DC1用的ESPHome容易上手好多，搭建环境也简单些，遇到一些小坑还是比较快就解决了。</li>
+<li>C语言看着真的头大，又感觉到了被指针支配的恐惧，还好原固件作者代码的业务逻辑还是比较清晰，于是就简单地改一改。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>cnk700i
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://ljr.im/articles/streamline-the-fixon-tc1-firmware/" title="精简下斐讯TC1固件">https://ljr.im/articles/streamline-the-fixon-tc1-firmware/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/MQTT/" rel="tag"><i class="fa fa-tag"></i> MQTT</a>
+              <a href="/tags/TC1/" rel="tag"><i class="fa fa-tag"></i> TC1</a>
+              <a href="/tags/MiCO/" rel="tag"><i class="fa fa-tag"></i> MiCO</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/articles/esphome-getting-started-guide-pseudo/" rel="prev" title="ESPHome入门指引（伪）">
+      <i class="fa fa-chevron-left"></i> ESPHome入门指引（伪）
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/articles/plugin-%C2%B7-change-lovelace-weather-card-based-on-windy/" rel="next" title="【插件·改】基于和风天气的lovelace天气卡片">
+      【插件·改】基于和风天气的lovelace天气卡片 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0-update"><span class="nav-text">0. update</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E6%94%B9%E5%8A%A8%E8%AF%B4%E6%98%8E"><span class="nav-text">1. 改动说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E7%BC%96%E8%AF%91%E7%8E%AF%E5%A2%83"><span class="nav-text">2. 编译环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E7%BC%96%E8%AF%91%E5%9B%BA%E4%BB%B6"><span class="nav-text">3.编译固件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E5%88%B7%E5%9B%BA%E4%BB%B6"><span class="nav-text">4.刷固件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E6%8E%A5%E5%85%A5homeassistant"><span class="nav-text">5.接入homeassistant</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E5%B0%8F%E7%BB%93"><span class="nav-text">5.小结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="cnk700i"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">cnk700i</p>
+  <div class="site-description" itemprop="description">虽然没用技术赚到钱，至少让生活更有趣吧</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">38</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/cnk700i" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cnk700i" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:liangjiarong@gmail.com" title="E-Mail → mailto:liangjiarong@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://jq.qq.com/?_wv=1027&k=5mCE2MH" title="QQ → https:&#x2F;&#x2F;jq.qq.com&#x2F;?_wv&#x3D;1027&amp;k&#x3D;5mCE2MH" rel="noopener" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-rss"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">cnk700i</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">154k</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.id);
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            let target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    let { app_id, app_key, server_url } = {"enable":true,"app_id":"D6eniJJLIQb3z1eCLum0aUsC-MdYXbMMI","app_key":"eqYfUABMvuNoBGflLYsdYcK3","server_url":null,"security":true};
+    function fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    let api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

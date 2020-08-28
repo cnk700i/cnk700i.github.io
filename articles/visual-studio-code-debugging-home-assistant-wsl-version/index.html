@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"ljr.im","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="使用Visual Studio Code + Windows子系统实现调试Home Assistant代码。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Visual Studio Code调试Home Assistant代码（WSL版）">
+<meta property="og:url" content="https://ljr.im/articles/visual-studio-code-debugging-home-assistant-wsl-version/index.html">
+<meta property="og:site_name" content="星路">
+<meta property="og:description" content="使用Visual Studio Code + Windows子系统实现调试Home Assistant代码。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ljr.im/articles/visual-studio-code-debugging-home-assistant-wsl-version/c1_p1_%E6%96%AD%E7%82%B9%E6%9C%AA%E9%AA%8C%E8%AF%81.png">
+<meta property="og:image" content="https://ljr.im/articles/visual-studio-code-debugging-home-assistant-wsl-version/c1_p2_%E5%90%8E%E7%BB%AD%E6%96%AD%E7%82%B9%E4%B8%8D%E5%81%9C.png">
+<meta property="og:image" content="https://ljr.im/articles/visual-studio-code-debugging-home-assistant-wsl-version/c2_p1_%E5%BA%94%E7%94%A8%E8%AE%BE%E7%BD%AE%E5%85%A5%E5%8F%A3.png">
+<meta property="og:image" content="https://ljr.im/articles/visual-studio-code-debugging-home-assistant-wsl-version/c2_p2_%E5%90%AF%E7%94%A8%E5%AD%90%E7%B3%BB%E7%BB%9F.png">
+<meta property="og:image" content="https://ljr.im/articles/visual-studio-code-debugging-home-assistant-wsl-version/c2_p3_%E5%AE%89%E8%A3%85Ubuntu%E5%AD%90%E7%B3%BB%E7%BB%9F.png">
+<meta property="og:image" content="https://ljr.im/articles/visual-studio-code-debugging-home-assistant-wsl-version/c3_p1_%E5%AE%89%E8%A3%85WSL%E6%8F%92%E4%BB%B6.png">
+<meta property="og:image" content="https://ljr.im/articles/visual-studio-code-debugging-home-assistant-wsl-version/c3_p2_%E6%96%B0%E5%BB%BAWSL%E7%AA%97%E5%8F%A3.png">
+<meta property="og:image" content="https://ljr.im/articles/visual-studio-code-debugging-home-assistant-wsl-version/c3_p3_%E5%AE%89%E8%A3%85Python%E6%8F%92%E4%BB%B6.png">
+<meta property="og:image" content="https://ljr.im/articles/visual-studio-code-debugging-home-assistant-wsl-version/c3_p4_%E6%89%93%E5%BC%80Linux%E7%BB%88%E7%AB%AF.png">
+<meta property="og:image" content="https://ljr.im/articles/visual-studio-code-debugging-home-assistant-wsl-version/c4_p1_%E6%95%B4%E4%BD%93%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84.png">
+<meta property="og:image" content="https://ljr.im/articles/visual-studio-code-debugging-home-assistant-wsl-version/c5_p1_%E6%89%93%E5%BC%80%E6%9C%AC%E5%9C%B0%E7%9B%AE%E5%BD%95%E5%86%8D%E7%94%A8WSL%E9%87%8D%E6%96%B0%E5%8A%A0%E8%BD%BD.png">
+<meta property="og:image" content="https://ljr.im/articles/visual-studio-code-debugging-home-assistant-wsl-version/c5_p2_%E6%89%93%E5%BC%80WSL%E7%AA%97%E5%8F%A3.png">
+<meta property="og:image" content="https://ljr.im/articles/visual-studio-code-debugging-home-assistant-wsl-version/c5_p3_WSL%E7%AA%97%E5%8F%A3%E5%8A%A0%E8%BD%BD%E7%9B%AE%E5%BD%95.png">
+<meta property="og:image" content="https://ljr.im/articles/visual-studio-code-debugging-home-assistant-wsl-version/c5_p4_%E5%BF%AB%E9%80%9F%E6%89%93%E5%BC%80%E4%B8%BB%E7%9B%AE%E5%BD%95.png">
+<meta property="og:image" content="https://ljr.im/articles/visual-studio-code-debugging-home-assistant-wsl-version/c5_p5_%E8%AE%BE%E7%BD%AEpython%E8%A7%A3%E9%87%8A%E5%99%A8.png">
+<meta property="og:image" content="https://ljr.im/articles/visual-studio-code-debugging-home-assistant-wsl-version/c5_p6_%E8%B0%83%E8%AF%95%E6%95%88%E6%9E%9C.png">
+<meta property="og:image" content="https://ljr.im/articles/visual-studio-code-debugging-home-assistant-wsl-version/c6_p1_%E5%8D%A0%E7%94%A8%E7%AB%AF%E5%8F%A3%E6%83%85%E5%86%B5%E4%B8%8B%E7%BB%88%E6%AD%A2%E8%BF%9B%E7%A8%8B.png">
+<meta property="article:published_time" content="2019-09-08T21:00:00.000Z">
+<meta property="article:modified_time" content="2020-08-28T13:20:12.000Z">
+<meta property="article:author" content="cnk700i">
+<meta property="article:tag" content="Home Assistant">
+<meta property="article:tag" content="VS Code">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ljr.im/articles/visual-studio-code-debugging-home-assistant-wsl-version/c1_p1_%E6%96%AD%E7%82%B9%E6%9C%AA%E9%AA%8C%E8%AF%81.png">
+
+<link rel="canonical" href="https://ljr.im/articles/visual-studio-code-debugging-home-assistant-wsl-version/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Visual Studio Code调试Home Assistant代码（WSL版） | 星路</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-137999457-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-137999457-1');
+      }
+    </script>
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?dc919d77bfa18b55261c23c656062137";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">星路</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">追寻那一缕星光，在漆黑夜晚前行</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ljr.im/articles/visual-studio-code-debugging-home-assistant-wsl-version/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="cnk700i">
+      <meta itemprop="description" content="虽然没用技术赚到钱，至少让生活更有趣吧">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="星路">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Visual Studio Code调试Home Assistant代码（WSL版）
+        </h1>
+
+        <div class="post-meta">
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-09-08 21:00:00" itemprop="dateCreated datePublished" datetime="2019-09-08T21:00:00+00:00">2019-09-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-08-28 13:20:12" itemprop="dateModified" datetime="2020-08-28T13:20:12+00:00">2020-08-28</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Home-Assistant/" itemprop="url" rel="index"><span itemprop="name">Home Assistant</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/articles/visual-studio-code-debugging-home-assistant-wsl-version/" class="post-meta-item leancloud_visitors" data-flag-title="Visual Studio Code调试Home Assistant代码（WSL版）" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+            <div class="post-description">使用Visual Studio Code + Windows子系统实现调试Home Assistant代码。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>最近在瀚思彼岸看到M大的<a target="_blank" rel="noopener" href="https://bbs.hassbian.com/thread-8054-1-1.html" title="[基础教程] 篇六：有些硬件太小众了怎么自己写插件">写插件教程帖子</a>提及用pycharm断点调试插件，想到自己一直以来开发插件全靠logging埋点看输出、研究HA核心功能代码依靠人肉追踪，真有点内牛满面。不过M大的调试方法不是放在普通原代码上的，貌似也没法追踪HA主程序代码，用的工具也不是自己熟悉的，于是乎狠下决心去折腾实现能用VS Code对HA代码进行直接调试，发现坑真不少。</p>
+<hr>
+<a id="more"></a>
+<h2 id="0-环境"><a href="#0-环境" class="headerlink" title="0.环境"></a>0.环境</h2><ul>
+<li>Win10 LTSC 2019 + WSL(Ubuntu 18.04)</li>
+<li>Visual Studio Code 1.38.0</li>
+</ul>
+<hr>
+<h2 id="1-问题及结论"><a href="#1-问题及结论" class="headerlink" title="1.问题及结论"></a>1.问题及结论</h2><p>这几天先是按官方的<a target="_blank" rel="noopener" href="https://developers.home-assistant.io/docs/en/development_environment.html" title="官方的开发环境部署文档">搭建开发环境文档</a>去搭了（VS Code+容器）环境，结果发现压根没提到调试方面的操作。后来在官方的论坛中有搜到不少无法追踪断点的问题，不过没发现解决方法。再后来百度有人提及是目录位置问题才有了转机，瞎折腾测试一番总是解决了。</p>
+<ul>
+<li><p>问题</p>
+<ul>
+<li>pip安装后，使用<code>site-packages/homeassistant</code>安装目录作为VS Code主目录，运行会跳过所有断点，显示“未验证的断点”。 
+      <img src="/articles/visual-studio-code-debugging-home-assistant-wsl-version/c1_p1_%E6%96%AD%E7%82%B9%E6%9C%AA%E9%AA%8C%E8%AF%81.png" class="" title="断点未验证">
+    </li>
+<li>在其它路径放置HA代码目录<code>homeassistant</code>作为VS Code主目录，断点在<code>__main__.py</code>程序入口373行之后就不停了。 
+      <img src="/articles/visual-studio-code-debugging-home-assistant-wsl-version/c1_p2_%E5%90%8E%E7%BB%AD%E6%96%AD%E7%82%B9%E4%B8%8D%E5%81%9C.png" class="" title="后续断点不停">
+    </li>
+</ul>
+</li>
+<li><p>结论</p>
+<ul>
+<li>要正常调试需要Linux环境，并且不能用pip安装目录的代码。</li>
+<li>要跟踪断点的代码需要在同一个VS Code主目录。</li>
+</ul>
+</li>
+<li><p>解决方法</p>
+<ul>
+<li>将配置目录和程序代码放一起，这样可以<font color = 'red'>调试自定义组件。</font></li>
+<li>HA程序代码使用了不少<code>from homeassistant import xx</code>方式导入包，如果以HA代码目录比如<code>d:\homeassistant</code>作为VS Code主目录，则运行点就跑到pip的<code>site-packages/homeassistant</code>安装目录里的代码去，所以需要利用Python的搜索优先规则，给HA代码目录加多一层上级目录，使得导入的是VS Code主目录下的HA代码，也就能<font color = 'red'>调试HA主程序代码</font>。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="2-准备"><a href="#2-准备" class="headerlink" title="2.准备"></a>2.准备</h2><ul>
+<li><p>Windows下启用Linux子系统功能，开始菜单-&gt;设置-&gt;应用和功能-&gt;程序和功能-&gt;启用或关闭Windows功能-&gt;适用于Linux的Windows子系统。</p>
+ 
+    <img src="/articles/visual-studio-code-debugging-home-assistant-wsl-version/c2_p1_%E5%BA%94%E7%94%A8%E8%AE%BE%E7%BD%AE%E5%85%A5%E5%8F%A3.png" class="" title="应用设置入口">
+  
+ 
+    <img src="/articles/visual-studio-code-debugging-home-assistant-wsl-version/c2_p2_%E5%90%AF%E7%94%A8%E5%AD%90%E7%B3%BB%E7%BB%9F.png" class="" title="启用子系统">
+  
+<p><strong>INFO：也可以PowerShell（管理员权限）运行Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux</strong><br><strong>INFO：安装完毕需要重启。</strong></p>
+</li>
+<li><p>下载Ubuntu 18.04安装包。<a target="_blank" rel="noopener" href="https://docs.microsoft.com/zh-cn/windows/wsl/install-manual" title="手动下载适用于 Linux 的 Windows 子系统发行版包">下载地址</a></p>
+<p><strong>INFO：也可以在Microsoft Store中安装，不过下载安装包安装可以选择安装路径。</strong></p>
+</li>
+<li><p>解压安装包至安装路径，运行<code>ubuntu1804.exe</code>进行注册。</p>
+ 
+    <img src="/articles/visual-studio-code-debugging-home-assistant-wsl-version/c2_p3_%E5%AE%89%E8%A3%85Ubuntu%E5%AD%90%E7%B3%BB%E7%BB%9F.png" class="" title="安装Ubuntu子系统">
+  
+
+<p>__INFO：在Microsoft Store安装的安装路径是在C:\Users\ [用户名]\AppData\Local\Packages\CanonicalGroupLimited.Ubuntu18.04onWindows_79rhkp1fndgsc\LocalState\rootfs__</p>
+</li>
+</ul>
+<hr>
+<h2 id="3-VS-Code操作"><a href="#3-VS-Code操作" class="headerlink" title="3.VS Code操作"></a>3.VS Code操作</h2><ul>
+<li><p>安装Remote Development插件，用于远程WSL调试</p>
+ 
+    <img src="/articles/visual-studio-code-debugging-home-assistant-wsl-version/c3_p1_%E5%AE%89%E8%A3%85WSL%E6%8F%92%E4%BB%B6.png" class="" title="安装WSL插件">
+  
+<p><strong>INFO：实际上用到的是Remote - WSL插件，安装Remote Development插件会打包安装。</strong></p>
+</li>
+<li><p>打开远程窗口连接WSL，在WSL上安装Python插件，代码调试需要</p>
+ 
+    <img src="/articles/visual-studio-code-debugging-home-assistant-wsl-version/c3_p2_%E6%96%B0%E5%BB%BAWSL%E7%AA%97%E5%8F%A3.png" class="" title="新建WSL窗口">
+  
+ 
+    <img src="/articles/visual-studio-code-debugging-home-assistant-wsl-version/c3_p3_%E5%AE%89%E8%A3%85Python%E6%8F%92%E4%BB%B6.png" class="" title="安装Python插件">
+  
+</li>
+<li><p>WSL窗口下使用终端，在WSL上安装软件包，中途会有确认步骤</p>
+ 
+    <img src="/articles/visual-studio-code-debugging-home-assistant-wsl-version/c3_p4_%E6%89%93%E5%BC%80Linux%E7%BB%88%E7%AB%AF.png" class="" title="打开Linux终端">
+  
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># VS Code远程窗口的bash终端执行。PS：不嫌CMD辣眼睛也可以在CMD下敲命令安装。</span></span><br><span class="line">sudo su</span><br><span class="line">sed -i <span class="string">&quot;s@http://\(security.ubuntu.com\|archive.ubuntu.com\)@http://mirrors.aliyun.com@g&quot;</span> /etc/apt/sources.list &amp;&amp; \</span><br><span class="line">apt update &amp;&amp; \</span><br><span class="line">apt install python3-pip &amp;&amp; \</span><br><span class="line">mkdir -p ~/.pip/ &amp;&amp; \</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;[global]&quot;</span> &gt; ~/.pip/pip.conf &amp;&amp; \</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;index-url = https://pypi.tuna.tsinghua.edu.cn/simple&quot;</span> &gt;&gt; ~/.pip/pip.conf &amp;&amp; \</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;[install]&quot;</span> &gt;&gt; ~/.pip/pip.conf &amp;&amp; \</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;trusted-host = https://pypi.tuna.tsinghua.edu.cn&quot;</span> &gt;&gt; ~/.pip/pip.conf &amp;&amp; \</span><br><span class="line">pip3 install homeassistant</span><br></pre></td></tr></table></figure>
+<p><strong>INFO：Ctrl+Shift+`打开新的终端。</strong></p>
+</li>
+</ul>
+<hr>
+<h2 id="4-准备代码目录"><a href="#4-准备代码目录" class="headerlink" title="4.准备代码目录"></a>4.准备代码目录</h2><ul>
+<li>新建一个文件夹<code>d:\workspace</code>，作为VS Code主目录，内容如下：<ul>
+<li>放入<code>homeassistant</code>目录，github下载指定版本HA取相应的文件夹即可。</li>
+<li>新建<code>config</code>目录，作为HA配置目录。</li>
+<li>新建<code>debug.py</code>，用于启动HA，内容如下：<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> homeassistant <span class="keyword">import</span> __main__ <span class="keyword">as</span> hass_entry</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    sys.exit(hass_entry.main())</span><br></pre></td></tr></table></figure></li>
+<li>用CMD命令新建<code>.vscode</code>目录<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">rem 命令行下新建.vscode文件夹，直接右键新建会报错</span></span><br><span class="line"><span class="built_in">cd</span> d:\workspace</span><br><span class="line"><span class="built_in">mkdir</span> .vscode</span><br></pre></td></tr></table></figure></li>
+<li><code>.vscode</code>目录下新建<code>launch.json</code>文件<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//launch.json内容</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 使用 IntelliSense 了解相关属性。 </span></span><br><span class="line">    <span class="comment">// 悬停以查看现有属性的描述。</span></span><br><span class="line">    <span class="comment">// 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387</span></span><br><span class="line">    <span class="attr">&quot;version&quot;</span>: <span class="string">&quot;0.2.0&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;configurations&quot;</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;Home Assistant Debug&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;type&quot;</span>: <span class="string">&quot;python&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;request&quot;</span>: <span class="string">&quot;launch&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;program&quot;</span>: <span class="string">&quot;$&#123;workspaceRoot&#125;/debug.py&quot;</span>, <span class="comment">//运行HA</span></span><br><span class="line">            <span class="attr">&quot;console&quot;</span>: <span class="string">&quot;integratedTerminal&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;args&quot;</span>: [<span class="string">&quot;-c&quot;</span>, <span class="string">&quot;config&quot;</span>], <span class="comment">//指定配置文件</span></span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<strong>INFO：该步骤也可以打开文件夹后，在VS Code调试页添加配置，添加完配置后会生成对应文件。</strong></li>
+</ul>
+</li>
+<li>最终目录结构如图 
+    <img src="/articles/visual-studio-code-debugging-home-assistant-wsl-version/c4_p1_%E6%95%B4%E4%BD%93%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84.png" class="" title="整体目录结构">
+  
+
+</li>
+</ul>
+<hr>
+<h2 id="5-开始调试"><a href="#5-开始调试" class="headerlink" title="5.开始调试"></a>5.开始调试</h2><ul>
+<li><p>加载主目录，有两种方法：</p>
+<ul>
+<li><p>先打开文件夹，再点左下角弹出选项选”Reopen Folder in WSL”</p>
+ 
+      <img src="/articles/visual-studio-code-debugging-home-assistant-wsl-version/c5_p1_%E6%89%93%E5%BC%80%E6%9C%AC%E5%9C%B0%E7%9B%AE%E5%BD%95%E5%86%8D%E7%94%A8WSL%E9%87%8D%E6%96%B0%E5%8A%A0%E8%BD%BD.png" class="" title="打开本地目录再用WSL重新加载">
+    
+</li>
+<li><p>点左下角弹出选项选”New Window”，在新建窗口再打开文件夹（WSL中的windows文件夹路径对应为<code>/mnt/[盘符]/[文件夹A]/[文件夹B]</code>）</p>
+ 
+      <img src="/articles/visual-studio-code-debugging-home-assistant-wsl-version/c5_p2_%E6%89%93%E5%BC%80WSL%E7%AA%97%E5%8F%A3.png" class="" title="打开WSL窗口">
+    
+ 
+      <img src="/articles/visual-studio-code-debugging-home-assistant-wsl-version/c5_p3_WSL%E7%AA%97%E5%8F%A3%E5%8A%A0%E8%BD%BD%E7%9B%AE%E5%BD%95.png" class="" title="WSL窗口加载目录">
+    
+</li>
+<li><p>后续可以快速重新打开</p>
+ 
+      <img src="/articles/visual-studio-code-debugging-home-assistant-wsl-version/c5_p4_%E5%BF%AB%E9%80%9F%E6%89%93%E5%BC%80%E4%B8%BB%E7%9B%AE%E5%BD%95.png" class="" title="快速打开主目录">
+    
+</li>
+</ul>
+</li>
+<li><p>设置python解析器，一般会自动识别出来，直接选择即可。</p>
+ 
+    <img src="/articles/visual-studio-code-debugging-home-assistant-wsl-version/c5_p5_%E8%AE%BE%E7%BD%AEpython%E8%A7%A3%E9%87%8A%E5%99%A8.png" class="" title="设置python解释器">
+  
+<p><strong>INFO：WSL环境自带有3.6.8版本，Windows不用安装Python。</strong></p>
+</li>
+<li><p>按F5即可运行调试。</p>
+ 
+    <img src="/articles/visual-studio-code-debugging-home-assistant-wsl-version/c5_p6_%E8%B0%83%E8%AF%95%E6%95%88%E6%9E%9C.png" class="" title="调试效果">
+  
+<p><strong>WARN：首次运行先不要设断点，待配置目录初始化完成后，再加入配置信息调试。</strong></p>
+</li>
+</ul>
+<hr>
+<h2 id="6-其它"><a href="#6-其它" class="headerlink" title="6.其它"></a>6.其它</h2><ul>
+<li>有时候无法正常退出调试，会占用8123端口导致无法访问网页，需要手工终止一下进程。 
+    <img src="/articles/visual-studio-code-debugging-home-assistant-wsl-version/c6_p1_%E5%8D%A0%E7%94%A8%E7%AB%AF%E5%8F%A3%E6%83%85%E5%86%B5%E4%B8%8B%E7%BB%88%E6%AD%A2%E8%BF%9B%E7%A8%8B.png" class="" title="占用端口情况下终止进程">
+  
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo su</span><br><span class="line">ps -aux | grep python3 | grep config</span><br><span class="line"><span class="built_in">kill</span> -9 [进程号]</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<hr>
+<h2 id="7-小结"><a href="#7-小结" class="headerlink" title="7.小结"></a>7.小结</h2><ul>
+<li>VS Code的远程调试挺有意思的，一开始看的是容器方式的文档，看得各种懵逼，后来改看WSL方式的发现简单不少，调试果然是一门水深的学问。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>cnk700i
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://ljr.im/articles/visual-studio-code-debugging-home-assistant-wsl-version/" title="Visual Studio Code调试Home Assistant代码（WSL版）">https://ljr.im/articles/visual-studio-code-debugging-home-assistant-wsl-version/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/Home-Assistant/" rel="tag"><i class="fa fa-tag"></i> Home Assistant</a>
+              <a href="/tags/VS-Code/" rel="tag"><i class="fa fa-tag"></i> VS Code</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/articles/home-assistant-novice-question-set/" rel="prev" title="Home Assistant新手问题集">
+      <i class="fa fa-chevron-left"></i> Home Assistant新手问题集
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/articles/visual-studio-code-debugging-home-assistant-docker-version/" rel="next" title="Visual Studio Code调试Home Assistant代码（Docker版）">
+      Visual Studio Code调试Home Assistant代码（Docker版） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0-%E7%8E%AF%E5%A2%83"><span class="nav-text">0.环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E9%97%AE%E9%A2%98%E5%8F%8A%E7%BB%93%E8%AE%BA"><span class="nav-text">1.问题及结论</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E5%87%86%E5%A4%87"><span class="nav-text">2.准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-VS-Code%E6%93%8D%E4%BD%9C"><span class="nav-text">3.VS Code操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E5%87%86%E5%A4%87%E4%BB%A3%E7%A0%81%E7%9B%AE%E5%BD%95"><span class="nav-text">4.准备代码目录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E5%BC%80%E5%A7%8B%E8%B0%83%E8%AF%95"><span class="nav-text">5.开始调试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E5%85%B6%E5%AE%83"><span class="nav-text">6.其它</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-%E5%B0%8F%E7%BB%93"><span class="nav-text">7.小结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="cnk700i"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">cnk700i</p>
+  <div class="site-description" itemprop="description">虽然没用技术赚到钱，至少让生活更有趣吧</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">38</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/cnk700i" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cnk700i" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:liangjiarong@gmail.com" title="E-Mail → mailto:liangjiarong@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://jq.qq.com/?_wv=1027&k=5mCE2MH" title="QQ → https:&#x2F;&#x2F;jq.qq.com&#x2F;?_wv&#x3D;1027&amp;k&#x3D;5mCE2MH" rel="noopener" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-rss"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">cnk700i</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">154k</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.id);
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            let target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    let { app_id, app_key, server_url } = {"enable":true,"app_id":"D6eniJJLIQb3z1eCLum0aUsC-MdYXbMMI","app_key":"eqYfUABMvuNoBGflLYsdYcK3","server_url":null,"security":true};
+    function fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    let api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

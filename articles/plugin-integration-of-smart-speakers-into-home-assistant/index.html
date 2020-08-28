@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"ljr.im","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="叮咚音箱、天猫精灵、小度音箱等智能音箱多种方法接入Home Assistant，现可直接使用音箱APP技能接入（免公网IP）。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【插件】智能音箱接入Home Assistant整合">
+<meta property="og:url" content="https://ljr.im/articles/plugin-integration-of-smart-speakers-into-home-assistant/index.html">
+<meta property="og:site_name" content="星路">
+<meta property="og:description" content="叮咚音箱、天猫精灵、小度音箱等智能音箱多种方法接入Home Assistant，现可直接使用音箱APP技能接入（免公网IP）。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ljr.im/articles/plugin-integration-of-smart-speakers-into-home-assistant/mode1.svg">
+<meta property="og:image" content="https://ljr.im/articles/plugin-integration-of-smart-speakers-into-home-assistant/mode2.svg">
+<meta property="og:image" content="https://ljr.im/articles/plugin-integration-of-smart-speakers-into-home-assistant/mode3.svg">
+<meta property="article:published_time" content="2019-02-17T20:00:00.000Z">
+<meta property="article:modified_time" content="2020-08-28T17:11:21.000Z">
+<meta property="article:author" content="cnk700i">
+<meta property="article:tag" content="Home Assistant">
+<meta property="article:tag" content="插件">
+<meta property="article:tag" content="智能音箱">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ljr.im/articles/plugin-integration-of-smart-speakers-into-home-assistant/mode1.svg">
+
+<link rel="canonical" href="https://ljr.im/articles/plugin-integration-of-smart-speakers-into-home-assistant/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【插件】智能音箱接入Home Assistant整合 | 星路</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-137999457-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-137999457-1');
+      }
+    </script>
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?dc919d77bfa18b55261c23c656062137";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">星路</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">追寻那一缕星光，在漆黑夜晚前行</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ljr.im/articles/plugin-integration-of-smart-speakers-into-home-assistant/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="cnk700i">
+      <meta itemprop="description" content="虽然没用技术赚到钱，至少让生活更有趣吧">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="星路">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【插件】智能音箱接入Home Assistant整合
+        </h1>
+
+        <div class="post-meta">
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-02-17 20:00:00" itemprop="dateCreated datePublished" datetime="2019-02-17T20:00:00+00:00">2019-02-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-08-28 17:11:21" itemprop="dateModified" datetime="2020-08-28T17:11:21+00:00">2020-08-28</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Home-Assistant/" itemprop="url" rel="index"><span itemprop="name">Home Assistant</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/articles/plugin-integration-of-smart-speakers-into-home-assistant/" class="post-meta-item leancloud_visitors" data-flag-title="【插件】智能音箱接入Home Assistant整合" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>13k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>12 分钟</span>
+            </span>
+            <div class="post-description">叮咚音箱、天猫精灵、小度音箱等智能音箱多种方法接入Home Assistant，现可直接使用音箱APP技能接入（免公网IP）。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>前情回顾：年前折腾的<a href="https://ljr.im/articles/flip-car-series-smart-speaker-universal-access-platform/" title="【翻车系列】智能音箱通用接入平台">通用智能音箱接入平台</a>因音箱技能类型限制不过审翻车了，然后将项目成果整理做了个<a href="https://ljr.im/articles/plugin-mqtt-relay-to-achieve-smart-speaker-access-home-assistant/" title="【插件】MQTT中转实现智能音箱接入Home Assistant">智能音箱mqtt代理转发插件</a>。考虑到易用性，趁着过年闲着，于是折腾了下各个平台的智能家居类型技能对接，最终成果就是这么一个整合版插件了。</p>
+<hr>
+<a id="more"></a>
+<h2 id="0-更新"><a href="#0-更新" class="headerlink" title="0.更新"></a>0.更新</h2><p><font color = "red">新版本插件已发布并更名为havcs（<a href="https://ljr.im/articles/plugin-smart-speaker-access-home-assistant-integration-plus/" title="【插件】智能音箱接入Home Assistant整合Plus">传送门</a>），主要变更了设备配置方式，其它部分内容基本仍适用，建议先粗略观看完此版本内容再移步观看新版本。</font></p>
+<h2 id="1-插件说明"><a href="#1-插件说明" class="headerlink" title="1.插件说明"></a>1.插件说明</h2><p><strong>本插件实际上由两大功能模块组成：</strong></p>
+<ul>
+<li><p>MQTT对接服务</p>
+<p>配合本人搭建的mqtt中转服务，可以将音箱云平台的音箱命令消息、oauth消息转发到无公网环境下家中的Home Assistant。</p>
+</li>
+<li><p>音箱组件</p>
+<p>即智能音箱本地网关插件，对音箱云平台的音箱命令消息进行解析、处理，可以初始化为HTTP网关服务与音箱云平台直接对接。</p>
+</li>
+</ul>
+<p><strong>有三种使用模式，适合不同场景的接入：</strong></p>
+<ul>
+<li><p>模式一 http模式</p>
+<ul>
+<li>生成音箱http网关，通过<code>自建测试技能</code>接入</li>
+<li>适合<code>家庭宽带有公网ip或已实现内网穿透</code>场景下使用</li>
+<li><strong>建议有条件都用这个，留服务资源给有需要的人</strong></li>
+</ul>
+<img src="/articles/plugin-integration-of-smart-speakers-into-home-assistant/mode1.svg" class="" title="[模式一示意图]">
+</li>
+<li><p>模式二 http proxy模式</p>
+<ul>
+<li>生成音箱http网关，同时使用mqtt代理穿透内网访问，通过<code>自建测试技能</code>接入</li>
+<li>适合<code>家庭宽带无公网ip</code>场景下使用</li>
+<li><strong>临时提供，视服务资源情况会停止</strong></li>
+</ul>
+<img src="/articles/plugin-integration-of-smart-speakers-into-home-assistant/mode2.svg" class="" title="[模式二示意图]">
+</li>
+<li><p>模式三 skill模式</p>
+<ul>
+<li>通过<code>官方音箱APP技能</code>接入，目前技能已<del>暂未</del>上线 <del>（也许没法上线）</del></li>
+<li>适合<code>无公网</code>、<code>省事</code>场景使用</li>
+<li><strong>服务资源有限不能保证稳定</strong></li>
+</ul>
+<img src="/articles/plugin-integration-of-smart-speakers-into-home-assistant/mode3.svg" class="" title="[模式三示意图]"></li>
+<li><p>各模式难度指数</p>
+<p>模式一：★★★★☆</p>
+<p>模式二：★★☆☆☆</p>
+<p>模式三：★☆☆☆☆</p>
+</li>
+</ul>
+<blockquote>
+<p><strong>INFO：不同模式的配置方法见3.3HA插件配置章节。</strong></p>
+</blockquote>
+<p><strong>智能音箱组件说明</strong></p>
+<ul>
+<li>天猫精灵插件基于瀚思彼岸论坛<a target="_blank" rel="noopener" href="https://bbs.hassbian.com/thread-4758-1-1.html" title="天猫精灵音箱插件">@feversky</a>的插件修改</li>
+<li>小度音箱插件基于瀚思彼岸论坛<a target="_blank" rel="noopener" href="https://bbs.hassbian.com/thread-5417-1-1.html" title="小度音箱插件">@zhkufish</a>的插件修改</li>
+<li>叮咚音箱插件参考前两个插件编写</li>
+</ul>
+<p><strong><del>aihome</del>HAVCS线上服务劝退警告</strong></p>
+<ul>
+<li><del>aihome</del>HAVCS线上服务（指模式二、三的mqtt中转服务及APP技能）可以实现叮咚音箱、天猫精灵、小度音箱接入Home Assistant（免公网IP），语音控制家中设备。线上服务主要目的在于测试、学习、交流，受限于个人能力，无法保证提供完善服务，并且使用线上服务有一定的风险，介意者建议另行部署自用的环境对接智能音箱平台。</li>
+<li>隐私安全<ul>
+<li>为解决无公网IP的家庭宽带环境下使用的痛点，线上服务采用mqtt中转的技术方案，该方案下控制消息需经个人服务器转发，存在被本人监控、冒充控制消息的风险。</li>
+<li>mqtt中转模式下已采用了消息隔离、消息加密、设备entity_id加密等方式对用户的控制消息进行安全保障，但仍可能存在本人没考虑全面的安全风险。</li>
+</ul>
+</li>
+<li>服务质量<ul>
+<li>只能尽个人最大能力保证，毕竟存在不可抗力自然因素、断电、断网、服务器宕机、本人偷懒等诸多不可控风险。</li>
+<li>如果不幸本人跑路，因为相关设备信息（设备个性化配置）只保留在本地，你仍可以自行部署自用环境对接智能音箱平台继续使用。</li>
+</ul>
+</li>
+<li>服务支持<ul>
+<li>本服务实质上只提供便捷接入途径，后续仍要对设备信息进行个性化配置，需要对各家音箱平台的控制指令有一定了解。</li>
+<li>使用本服务上手有一定难度，建议心平气和慢慢熟悉，遇到问题可加QQ群寻求帮助。</li>
+<li>因个人时间有限，只侧重支撑解决使用mqtt中转服务和使用插件遇到的问题；部署自用环境对接方面问题请自行查阅厂家技能开放平台文档。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="2-完成度"><a href="#2-完成度" class="headerlink" title="2.完成度"></a>2.完成度</h2><p><strong>控制指令</strong></p>
+<ul>
+<li>灯、开关类型设备的开/关（小度音箱可延时）</li>
+<li>电源状态、温度、湿度等状态查询</li>
+</ul>
+<blockquote>
+<p><strong>INFO：能用的控制指令实际上与各智能音箱组件对音箱平台预设功能指令的支持度有关，因各个音箱平台有差异，无法一一描述，只能先列举叮咚音箱组件下目前个人已测试的功能。</strong></p>
+</blockquote>
+<p><strong>平台适配进展</strong></p>
+<ul>
+<li>天猫精灵：支持，音箱APP已上线技能（“<del>aihome智能</del>HAVCS”）</li>
+<li>小度：支持，音箱APP已上线技能（“<del>aihome</del>HAVCS”）</li>
+<li>叮咚：支持，音箱APP已上线技能（“<del>aihome</del>HAVCS”）</li>
+<li>echo：看情况（等支持中文。。。）</li>
+<li>小爱：计划外（手持身份证验证+商用要求劝退）</li>
+<li>有其它音箱接入需求可以反馈我研究下</li>
+</ul>
+<p><strong>高能提醒</strong></p>
+<ul>
+<li>设备配置各个音箱平台会有一些出入，需要一定耐心熟悉上手</li>
+<li>多用户使用场景没有条件测试，估计有不少bug</li>
+<li>多用户并发下服务器处理性能及带宽可能有瓶颈问题</li>
+</ul>
+<hr>
+<h2 id="3-使用说明"><a href="#3-使用说明" class="headerlink" title="3.使用说明"></a>3.使用说明</h2><h3 id="3-0-准备"><a href="#3-0-准备" class="headerlink" title="3.0.准备"></a>3.0.准备</h3><ul>
+<li>下载插件：<a target="_blank" rel="noopener" href="https://github.com/cnk700i/havcs" title="aihome插件下载">aihome</a><font color = "red">（新版本插件名称已更名为havcs，旧版本在github项目release页面下载）</font></li>
+<li>确认采取哪种模式接入</li>
+</ul>
+<h3 id="3-1-获取账号"><a href="#3-1-获取账号" class="headerlink" title="3.1.获取账号"></a>3.1.获取账号</h3><p><code>注：模式一跳过此步骤</code></p>
+<p>打开<a target="_blank" rel="noopener" href="https://ai-home.ljr.im/account/" title="aihome插件账号获取页面">账号获取页面</a>，获取AppKey和AppSecret</p>
+<blockquote>
+<p><strong>INFO：模式三需要注册用户登陆；模式二可以不登陆（暂时）。</strong></p>
+</blockquote>
+<h3 id="3-2-音箱技能平台配置"><a href="#3-2-音箱技能平台配置" class="headerlink" title="3.2.音箱技能平台配置"></a>3.2.音箱技能平台配置</h3><p><code>注：模式三跳过此步骤</code><br>启用模式一或模式二，会生成服务网关（不分音箱平台），访问uri为<code>/aihome_service</code>。</p>
+<ul>
+<li>模式一<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#前往厂家的音箱技能平台进行设置</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#授权地址</span></span><br><span class="line">https://&#123;你的域名&#125;/auth/authorize</span><br><span class="line"><span class="comment">#Client_Id，回调地址域名那一串即可</span></span><br><span class="line">小度：https://xiaodu.baidu.com</span><br><span class="line">天猫：https://open.bot.tmall.com</span><br><span class="line"><span class="comment">#Token地址</span></span><br><span class="line">https://&#123;你的域名&#125;/aihome_auth</span><br><span class="line"><span class="comment">#WebService（服务网关）地址</span></span><br><span class="line">https://&#123;你的域名&#125;/aihome_service</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>INFO：需要自己解决域名访问问题，建议观看天猫精灵、小度音箱原版插件的教程。</strong></p>
+</blockquote>
+</li>
+<li>模式二<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#前往厂家的音箱技能平台进行设置</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#授权地址（授权操作只能使用本地电脑）</span></span><br><span class="line">https://&#123;本地HA访问地址&#125;/auth/authorize</span><br><span class="line"><span class="comment">#Client_Id，回调地址域名那一串即可</span></span><br><span class="line">小度：https://xiaodu.baidu.com</span><br><span class="line">天猫：https://open.bot.tmall.com</span><br><span class="line"><span class="comment">#Token地址（代理地址）</span></span><br><span class="line">https://ai-home.ljr.im/h2m2h/&#123;app_key&#125;/aihome_auth</span><br><span class="line"><span class="comment">#WebService（服务网关）地址（代理地址）</span></span><br><span class="line">https://ai-home.ljr.im/h2m2h/&#123;app_key&#125;/aihome_service</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>INFO：{本地HA访问地址}、{app_key}替换成相应的字符串。__<br>__INFO：目前叮咚技能需要联系工作人员审核后才能绑定到指定音箱，另外client_id格式不能填写”https://“（HA的oauth格式要求），需要自行修改HA对应组件代码解决。</strong></p>
+</blockquote>
+</li>
+</ul>
+<h3 id="3-3-HA插件配置"><a href="#3-3-HA插件配置" class="headerlink" title="3.3.HA插件配置"></a>3.3.HA插件配置</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#&#123;HA配置目录&#125;/configuration.yaml                 </span></span><br><span class="line"><span class="attr">aihome:</span></span><br><span class="line">  <span class="comment"># 启用音箱平台，至少启用一个</span></span><br><span class="line">  <span class="attr">platform:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">aligenie</span>                            <span class="comment"># 天猫精灵</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">dueros</span>                              <span class="comment"># 小度</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">jdwhale</span>                             <span class="comment"># 叮咚</span></span><br><span class="line">  <span class="comment"># http服务网关，&gt;&gt;模式一、模式二启用&lt;&lt;</span></span><br><span class="line">  <span class="attr">http:</span></span><br><span class="line">    <span class="comment"># ha_url: https://localhost:8123      # HA所在主机/容器IP地址，不设置则默认识别</span></span><br><span class="line">    <span class="comment"># expire_in_hours: 24                 # token超时时间，单位小时，不设置则默认24h</span></span><br><span class="line">  <span class="comment"># http代理服务，用于穿透内网，&gt;&gt;模式二启用&lt;&lt;</span></span><br><span class="line">  <span class="attr">http_proxy:</span></span><br><span class="line">    <span class="comment"># ha_url: https://localhost:8123      # HA所在主机/容器IP地址，不设置则默认识别</span></span><br><span class="line">    <span class="comment"># allowed_uri:                        # http请求白名单，不设置则默认[&#x27;/aihome_auth&#x27;, &#x27;/aihome_service&#x27;]</span></span><br><span class="line">    <span class="comment">#   - /aihome_auth</span></span><br><span class="line">    <span class="comment">#   - /aihome_service</span></span><br><span class="line">  <span class="comment"># APP技能服务，&gt;&gt;模式三启用&lt;&lt;</span></span><br><span class="line">  <span class="attr">skill:</span></span><br><span class="line">    <span class="comment"># sync: False                         # 是否主动上报设备状态，不设置则默认False不上报（小度音箱才有效）</span></span><br><span class="line">  <span class="comment"># mqtt相关设置，启用http代理服务及APP技能服务才生效</span></span><br><span class="line">  <span class="attr">setting:</span></span><br><span class="line">    <span class="attr">app_key:</span> &#123;&#123;<span class="string">your_app_key</span>&#125;&#125;             <span class="comment"># 必填，https://ai-home.ljr.im/account/获取</span></span><br><span class="line">    <span class="attr">app_secret:</span> &#123;&#123;<span class="string">your_app_secret</span>&#125;&#125;       <span class="comment"># 必填，https://ai-home.ljr.im/account/获取</span></span><br><span class="line">    <span class="attr">entity_key:</span> &#123;&#123;<span class="string">your_entity_key</span>&#125;&#125;       <span class="comment"># 必填，加密entity_id的key，自定义16个字符</span></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="3-4-HA设备个性化配置（绑定设备）"><a href="#3-4-HA设备个性化配置（绑定设备）" class="headerlink" title="3.4.HA设备个性化配置（绑定设备）"></a>3.4.HA设备个性化配置（绑定设备）</h3><p>音箱云平台的设备与HA的设备属性字段有出入，HA中需要使用个性化配置文件（customize.yaml）补充额外的属性，使得音箱云平台可以识别、绑定设备。虽然音箱插件会尝试根据设备类型、设备名称进行自动补充，但目前准确率仍不高，建议还是尽量手动指定。</p>
+<h4 id="3-4-1-整体配置框架"><a href="#3-4-1-整体配置框架" class="headerlink" title="3.4.1.整体配置框架"></a>3.4.1.整体配置框架</h4><p>以接入一个灯类设备、传感器类设备为例，会涉及几个大块配置。</p>
+<ul>
+<li><p>方法1 分散文件配置方式</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#&#123;HA配置目录&#125;/customize.yaml，&gt;设备个性化配置&lt;</span></span><br><span class="line"><span class="attr">light.demo:</span> <span class="comment"># 接入音箱平台的灯（一般设备配置属性即可）</span></span><br><span class="line">  <span class="string">属性1:</span></span><br><span class="line">  <span class="string">属性2:</span></span><br><span class="line"><span class="attr">sensor.livingroom:</span> <span class="comment"># 接入音箱平台的传感器（虚拟创建的）</span></span><br><span class="line">  <span class="string">属性1:</span></span><br><span class="line">  <span class="string">属性2:</span></span><br><span class="line"><span class="attr">sensor.temperature:</span> <span class="comment"># 虚拟传感器关联的真实传感器设备（作为一种参数查询，如温度）</span></span><br><span class="line">  <span class="string">属性1:</span></span><br><span class="line"><span class="attr">sensor.humidity:</span> <span class="comment"># 虚拟传感器关联的真实传感器设备（作为一种参数查询，如湿度）</span></span><br><span class="line">  <span class="string">属性1:</span></span><br><span class="line"><span class="comment">#&#123;HA配置目录&#125;/configuration.yaml，虚拟传感器</span></span><br><span class="line"><span class="attr">sensor:</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">platform:</span> <span class="string">template</span></span><br><span class="line">  <span class="attr">sensors:</span></span><br><span class="line">    <span class="attr">livingroom:</span> <span class="comment"># 新增虚拟传感器设备，该设备在音箱云平台展示</span></span><br><span class="line">      <span class="attr">value_template:</span> <span class="string">&quot;客厅环境&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#&#123;HA配置目录&#125;/group.yaml，虚拟传感器关联的传感器类分组</span></span><br><span class="line"><span class="attr">livingroom_sensors:</span></span><br><span class="line">  <span class="attr">view:</span> <span class="literal">no</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">&#x27;客厅传感器列表&#x27;</span></span><br><span class="line">  <span class="attr">control:</span> <span class="string">hidden</span></span><br><span class="line">  <span class="attr">entities:</span> <span class="comment"># 真实传感器列表，真实传感器配置过程省略</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">sensor.temperature</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">sensor.humidity</span></span><br></pre></td></tr></table></figure></li>
+<li><p>方法2 统一文件配置方式（建议）</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#编辑&#123;HA配置目录&#125;/configuration.yaml，引入packages目录</span></span><br><span class="line"><span class="attr">homeassistant:</span></span><br><span class="line">  <span class="attr">packages:</span> <span class="type">!include_dir_named</span> <span class="string">packages</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#编辑&#123;HA配置目录&#125;/packages/自定义名称.yaml， 增加设备个性化配置、新增虚拟传感器、传感器分组等信息</span></span><br><span class="line"><span class="attr">homeassistant:</span></span><br><span class="line">  <span class="attr">customize:</span> <span class="comment"># &gt;设备个性化配置&lt;</span></span><br><span class="line">    <span class="attr">light.demo:</span> <span class="comment"># 接入音箱平台的灯（一般设备配置属性即可）</span></span><br><span class="line">      <span class="string">属性1:</span></span><br><span class="line">      <span class="string">属性2:</span></span><br><span class="line">    <span class="attr">sensor.livingroom:</span> <span class="comment"># 接入音箱平台的传感器（虚拟创建的）</span></span><br><span class="line">      <span class="string">属性1:</span></span><br><span class="line">      <span class="string">属性2:</span></span><br><span class="line">    <span class="attr">sensor.temperature:</span> <span class="comment"># 虚拟传感器关联的真实传感器设备（作为一种参数查询，如温度）</span></span><br><span class="line">      <span class="string">属性1:</span></span><br><span class="line">    <span class="attr">sensor.humidity:</span> <span class="comment"># 虚拟传感器关联的真实传感器设备（作为一种参数查询，如湿度）</span></span><br><span class="line">      <span class="string">属性1:</span></span><br><span class="line"><span class="attr">group:</span> <span class="comment"># 虚拟传感器关联的传感器类分组</span></span><br><span class="line">  <span class="attr">livingroom_sensors:</span></span><br><span class="line">    <span class="attr">view:</span> <span class="literal">no</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">&#x27;客厅传感器列表&#x27;</span></span><br><span class="line">    <span class="attr">control:</span> <span class="string">hidden</span></span><br><span class="line">    <span class="attr">entities:</span>  <span class="comment"># 真实传感器列表，真实传感器配置过程省略</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">sensor.temperature</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">sensor.humidity</span></span><br><span class="line"><span class="attr">sensor:</span> <span class="comment"># 虚拟传感器</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">platform:</span> <span class="string">template</span></span><br><span class="line">  <span class="attr">sensors:</span></span><br><span class="line">    <span class="attr">livingroom:</span> <span class="comment"># 新增虚拟传感器设备，该设备在音箱云平台展示</span></span><br><span class="line">      <span class="attr">value_template:</span> <span class="string">&quot;客厅环境&quot;</span></span><br></pre></td></tr></table></figure>
+<h4 id="3-4-2-设备个性化配置属性"><a href="#3-4-2-设备个性化配置属性" class="headerlink" title="3.4.2.设备个性化配置属性"></a>3.4.2.设备个性化配置属性</h4><p>使用官方自带的customize组件（{HA配置目录}/customize.yaml中配置）为HA的设备增加相关属性，音箱插件根据属性信息生成音箱平台可识别的设备。在3.4.1章节<code>&gt;设备个性化配置&lt;</code>部分，可以为指定的HA设备（entity_id）增加相关的属性。</p>
+</li>
+<li><p>通用</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 指定的设备可被发现，上报设备数据</span></span><br><span class="line"><span class="attr">aihome_device:</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure></li>
+<li><p>传感器专用</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 虚拟传感器，关联真实传感器分组，详细用法见传感器类设备配置说明</span></span><br><span class="line"><span class="attr">aihome_sensor_group:</span> <span class="string">group.livingroom_sensors</span></span><br><span class="line"><span class="comment"># 真实传感器标识，对传感器分组特定的传感器进行上报，详细用法见传感器类设备配置说明</span></span><br><span class="line"><span class="attr">aihome_sensor:</span> <span class="literal">True</span> <span class="comment"># 不需要再设置aihome_device</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>叮咚音箱</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 设备类型，不设置则尝试自动生成</span></span><br><span class="line"><span class="attr">jdwhale_deviceType:</span> <span class="string">&#x27;LIGHT&#x27;</span></span><br><span class="line"><span class="comment"># 设备支持操作，不设置则尝试自动生成</span></span><br><span class="line"><span class="attr">jdwhale_actions:</span> [<span class="string">&#x27;TurnOn&#x27;</span>, <span class="string">&#x27;TurnOff&#x27;</span>, <span class="string">&#x27;Query&#x27;</span>]</span><br></pre></td></tr></table></figure></li>
+<li><p>天猫精灵</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 设备别名（设备类型限定设备别名可取值）</span></span><br><span class="line"><span class="attr">aligenie_deviceName:</span> <span class="string">灯</span></span><br><span class="line"><span class="comment"># 设备位置，不设置则尝试自动生成</span></span><br><span class="line"><span class="attr">aligenie_zone:</span> <span class="string">主卧</span></span><br><span class="line"><span class="comment"># 设备类型，不设置则尝试自动生成</span></span><br><span class="line"><span class="attr">aligenie_deviceType:</span> <span class="string">&#x27;light&#x27;</span></span><br><span class="line"><span class="comment"># 设备支持操作，不设置则尝试自动生成</span></span><br><span class="line"><span class="attr">aligenie_actions:</span> [<span class="string">&quot;TurnOn&quot;</span>, <span class="string">&quot;TurnOff&quot;</span>]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>小度音箱</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 设备类型，不设置则尝试自动生成</span></span><br><span class="line"><span class="attr">dueros_deviceType:</span> <span class="string">&#x27;LIGHT&#x27;</span></span><br><span class="line"><span class="comment"># 设备支持操作，不设置则尝试自动生成</span></span><br><span class="line"><span class="attr">dueros_actions:</span> [<span class="string">&#x27;turnOn&#x27;</span>, <span class="string">&#x27;turnOff&#x27;</span>]</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>INFO：音箱的设备类型、支持的操作建议去官网看相应智能家居技能文档，无法一一详述。</strong></p>
+</blockquote>
+</li>
+</ul>
+<h4 id="3-4-3-特殊设备配置说明"><a href="#3-4-3-特殊设备配置说明" class="headerlink" title="3.4.3.特殊设备配置说明"></a>3.4.3.特殊设备配置说明</h4><ul>
+<li><p>传感器类设备配置</p>
+<p>HA中，一个传感器设备只有一种数据，而音箱云平台可以对设备查询多种属性，因此需要虚拟一个新的传感器设备整合多个真实传感器数据。</p>
+<ol>
+<li>环境类传感器先集中到一个分组<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#&#123;HA配置目录&#125;/group.yaml，虚拟传感器关联的传感器类分组</span></span><br><span class="line"><span class="attr">livingroom_sensors:</span></span><br><span class="line">  <span class="attr">view:</span> <span class="literal">no</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">&#x27;客厅传感器列表&#x27;</span></span><br><span class="line">  <span class="attr">control:</span> <span class="string">hidden</span></span><br><span class="line">  <span class="attr">entities:</span> <span class="comment"># 真实传感器列表</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">sensor.temperature</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">sensor.humidity</span></span><br></pre></td></tr></table></figure></li>
+<li>新增一个虚拟的sensor（使用官方sensor组件template生成即可）<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#&#123;HA配置目录&#125;/configuration.yaml，虚拟传感器</span></span><br><span class="line"><span class="attr">sensor:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">platform:</span> <span class="string">template</span></span><br><span class="line">    <span class="attr">sensors:</span></span><br><span class="line">      <span class="attr">livingroom:</span> <span class="comment"># 新增虚拟传感器设备，该设备在音箱云平台展示</span></span><br><span class="line">        <span class="attr">value_template:</span> <span class="string">&quot;客厅环境&quot;</span></span><br></pre></td></tr></table></figure></li>
+<li>自定义虚拟sensor的属性，关联传感器分组<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#&#123;HA配置目录&#125;/customize.yaml，设备个性化配置</span></span><br><span class="line"></span><br><span class="line"><span class="attr">sensor.livingroom:</span></span><br><span class="line">  <span class="attr">aihome_device:</span> <span class="literal">True</span>     <span class="comment"># 上报设备</span></span><br><span class="line">  <span class="attr">friendly_name:</span> <span class="string">客厅传感器</span></span><br><span class="line">  <span class="attr">aihome_sensor_group:</span> <span class="string">group.livingroom_sensors</span> <span class="comment"># 关联真实传感器分组</span></span><br><span class="line">  <span class="attr">jdwhale_actions:</span> [<span class="string">&#x27;Query&#x27;</span>, <span class="string">&#x27;QueryTemperature&#x27;</span>, <span class="string">&#x27;QueryHumidity&#x27;</span>] <span class="comment"># 叮咚平台设置，需根据真实传感器及音箱平台支持的类型设置</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 真实传感器设置aihome_sensor属性</span></span><br><span class="line"><span class="attr">sensor.temperature:</span></span><br><span class="line">  <span class="attr">aihome_sensor:</span> <span class="literal">True</span> <span class="comment"># 上报传感器数据，注意不参与直接上报，不需要再设置aihome_device</span></span><br><span class="line"><span class="attr">sensor.humidity:</span></span><br><span class="line">  <span class="attr">aihome_sensor:</span> <span class="literal">True</span> <span class="comment"># 上报传感器数据，注意不参与直接上报，不需要再设置aihome_device</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>INFO：建议虚拟sensor的名称命名为“{房间名}传感器”，各个平台的识别执行成功率比较高。</strong></p>
+</blockquote>
+</li>
+</ol>
+</li>
+</ul>
+<blockquote>
+<p><strong>INFO：原天猫精灵插件根据zone组合传感器，原小度插件没有实现相应查询功能，于是对查询方法进行了统一。</strong></p>
+</blockquote>
+<ul>
+<li><p>直接调service类设备配置说明</p>
+<p>可以手动指定调用服务命令，效果和新建简单脚本再调用类似。</p>
+<ol>
+<li>新增一个input_boolean<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#&#123;HA配置目录&#125;/configuration.yaml</span></span><br><span class="line"><span class="attr">input_boolean:</span></span><br><span class="line">  <span class="attr">call_service:</span></span><br></pre></td></tr></table></figure></li>
+<li>自定义虚拟input_boolean的属性，在aihome_actions属性中设置对应的service指令（只能设置turn_on/turn_off/increase_brightness/decrease_brightness，对应打开/关闭/调高亮度/调低亮度指令）<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#&#123;HA配置目录&#125;/customize.yaml</span></span><br><span class="line">  <span class="attr">input_boolean.call_service:</span>  </span><br><span class="line">    <span class="attr">friendly_name:</span> <span class="string">定时充电</span></span><br><span class="line">    <span class="comment">#↓↓↓该部分根据使用的音箱精简↓↓↓</span></span><br><span class="line">    <span class="attr">aihome_device:</span> <span class="literal">True</span></span><br><span class="line">    <span class="attr">aligenie_deviceName:</span> <span class="string">开关</span></span><br><span class="line">    <span class="attr">aligenie_zone:</span> <span class="string">主卧</span></span><br><span class="line">    <span class="attr">aligenie_deviceType:</span> <span class="string">switch</span></span><br><span class="line">    <span class="comment"># aligenie_actions: [&quot;TurnOn&quot;, &quot;TurnOff&quot;]  # 新版本已可根据aihome_actions自动识别</span></span><br><span class="line">    <span class="attr">dueros_deviceType:</span> <span class="string">&#x27;SWITCH&#x27;</span></span><br><span class="line">    <span class="comment"># dueros_actions: [&#x27;turnOn&#x27;, &#x27;turnOff&#x27;]    # 新版本已可根据aihome_actions自动识别</span></span><br><span class="line">    <span class="attr">jdwhale_deviceType:</span> <span class="string">&#x27;SWITCH&#x27;</span></span><br><span class="line">    <span class="comment"># jdwhale_actions: [&#x27;TurnOn&#x27;, &#x27;TurnOff&#x27;]   # 新版本已可根据aihome_actions自动识别</span></span><br><span class="line">    <span class="comment">#↑↑↑该部分根据使用的音箱精简↑↑↑</span></span><br><span class="line">    <span class="comment">#↓↓↓指令根据实际需要配置↓↓↓</span></span><br><span class="line">    <span class="attr">aihome_actions:</span></span><br><span class="line">        <span class="comment"># service指令格式:[domain, service_name, service_data（json字符串）]，具体内容需参见相应组件的服务定义。</span></span><br><span class="line">        <span class="comment"># 注意，参数变更为数组以支持多条指令，单条指令也别忘了加-</span></span><br><span class="line">        <span class="attr">turn_on:</span></span><br><span class="line">          <span class="bullet">-</span> [<span class="string">&#x27;common_timer&#x27;</span>, <span class="string">&#x27;set&#x27;</span>, <span class="string">&#x27;&#123;&quot;entity_id&quot;:&quot;switch.demo&quot;,&quot;duration&quot;:&quot;01:00:00&quot;,&quot;operation&quot;:&quot;off&quot;&#125;&#x27;</span>] <span class="comment"># 打开命令</span></span><br><span class="line">          <span class="bullet">-</span> [<span class="string">&#x27;input_boolean&#x27;</span>, <span class="string">&#x27;turn_on&#x27;</span>, <span class="string">&#x27;&#123;&#125;&#x27;</span>] <span class="comment"># 同步打开状态</span></span><br><span class="line">        <span class="attr">turn_off:</span></span><br><span class="line">          <span class="bullet">-</span> [<span class="string">&#x27;common_timer&#x27;</span>, <span class="string">&#x27;cancel&#x27;</span>, <span class="string">&#x27;&#123;&quot;entity_id&quot;:&quot;switch.demo&quot;&#125;&#x27;</span>] <span class="comment"># 关闭命令</span></span><br><span class="line">          <span class="bullet">-</span> [<span class="string">&#x27;input_boolean&#x27;</span>, <span class="string">&#x27;turn_off&#x27;</span>, <span class="string">&#x27;&#123;&#125;&#x27;</span>] <span class="comment"># 同步关闭状态</span></span><br><span class="line">        <span class="attr">increase_brightness:</span></span><br><span class="line">          <span class="bullet">-</span> [<span class="string">&#x27;指令1&#x27;</span>]</span><br><span class="line">          <span class="bullet">-</span> [<span class="string">&#x27;指令2&#x27;</span>]</span><br><span class="line">        <span class="attr">decrease_brightness:</span></span><br><span class="line">          <span class="bullet">-</span> [<span class="string">&#x27;指令1&#x27;</span>]</span><br><span class="line">          <span class="bullet">-</span> [<span class="string">&#x27;指令2&#x27;</span>]</span><br><span class="line">        <span class="attr">timing_turn_on:</span> <span class="comment"># 延时打开指令（小度音箱）</span></span><br><span class="line">          <span class="bullet">-</span> [<span class="string">&#x27;指令1&#x27;</span>]</span><br><span class="line">          <span class="bullet">-</span> [<span class="string">&#x27;指令2&#x27;</span>]</span><br><span class="line">        <span class="attr">timing_turn_off:</span> <span class="comment"># 延时关闭指令（小度音箱）</span></span><br><span class="line">          <span class="bullet">-</span> [<span class="string">&#x27;指令1&#x27;</span>]</span><br><span class="line">          <span class="bullet">-</span> [<span class="string">&#x27;指令2&#x27;</span>] </span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>__INFO：调自动化(automation.turn_on)、调脚本(scrpit.turn_on)、调红外指令(climate.xiaomi_miio_send_command)等会比较适合。__</p>
+</blockquote>
+</li>
+</ol>
+<blockquote>
+<p><strong>INFO：天猫精灵无法自定义名称，不太适合使用。</strong></p>
+</blockquote>
+</li>
+</ul>
+<h4 id="3-4-4-配置样例"><a href="#3-4-4-配置样例" class="headerlink" title="3.4.4.配置样例"></a>3.4.4.配置样例</h4><p>采用统一文件配置方式，引入packages目录及即可测试，引入方法见3.4.1。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#&#123;HA配置目录&#125;/packages/aihome_template.yaml</span></span><br><span class="line"><span class="attr">homeassistant:</span> <span class="comment"># 用于生成音箱平台设备</span></span><br><span class="line">  <span class="attr">customize:</span></span><br><span class="line">    <span class="comment"># 一般设备，switch light fan input_boolean cover等</span></span><br><span class="line">    <span class="attr">input_boolean.aihome_demo_light:</span>                                    <span class="comment"># 平台已有设备的entity_id。开关类的是switch.xxx，灯类的是light.xxx，HA左侧开发者工具第二个图标可以查看当前HA所有的entities。</span></span><br><span class="line">      <span class="attr">friendly_name:</span> <span class="string">厨房灯</span>                                             <span class="comment"># 设备别名，小度音箱和叮咚音箱使用这个名称进行控制</span></span><br><span class="line">      <span class="attr">aihome_device:</span> <span class="literal">True</span>                                               <span class="comment"># 该设备可被发现</span></span><br><span class="line">      <span class="comment"># 天猫精灵专用 &lt;测试指令：打开/关闭厨房灯&gt;</span></span><br><span class="line">      <span class="attr">aligenie_deviceName:</span> <span class="string">灯</span>                                             <span class="comment"># 设备品类别名，https://open.bot.tmall.com/oauth/api/aliaslist</span></span><br><span class="line">      <span class="attr">aligenie_zone:</span> <span class="string">厨房</span>                                                 <span class="comment"># 房间名，https://open.bot.tmall.com/oauth/api/placelist</span></span><br><span class="line">      <span class="attr">aligenie_deviceType:</span> <span class="string">light</span>                                          <span class="comment"># 设备品类，https://doc-bot.tmall.com/docs/doc.htm?treeId=393&amp;articleId=108271&amp;docType=1</span></span><br><span class="line">      <span class="attr">aligenie_actions:</span> [<span class="string">&quot;TurnOn&quot;</span>, <span class="string">&quot;TurnOff&quot;</span>]                             <span class="comment"># 指定设备支持的操作，https://doc-bot.tmall.com/docs/doc.htm?spm=0.7629140.0.0.2b131780Fl14V8&amp;treeId=393&amp;articleId=108264&amp;docType=1</span></span><br><span class="line">      <span class="comment"># 小度音箱专用 &lt;测试指令：打开/关闭厨房灯&gt;</span></span><br><span class="line">      <span class="attr">dueros_deviceType:</span> <span class="string">&#x27;LIGHT&#x27;</span>                                          <span class="comment"># 指定设备类型，https://dueros.baidu.com/didp/doc/dueros-bot-platform/dbp-smart-home/protocol/discovery-message_markdown</span></span><br><span class="line">      <span class="attr">dueros_actions:</span> [<span class="string">&#x27;turnOn&#x27;</span>, <span class="string">&#x27;turnOff&#x27;</span>]                               <span class="comment"># 指定设备支持操作，https://dueros.baidu.com/didp/doc/dueros-bot-platform/dbp-smart-home/protocol/control-message_markdown</span></span><br><span class="line">      <span class="comment"># 叮咚音箱专用 &lt;测试指令：打开/关闭厨房灯&gt;</span></span><br><span class="line">      <span class="attr">jdwhale_deviceType:</span> <span class="string">&#x27;SWITCH&#x27;</span>                                        <span class="comment"># 指定设备类型，http://jdwhale.jd.com/Docs/skillManager#shebeifaxianfanhui</span></span><br><span class="line">      <span class="attr">jdwhale_actions:</span> [<span class="string">&#x27;TurnOn&#x27;</span>, <span class="string">&#x27;TurnOff&#x27;</span>, <span class="string">&#x27;Query&#x27;</span>, <span class="string">&#x27;QueryPowerState&#x27;</span>]  <span class="comment"># 指定设备支持操作，http://jdwhale.jd.com/Docs/skillManager#dakaishebei</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 环境类传感器，虚拟的sensor</span></span><br><span class="line">    <span class="attr">sensor.aihome_demo_sensor:</span></span><br><span class="line">      <span class="attr">friendly_name:</span> <span class="string">客厅传感器</span></span><br><span class="line">      <span class="attr">aihome_device:</span> <span class="literal">True</span></span><br><span class="line">      <span class="attr">aihome_sensor_group:</span> <span class="string">group.aihome_demo_sensors</span> <span class="comment"># 关联一个传感器分组，从分组的真实传感器取数据</span></span><br><span class="line">      <span class="comment"># 天猫精灵专用 &lt;测试指令：查询客厅传感器的温度/湿度&gt;</span></span><br><span class="line">      <span class="attr">aligenie_deviceName:</span> <span class="string">传感器</span></span><br><span class="line">      <span class="attr">aligenie_zone:</span> <span class="string">客厅</span> </span><br><span class="line">      <span class="attr">aligenie_deviceType:</span> <span class="string">sensor</span> <span class="comment"># 可自动识别，可省略</span></span><br><span class="line">      <span class="attr">aligenie_actions:</span> [<span class="string">&#x27;Query&#x27;</span>, <span class="string">&#x27;QueryTemperature&#x27;</span>, <span class="string">&#x27;QueryHumidity&#x27;</span>] <span class="comment"># 只测试查询温度、湿度</span></span><br><span class="line">      <span class="comment"># 小度音箱专用 &lt;测试指令：查询客厅传感器的温度/湿度&gt;</span></span><br><span class="line">      <span class="attr">dueros_deviceType:</span> <span class="string">AIR_MONITOR</span> <span class="comment"># 无传感器类别，默认为空气监测器类设备，可省略</span></span><br><span class="line">      <span class="attr">dueros_actions:</span> [<span class="string">&quot;getTemperatureReading&quot;</span>, <span class="string">&quot;getHumidity&quot;</span>] <span class="comment"># 只测试查询温度、湿度</span></span><br><span class="line">      <span class="comment"># 叮咚音箱专用 &lt;测试指令：查询客厅传感器的温度/湿度&gt;</span></span><br><span class="line">      <span class="attr">jdwhale_deviceType:</span> <span class="string">AIR_CLEANER</span> <span class="comment"># 无传感器类别，默认为空气净化器类设备，可省略</span></span><br><span class="line">      <span class="attr">jdwhale_actions:</span> [<span class="string">&#x27;Query&#x27;</span>, <span class="string">&#x27;QueryTemperature&#x27;</span>, <span class="string">&#x27;QueryHumidity&#x27;</span>] <span class="comment"># 只测试查询温度、湿度</span></span><br><span class="line">    <span class="comment"># 真实传感器</span></span><br><span class="line">    <span class="attr">sensor.aihome_demo_temperature:</span></span><br><span class="line">      <span class="attr">aihome_sensor:</span> <span class="literal">True</span>     <span class="comment"># 上报传感器数据，注意不参与直接上报，不需要再设置aihome_device</span></span><br><span class="line">    <span class="comment"># 真实传感器</span></span><br><span class="line">    <span class="attr">sensor.aihome_demo_humidity:</span></span><br><span class="line">      <span class="attr">aihome_sensor:</span> <span class="literal">True</span>     <span class="comment"># 上报传感器数据，注意不参与直接上报，不需要再设置aihome_device</span></span><br><span class="line"></span><br><span class="line"><span class="attr">group:</span></span><br><span class="line">  <span class="comment"># 新增，传感器分组</span></span><br><span class="line">  <span class="attr">aihome_demo_sensors:</span></span><br><span class="line">    <span class="attr">view:</span> <span class="literal">no</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">&#x27;客厅传感器列表&#x27;</span></span><br><span class="line">    <span class="attr">control:</span> <span class="string">hidden</span></span><br><span class="line">    <span class="attr">entities:</span>  <span class="comment"># 关联真实传感器列表</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">sensor.aihome_demo_temperature</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">sensor.aihome_demo_humidity</span></span><br><span class="line"></span><br><span class="line"><span class="attr">sensor:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">platform:</span> <span class="string">template</span></span><br><span class="line">    <span class="attr">sensors:</span></span><br><span class="line">      <span class="comment"># 演示用</span></span><br><span class="line">      <span class="attr">aihome_demo_temperature:</span></span><br><span class="line">        <span class="attr">unit_of_measurement:</span> <span class="string">&#x27;°C&#x27;</span></span><br><span class="line">        <span class="attr">value_template:</span> <span class="string">&quot;20&quot;</span></span><br><span class="line">      <span class="comment"># 演示用</span></span><br><span class="line">      <span class="attr">aihome_demo_humidity:</span></span><br><span class="line">        <span class="attr">unit_of_measurement:</span> <span class="string">&#x27;%&#x27;</span></span><br><span class="line">        <span class="attr">value_template:</span> <span class="string">&quot;60&quot;</span></span><br><span class="line">      <span class="comment"># 新增，虚拟的sensor</span></span><br><span class="line">      <span class="attr">aihome_demo_sensor:</span></span><br><span class="line">        <span class="attr">value_template:</span> <span class="string">&quot;虚拟的传感器&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">input_boolean:</span></span><br><span class="line">  <span class="comment"># 演示用</span></span><br><span class="line">  <span class="attr">aihome_demo_light:</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-5-上报设备"><a href="#3-5-上报设备" class="headerlink" title="3.5.上报设备"></a>3.5.上报设备</h3><p>当HA中设备信息配置完毕后，需要上报信息给音箱平台。</p>
+<ul>
+<li>叮咚<br>重启HA触发上报。</li>
+<li>天猫精灵<br>在APP中重新绑定触发上报。</li>
+<li>小度<br>执行“发现设备”指令触发上报。</li>
+</ul>
+<h3 id="3-6-控制指令说明"><a href="#3-6-控制指令说明" class="headerlink" title="3.6.控制指令说明"></a>3.6.控制指令说明</h3><ul>
+<li>叮咚<ul>
+<li>打开/关闭<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#打开/关闭</span></span><br><span class="line"><span class="comment">#用途：一般为电源控制</span></span><br><span class="line"><span class="comment">#语义：打开/关闭&#123;设备名称&#125;</span></span><br><span class="line"><span class="comment">#例子：打开主卧灯</span></span><br></pre></td></tr></table></figure></li>
+<li>查询状态<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#打开/关闭</span></span><br><span class="line"><span class="comment">#用途：查询设备状态</span></span><br><span class="line"><span class="comment">#语义：查询&#123;设备名称&#125;的&#123;状态/xx状态&#125;</span></span><br><span class="line"><span class="comment">#例子：查询主卧传感器的状态；查询主卧传感器的温度；查询主卧灯的电源状态</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>INFO：传感器信息需要挂靠到具体设备上进行查询。一般来说温度、湿度需要挂靠到空气净化器类型上。</strong></p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li>天猫精灵<ul>
+<li>打开/关闭<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#打开/关闭</span></span><br><span class="line"><span class="comment">#用途：一般为电源控制</span></span><br><span class="line"><span class="comment">#语义：打开/关闭&#123;房间名&#125;的&#123;设备类型/别名&#125;</span></span><br><span class="line"><span class="comment">#例子：打开主卧的灯。</span></span><br><span class="line"><span class="comment">#备注：&#123;房间名&#125;、&#123;设备类型/别名&#125;需要指定，均为枚举值</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>INFO：优先匹配“位置（可为空）+别名”：例如有台灯、灯两个设备，“打开台灯”则精确匹配台灯；然后匹配“位置（可为空）+设备类型”，例如有一个台灯设备，“打开吸顶灯”、“打开床头灯”等都可控制。指令不带位置，如设备别名多个匹配，询问设备位置；当有相同匹配，一起执行。</strong></p>
+</blockquote>
+</li>
+<li>查询状态<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#打开/关闭</span></span><br><span class="line"><span class="comment">#用途：查询设备状态</span></span><br><span class="line"><span class="comment">#语义：查询&#123;房间名&#125;&#123;设备类型/别名&#125;的&#123;状态/xx状态&#125;</span></span><br><span class="line"><span class="comment">#例子：查询主卧传感器的状态；查询主卧传感器的温度</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>INFO：查询传感器好像有个bug：查询所有状态不能正常播报；查询单个状态，发送的指令是查询所有状态的指令。</strong></p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li>小度<ul>
+<li>打开/关闭<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#打开/关闭</span></span><br><span class="line"><span class="comment">#用途：一般为电源控制</span></span><br><span class="line"><span class="comment">#语义：打开/关闭&#123;设备名称&#125;</span></span><br><span class="line"><span class="comment">#例子：打开主卧灯</span></span><br><span class="line"><span class="string">```</span>   </span><br><span class="line"><span class="bullet">-</span> <span class="string">查询状态</span></span><br><span class="line"><span class="string">```yaml</span></span><br><span class="line"><span class="comment">#打开/关闭</span></span><br><span class="line"><span class="comment">#用途：查询设备状态</span></span><br><span class="line"><span class="comment">#语义：查询&#123;设备名称&#125;的&#123;xx状态&#125;</span></span><br><span class="line"><span class="comment">#例子：查询主卧传感器的温度</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>INFO：只能查询单一状态。</strong></p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="4-小结"><a href="#4-小结" class="headerlink" title="4.小结"></a>4.小结</h2><ul>
+<li>重新对各音箱平台智能家居指令进行分析，目前智能音箱插件功能实现度还有比较大的改进空间，但不同音箱如何统一整合还要好好考虑。</li>
+<li>对原有多用户场景下mqtt消息发送、处理方式进行了重构。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>cnk700i
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://ljr.im/articles/plugin-integration-of-smart-speakers-into-home-assistant/" title="【插件】智能音箱接入Home Assistant整合">https://ljr.im/articles/plugin-integration-of-smart-speakers-into-home-assistant/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/Home-Assistant/" rel="tag"><i class="fa fa-tag"></i> Home Assistant</a>
+              <a href="/tags/%E6%8F%92%E4%BB%B6/" rel="tag"><i class="fa fa-tag"></i> 插件</a>
+              <a href="/tags/%E6%99%BA%E8%83%BD%E9%9F%B3%E7%AE%B1/" rel="tag"><i class="fa fa-tag"></i> 智能音箱</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/articles/plugin-mqtt-transit-to-achieve-smart-speaker-access-home-assistant/" rel="prev" title="【插件】MQTT中转实现智能音箱接入Home Assistant">
+      <i class="fa fa-chevron-left"></i> 【插件】MQTT中转实现智能音箱接入Home Assistant
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/articles/apache24-enables-fastcgi-fpm/" rel="next" title="Apache2.4启用FastCGI+FPM">
+      Apache2.4启用FastCGI+FPM <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0-%E6%9B%B4%E6%96%B0"><span class="nav-text">0.更新</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E6%8F%92%E4%BB%B6%E8%AF%B4%E6%98%8E"><span class="nav-text">1.插件说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E5%AE%8C%E6%88%90%E5%BA%A6"><span class="nav-text">2.完成度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E"><span class="nav-text">3.使用说明</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-0-%E5%87%86%E5%A4%87"><span class="nav-text">3.0.准备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E8%8E%B7%E5%8F%96%E8%B4%A6%E5%8F%B7"><span class="nav-text">3.1.获取账号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E9%9F%B3%E7%AE%B1%E6%8A%80%E8%83%BD%E5%B9%B3%E5%8F%B0%E9%85%8D%E7%BD%AE"><span class="nav-text">3.2.音箱技能平台配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-HA%E6%8F%92%E4%BB%B6%E9%85%8D%E7%BD%AE"><span class="nav-text">3.3.HA插件配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-HA%E8%AE%BE%E5%A4%87%E4%B8%AA%E6%80%A7%E5%8C%96%E9%85%8D%E7%BD%AE%EF%BC%88%E7%BB%91%E5%AE%9A%E8%AE%BE%E5%A4%87%EF%BC%89"><span class="nav-text">3.4.HA设备个性化配置（绑定设备）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-1-%E6%95%B4%E4%BD%93%E9%85%8D%E7%BD%AE%E6%A1%86%E6%9E%B6"><span class="nav-text">3.4.1.整体配置框架</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-2-%E8%AE%BE%E5%A4%87%E4%B8%AA%E6%80%A7%E5%8C%96%E9%85%8D%E7%BD%AE%E5%B1%9E%E6%80%A7"><span class="nav-text">3.4.2.设备个性化配置属性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-3-%E7%89%B9%E6%AE%8A%E8%AE%BE%E5%A4%87%E9%85%8D%E7%BD%AE%E8%AF%B4%E6%98%8E"><span class="nav-text">3.4.3.特殊设备配置说明</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-4-%E9%85%8D%E7%BD%AE%E6%A0%B7%E4%BE%8B"><span class="nav-text">3.4.4.配置样例</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-5-%E4%B8%8A%E6%8A%A5%E8%AE%BE%E5%A4%87"><span class="nav-text">3.5.上报设备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-6-%E6%8E%A7%E5%88%B6%E6%8C%87%E4%BB%A4%E8%AF%B4%E6%98%8E"><span class="nav-text">3.6.控制指令说明</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E5%B0%8F%E7%BB%93"><span class="nav-text">4.小结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="cnk700i"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">cnk700i</p>
+  <div class="site-description" itemprop="description">虽然没用技术赚到钱，至少让生活更有趣吧</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">38</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/cnk700i" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cnk700i" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:liangjiarong@gmail.com" title="E-Mail → mailto:liangjiarong@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://jq.qq.com/?_wv=1027&k=5mCE2MH" title="QQ → https:&#x2F;&#x2F;jq.qq.com&#x2F;?_wv&#x3D;1027&amp;k&#x3D;5mCE2MH" rel="noopener" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-rss"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">cnk700i</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">154k</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.id);
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            let target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    let { app_id, app_key, server_url } = {"enable":true,"app_id":"D6eniJJLIQb3z1eCLum0aUsC-MdYXbMMI","app_key":"eqYfUABMvuNoBGflLYsdYcK3","server_url":null,"security":true};
+    function fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    let api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

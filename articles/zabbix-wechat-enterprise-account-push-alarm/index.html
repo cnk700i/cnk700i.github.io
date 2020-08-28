@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"ljr.im","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="使用企业微信推送zabbix告警信息。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Zabbix+微信企业号推送告警">
+<meta property="og:url" content="https://ljr.im/articles/zabbix-wechat-enterprise-account-push-alarm/index.html">
+<meta property="og:site_name" content="星路">
+<meta property="og:description" content="使用企业微信推送zabbix告警信息。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ljr.im/articles/zabbix-wechat-enterprise-account-push-alarm/c1_p1_%E5%8A%A0%E5%85%A5%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1.png">
+<meta property="og:image" content="https://ljr.im/articles/zabbix-wechat-enterprise-account-push-alarm/c1_p2_%E5%85%B3%E6%B3%A8%E5%BE%AE%E5%B7%A5%E4%BD%9C%E5%8F%B0.png">
+<meta property="og:image" content="https://ljr.im/articles/zabbix-wechat-enterprise-account-push-alarm/c2.1_p1_%E6%94%BE%E7%BD%AE%E8%84%9A%E6%9C%AC.png">
+<meta property="og:image" content="https://ljr.im/articles/zabbix-wechat-enterprise-account-push-alarm/c2.2_p1_%E6%96%B0%E5%A2%9E%E6%8A%A5%E8%AD%A6%E5%AA%92%E4%BB%8B%E5%85%A5%E5%8F%A3.png">
+<meta property="og:image" content="https://ljr.im/articles/zabbix-wechat-enterprise-account-push-alarm/c2.2_p2_%E6%96%B0%E5%A2%9E%E6%8A%A5%E8%AD%A6%E5%AA%92%E4%BB%8B.png">
+<meta property="og:image" content="https://ljr.im/articles/zabbix-wechat-enterprise-account-push-alarm/c2.2_p3_%E7%94%A8%E6%88%B7%E9%85%8D%E7%BD%AE%E5%85%A5%E5%8F%A3.png">
+<meta property="og:image" content="https://ljr.im/articles/zabbix-wechat-enterprise-account-push-alarm/c2.2_p4_%E7%94%A8%E6%88%B7%E5%85%B3%E8%81%94%E6%8A%A5%E8%AD%A6%E5%AA%92%E4%BB%8B.png">
+<meta property="og:image" content="https://ljr.im/articles/zabbix-wechat-enterprise-account-push-alarm/c2.3_p1_%E6%96%B0%E5%A2%9E%E5%8A%A8%E4%BD%9C%E5%85%A5%E5%8F%A3.png">
+<meta property="og:image" content="https://ljr.im/articles/zabbix-wechat-enterprise-account-push-alarm/c2.3_p2_%E8%AE%BE%E7%BD%AE%E5%8A%A8%E4%BD%9C%E5%90%8D%E7%A7%B0.png">
+<meta property="og:image" content="https://ljr.im/articles/zabbix-wechat-enterprise-account-push-alarm/c2.3_p3_%E5%BC%82%E5%B8%B8%E9%80%9A%E7%9F%A5%E9%85%8D%E7%BD%AE1.png">
+<meta property="og:image" content="https://ljr.im/articles/zabbix-wechat-enterprise-account-push-alarm/c2.3_p4_%E5%BC%82%E5%B8%B8%E9%80%9A%E7%9F%A5%E9%85%8D%E7%BD%AE2.png">
+<meta property="og:image" content="https://ljr.im/articles/zabbix-wechat-enterprise-account-push-alarm/c2.3_p5_%E6%81%A2%E5%A4%8D%E9%80%9A%E7%9F%A5%E9%85%8D%E7%BD%AE.png">
+<meta property="og:image" content="https://ljr.im/articles/zabbix-wechat-enterprise-account-push-alarm/c3_p1_zabbix%E5%91%8A%E8%AD%A6%E6%B6%88%E6%81%AF.png">
+<meta property="og:image" content="https://ljr.im/articles/zabbix-wechat-enterprise-account-push-alarm/c3_p2_%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1%E5%91%8A%E8%AD%A6%E6%B6%88%E6%81%AF.png">
+<meta property="article:published_time" content="2019-08-29T12:33:00.000Z">
+<meta property="article:modified_time" content="2020-08-28T13:22:46.000Z">
+<meta property="article:author" content="cnk700i">
+<meta property="article:tag" content="Zabbix">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ljr.im/articles/zabbix-wechat-enterprise-account-push-alarm/c1_p1_%E5%8A%A0%E5%85%A5%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1.png">
+
+<link rel="canonical" href="https://ljr.im/articles/zabbix-wechat-enterprise-account-push-alarm/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Zabbix+微信企业号推送告警 | 星路</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-137999457-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-137999457-1');
+      }
+    </script>
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?dc919d77bfa18b55261c23c656062137";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">星路</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">追寻那一缕星光，在漆黑夜晚前行</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ljr.im/articles/zabbix-wechat-enterprise-account-push-alarm/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="cnk700i">
+      <meta itemprop="description" content="虽然没用技术赚到钱，至少让生活更有趣吧">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="星路">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Zabbix+微信企业号推送告警
+        </h1>
+
+        <div class="post-meta">
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-08-29 12:33:00" itemprop="dateCreated datePublished" datetime="2019-08-29T12:33:00+00:00">2019-08-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-08-28 13:22:46" itemprop="dateModified" datetime="2020-08-28T13:22:46+00:00">2020-08-28</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%BF%90%E7%BB%B4/" itemprop="url" rel="index"><span itemprop="name">运维</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/articles/zabbix-wechat-enterprise-account-push-alarm/" class="post-meta-item leancloud_visitors" data-flag-title="Zabbix+微信企业号推送告警" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+            <div class="post-description">使用企业微信推送zabbix告警信息。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>因工作需要搜了一些监控解决方案，发现zabbix还是挺多人推荐的，于是乎记录一下学习过程。上篇使用grafana实现了数据可视化展示，可以通过web网页直观了解主机运行状况。为了及时了解到异常信息，可以使用zabbix的推送机制，实现告警信息的推送，</p>
+<hr>
+<a id="more"></a>
+
+<h2 id="1-企业微信"><a href="#1-企业微信" class="headerlink" title="1.企业微信"></a>1.企业微信</h2><p>详细教程网上自行搜索，我是参照这个<a target="_blank" rel="noopener" href="http://www.ttlsa.com/zabbix/use-wechat-send-zabbix-msg/" title="zabbix使用微信发送告警（附Python代码）">教程</a>，大体过程如下：</p>
+<ul>
+<li><p>注册企业微信，记录下ID，脚本调用API接口推送消息需要用到</p>
+</li>
+<li><p>成员加入企业微信，关注微工作台</p>
+ 
+  <img src="/articles/zabbix-wechat-enterprise-account-push-alarm/c1_p1_%E5%8A%A0%E5%85%A5%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1.png" class="" title="加入企业微信">
+
+ 
+  <img src="/articles/zabbix-wechat-enterprise-account-push-alarm/c1_p2_%E5%85%B3%E6%B3%A8%E5%BE%AE%E5%B7%A5%E4%BD%9C%E5%8F%B0.png" class="" title="关注微工作台">
+
+<blockquote>
+<p><strong>INFO：企业微信是一个独立APP，微工作台是微信中原先的企业号（类似公众号），关注微工作台就可以用微信接收消息。</strong></p>
+</blockquote>
+</li>
+<li><p>通过通信录管理成员（可选）</p>
+</li>
+<li><p>创建应用，记录下应用ID（AgentId）、应用安全码（Secret），脚本调用API接口推送消息需要用到</p>
+</li>
+<li><p>设置应用可见范围（指定具体人员/部门可以使用应用）</p>
+<blockquote>
+<p><strong>INFO：分配应用的使用权限给指定人员，这样相关人员就可以接收该应用的消息。</strong></p>
+</blockquote>
+</li>
+</ul>
+<hr>
+<h2 id="2-zabbix"><a href="#2-zabbix" class="headerlink" title="2.zabbix"></a>2.zabbix</h2><h3 id="2-1-准备脚本"><a href="#2-1-准备脚本" class="headerlink" title="2.1.准备脚本"></a>2.1.准备脚本</h3><ul>
+<li>放置py脚本至zabbix的监控脚本目录，此处使用docker方式部署，已对脚本目录进行了映射（详细见docker-compose.yaml），所以只要拷贝至宿主机的<code>/data/zabbix/alertscripts</code></li>
+</ul>
+ 
+  <img src="/articles/zabbix-wechat-enterprise-account-push-alarm/c2.1_p1_%E6%94%BE%E7%BD%AE%E8%84%9A%E6%9C%AC.png" class="" title="放置脚本.png">
+
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/usr/bin/python3</span></span><br><span class="line"><span class="comment"># -*- coding:utf-8 -*-</span></span><br><span class="line"><span class="comment"># sendToWeixin.py</span></span><br><span class="line">import requests</span><br><span class="line">import json</span><br><span class="line">import sys</span><br><span class="line">import logging</span><br><span class="line"></span><br><span class="line"><span class="comment"># 企业号及应用相关信息</span></span><br><span class="line">corp_id = <span class="string">&#x27;xxx&#x27;</span></span><br><span class="line">corp_secret = <span class="string">&#x27;xxx&#x27;</span></span><br><span class="line">agent_id = <span class="string">&#x27;xxx&#x27;</span></span><br><span class="line"><span class="comment"># 存放access_token文件路径</span></span><br><span class="line">token_path = <span class="string">&#x27;/tmp/access_token.log&#x27;</span></span><br><span class="line"><span class="comment"># 日志文件路径</span></span><br><span class="line">log_path = <span class="string">&#x27;/tmp/send.log&#x27;</span></span><br><span class="line">logging.basicConfig(level=logging.INFO,<span class="comment">#控制台打印的日志级别</span></span><br><span class="line">                    filename=log_path,</span><br><span class="line">                    filemode=<span class="string">&#x27;a&#x27;</span>,<span class="comment">##模式，有w和a，w就是写模式，每次都会重新写日志，覆盖之前的日志；#a是追加模式，默认如果不写的话，就是追加模式</span></span><br><span class="line">                    format=<span class="string">&#x27;%(asctime)s - %(pathname)s[line:%(lineno)d] - %(levelname)s: %(message)s&#x27;</span><span class="comment">#日志格式</span></span><br><span class="line">                    )</span><br><span class="line"></span><br><span class="line">def get_access_token_from_file():</span><br><span class="line">    try:</span><br><span class="line">        f = open(token_path,<span class="string">&#x27;r+&#x27;</span>)</span><br><span class="line">        this_access_token = f.read()</span><br><span class="line">        logging.debug(<span class="string">&#x27;get success %s&#x27;</span> % this_access_token)</span><br><span class="line">        f.close()</span><br><span class="line">        <span class="built_in">return</span> this_access_token</span><br><span class="line">    except Exception as e:</span><br><span class="line">        logging.debug(e)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取token函数，文本里记录的token失效时调用</span></span><br><span class="line">def get_access_token():</span><br><span class="line">    get_token_url = <span class="string">&#x27;https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=%s&amp;corpsecret=%s&#x27;</span> % (corp_id, corp_secret)</span><br><span class="line">    logging.debug(get_token_url)</span><br><span class="line">    r = requests.get(get_token_url)</span><br><span class="line">    request_json = r.json()</span><br><span class="line">    this_access_token = request_json[<span class="string">&#x27;access_token&#x27;</span>]</span><br><span class="line">    logging.debug(this_access_token)</span><br><span class="line">    r.close()</span><br><span class="line">    <span class="comment"># 把获取到的access_token写入文本</span></span><br><span class="line">    try:</span><br><span class="line">        f = open(token_path,<span class="string">&#x27;w+&#x27;</span>)</span><br><span class="line">        f.write(this_access_token)</span><br><span class="line">        f.close()</span><br><span class="line">    except Exception as e:</span><br><span class="line">        logging.debug(e)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 返回获取到的access_token值</span></span><br><span class="line">    <span class="built_in">return</span> this_access_token</span><br><span class="line"></span><br><span class="line"><span class="comment"># snedMessage</span></span><br><span class="line">retry = 2</span><br><span class="line"><span class="keyword">while</span>(retry&gt;0):</span><br><span class="line">    retry -= 1</span><br><span class="line">    <span class="comment"># 从文本获取access_token</span></span><br><span class="line">    access_token = get_access_token_from_file()</span><br><span class="line">    try:</span><br><span class="line">        to_user = <span class="string">&#x27;@all&#x27;</span></span><br><span class="line">        message = sys.argv[2]+<span class="string">&#x27;\n&#x27;</span>+sys.argv[3]</span><br><span class="line">        inputArg = <span class="string">&#x27; &#x27;</span>.join(str(i) <span class="keyword">for</span> i <span class="keyword">in</span> sys.argv)</span><br><span class="line">        logging.debug(<span class="string">&#x27;cmd: &#x27;</span>+inputArg)</span><br><span class="line"></span><br><span class="line">        send_message_url = <span class="string">&#x27;https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=%s&#x27;</span> % access_token</span><br><span class="line">        logging.debug(send_message_url)</span><br><span class="line">        message_params = &#123;</span><br><span class="line">                            <span class="string">&quot;touser&quot;</span>:to_user,</span><br><span class="line">                            <span class="string">&quot;msgtype&quot;</span>:<span class="string">&quot;text&quot;</span>,</span><br><span class="line">                            <span class="string">&quot;agentid&quot;</span>:agent_id,</span><br><span class="line">                            <span class="string">&quot;text&quot;</span>:&#123;</span><br><span class="line">                                <span class="string">&quot;content&quot;</span> : message</span><br><span class="line">                            &#125;,</span><br><span class="line">                            <span class="string">&quot;safe&quot;</span>:0</span><br><span class="line">                        &#125;</span><br><span class="line">        <span class="comment"># markdown消息模板</span></span><br><span class="line">        <span class="comment"># markdown_message = &#123;</span></span><br><span class="line">        <span class="comment">#     &quot;touser&quot; : &quot;@all&quot;,</span></span><br><span class="line">        <span class="comment">#     &quot;msgtype&quot;: &quot;markdown&quot;,</span></span><br><span class="line">        <span class="comment">#     &quot;agentid&quot; : agent_id,</span></span><br><span class="line">        <span class="comment">#     &quot;markdown&quot;: &#123;</span></span><br><span class="line">        <span class="comment">#         &quot;content&quot;: &quot;您的会议室已经预定，稍后会同步到`邮箱`\r\</span></span><br><span class="line">        <span class="comment">#             &gt;**事项详情**\r\</span></span><br><span class="line">        <span class="comment">#             &gt;事　项：&lt;font color=\&quot;info\&quot;&gt;开会&lt;/font&gt;\r\</span></span><br><span class="line">        <span class="comment">#             &gt;组织者：@miglioguan\r\</span></span><br><span class="line">        <span class="comment">#             &gt;参与者：@miglioguan、@kunliu、@jamdeezhou、@kanexiong、@kisonwang\r\</span></span><br><span class="line">        <span class="comment">#             &gt;\r\</span></span><br><span class="line">        <span class="comment">#             &gt;会议室：&lt;font color=\&quot;info\&quot;&gt;广州TIT 1楼 301&lt;/font&gt;\r\</span></span><br><span class="line">        <span class="comment">#             &gt;日　期：&lt;font color=\&quot;warning\&quot;&gt;2018年5月18日&lt;/font&gt;\r\</span></span><br><span class="line">        <span class="comment">#             &gt;时　间：&lt;font color=\&quot;comment\&quot;&gt;上午9:00-11:00&lt;/font&gt;\r\</span></span><br><span class="line">        <span class="comment">#             &gt;\r\</span></span><br><span class="line">        <span class="comment">#             &gt;请准时参加会议。\r\</span></span><br><span class="line">        <span class="comment">#             &gt;\r\</span></span><br><span class="line">        <span class="comment">#             &gt;如需修改会议信息，请点击：[修改会议信息](https://work.weixin.qq.com)&quot;</span></span><br><span class="line">        <span class="comment">#     &#125;</span></span><br><span class="line">        <span class="comment"># &#125;</span></span><br><span class="line">        <span class="comment"># message_params = markdown_message</span></span><br><span class="line">        r = requests.post(send_message_url, data=json.dumps(message_params))</span><br><span class="line">        logging.debug(<span class="string">&#x27;post success %s &#x27;</span> % r.text)</span><br><span class="line">        request_json = r.json()</span><br><span class="line">        errmsg = request_json[<span class="string">&#x27;errmsg&#x27;</span>]</span><br><span class="line">        <span class="keyword">if</span> errmsg == <span class="string">&#x27;ok&#x27;</span>:</span><br><span class="line">            retry = 0</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            access_token = get_access_token()</span><br><span class="line">    except Exception as e:</span><br><span class="line">        logging.error(e)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>INFO：企业微信APP才支持markdown格式的消息。</strong></p>
+</blockquote>
+<ul>
+<li>设置可执行权限</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /data/zabbix/alertscripts <span class="comment"># 脚本目录（宿主机）</span></span><br><span class="line">chmod 755 sendToWeixin.py <span class="comment"># 设置可执行权限</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>WARN：脚本有对文件读写操作，如果以root用户执行脚本测试，需将/tmp目录下的log文件删除，避免zabbix-server进程（zabbix用户）因权限问题执行失败。</strong></p>
+</blockquote>
+<ul>
+<li>zabbix-server安装运行环境</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="built_in">exec</span> -it zabbix-server bash <span class="comment"># 进入容器</span></span><br><span class="line">apk add python3 <span class="comment"># 安装python环境</span></span><br><span class="line">pip3 install requests <span class="comment"># 安装requests包</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>INFO：容器镜像是基于alpine的，没有带python环境，所以需要另外安装。</strong></p>
+</blockquote>
+<h3 id="2-2-报警媒介"><a href="#2-2-报警媒介" class="headerlink" title="2.2.报警媒介"></a>2.2.报警媒介</h3><ul>
+<li>创建报警媒介类型</li>
+</ul>
+ 
+  <img src="/articles/zabbix-wechat-enterprise-account-push-alarm/c2.2_p1_%E6%96%B0%E5%A2%9E%E6%8A%A5%E8%AD%A6%E5%AA%92%E4%BB%8B%E5%85%A5%E5%8F%A3.png" class="" title="新增报警媒介入口">
+
+
+ 
+  <img src="/articles/zabbix-wechat-enterprise-account-push-alarm/c2.2_p2_%E6%96%B0%E5%A2%9E%E6%8A%A5%E8%AD%A6%E5%AA%92%E4%BB%8B.png" class="" title="新增报警媒介">
+
+<blockquote>
+<p><strong>INFO：使用了自定义脚本处理，传入参数使用了宏，对应后面用户关联报警媒介、动作中设置的信息。</strong></p>
+</blockquote>
+<ul>
+<li>用户关联报警媒介，指定用户接收报警的类型、收报警的时段。</li>
+</ul>
+ 
+  <img src="/articles/zabbix-wechat-enterprise-account-push-alarm/c2.2_p3_%E7%94%A8%E6%88%B7%E9%85%8D%E7%BD%AE%E5%85%A5%E5%8F%A3.png" class="" title="用户配置入口">
+
+ 
+  <img src="/articles/zabbix-wechat-enterprise-account-push-alarm/c2.2_p4_%E7%94%A8%E6%88%B7%E5%85%B3%E8%81%94%E6%8A%A5%E8%AD%A6%E5%AA%92%E4%BB%8B.png" class="" title="用户关联报警媒介">
+
+
+<h3 id="2-3-动作"><a href="#2-3-动作" class="headerlink" title="2.3.动作"></a>2.3.动作</h3><p>动作是设定特定事件发生后触发的操作，比如触发器告警事件出现，发送消息通知特定人员。可以配置触发条件（例如特定的触发器）、消息模板、发送消息方式、发送目标。</p>
+ 
+  <img src="/articles/zabbix-wechat-enterprise-account-push-alarm/c2.3_p1_%E6%96%B0%E5%A2%9E%E5%8A%A8%E4%BD%9C%E5%85%A5%E5%8F%A3.png" class="" title="新增动作入口">
+
+ 
+  <img src="/articles/zabbix-wechat-enterprise-account-push-alarm/c2.3_p2_%E8%AE%BE%E7%BD%AE%E5%8A%A8%E4%BD%9C%E5%90%8D%E7%A7%B0.png" class="" title="设置动作名称">
+
+ 
+  <img src="/articles/zabbix-wechat-enterprise-account-push-alarm/c2.3_p3_%E5%BC%82%E5%B8%B8%E9%80%9A%E7%9F%A5%E9%85%8D%E7%BD%AE1.png" class="" title="异常通知配置1">
+
+ 
+  <img src="/articles/zabbix-wechat-enterprise-account-push-alarm/c2.3_p4_%E5%BC%82%E5%B8%B8%E9%80%9A%E7%9F%A5%E9%85%8D%E7%BD%AE2.png" class="" title="异常通知配置2">
+
+ 
+  <img src="/articles/zabbix-wechat-enterprise-account-push-alarm/c2.3_p5_%E6%81%A2%E5%A4%8D%E9%80%9A%E7%9F%A5%E9%85%8D%E7%BD%AE.png" class="" title="恢复通知配置">
+
+<blockquote>
+<p><strong>INFO：更新操作的配置类似。</strong></p>
+</blockquote>
+<h3 id="3-测试"><a href="#3-测试" class="headerlink" title="3.测试"></a>3.测试</h3><p>停止监控主机上zabbix agent服务，5分钟之后zabbix server会出现告警，同时企业微信也收到告警消息。</p>
+ 
+  <img src="/articles/zabbix-wechat-enterprise-account-push-alarm/c3_p1_zabbix%E5%91%8A%E8%AD%A6%E6%B6%88%E6%81%AF.png" class="" title="zabbix告警消息">
+
+ 
+  <img src="/articles/zabbix-wechat-enterprise-account-push-alarm/c3_p2_%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1%E5%91%8A%E8%AD%A6%E6%B6%88%E6%81%AF.png" class="" title="企业微信告警消息">
+
+
+<h3 id="4-小结"><a href="#4-小结" class="headerlink" title="4.小结"></a>4.小结</h3><ul>
+<li>要做精细化的通知，可以结合zabbix用户关联报警媒介所设置的收件人参数、修改脚本为通知相应企业微信用户来实现。</li>
+<li>后续可以通过zabbix的API接口，在企业微信应用中实现主动查询状态的功能。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>cnk700i
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://ljr.im/articles/zabbix-wechat-enterprise-account-push-alarm/" title="Zabbix+微信企业号推送告警">https://ljr.im/articles/zabbix-wechat-enterprise-account-push-alarm/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/Zabbix/" rel="tag"><i class="fa fa-tag"></i> Zabbix</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/articles/zabbix-grafana-data-show/" rel="prev" title="Zabbix+Grafana数据展示">
+      <i class="fa fa-chevron-left"></i> Zabbix+Grafana数据展示
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/articles/home-assistant-novice-question-set/" rel="next" title="Home Assistant新手问题集">
+      Home Assistant新手问题集 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1"><span class="nav-text">1.企业微信</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-zabbix"><span class="nav-text">2.zabbix</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E5%87%86%E5%A4%87%E8%84%9A%E6%9C%AC"><span class="nav-text">2.1.准备脚本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E6%8A%A5%E8%AD%A6%E5%AA%92%E4%BB%8B"><span class="nav-text">2.2.报警媒介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-%E5%8A%A8%E4%BD%9C"><span class="nav-text">2.3.动作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E6%B5%8B%E8%AF%95"><span class="nav-text">3.测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%B0%8F%E7%BB%93"><span class="nav-text">4.小结</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="cnk700i"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">cnk700i</p>
+  <div class="site-description" itemprop="description">虽然没用技术赚到钱，至少让生活更有趣吧</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">38</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/cnk700i" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cnk700i" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:liangjiarong@gmail.com" title="E-Mail → mailto:liangjiarong@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://jq.qq.com/?_wv=1027&k=5mCE2MH" title="QQ → https:&#x2F;&#x2F;jq.qq.com&#x2F;?_wv&#x3D;1027&amp;k&#x3D;5mCE2MH" rel="noopener" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-rss"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">cnk700i</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">154k</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.id);
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            let target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    let { app_id, app_key, server_url } = {"enable":true,"app_id":"D6eniJJLIQb3z1eCLum0aUsC-MdYXbMMI","app_key":"eqYfUABMvuNoBGflLYsdYcK3","server_url":null,"security":true};
+    function fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    let api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
