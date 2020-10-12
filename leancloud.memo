@@ -7,6 +7,7 @@
 {"title":"智障家居初战-网络篇","url":"/articles/home-for-the-mentally-retardedplan/"},
 {"title":"智障家居初战-语音控制篇(基于Node-RED对接)","url":"/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/"},
 {"title":"初试Zabbix监控方案","url":"/articles/initial-test-zabbix-monitoring-program/"},
+{"title":"安装Jenkins及二级目录反向代理访问","url":"/articles/install-jenkins-and-reverse-proxy-access-to-secondary-directories/"},
 {"title":"智障家居初战-对接篇","url":"/articles/intellectually-impaired-home-battlematching/"},
 {"title":"智障家居初战-方案篇","url":"/articles/intellectually-impaired-home-battlenetwork/"},
 {"title":"Let's Encrypt通配符证书续期及分发","url":"/articles/lets-encrypt-wildcard-certificate-renewal-and-distribution/"},

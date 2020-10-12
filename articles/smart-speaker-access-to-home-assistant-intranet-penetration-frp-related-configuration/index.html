@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"ljr.im","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="frp解决自建技能实现智能音箱接入Home Assistant需要内网穿透的问题。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="智能音箱接入Home Assistant内网穿透frp相关配置">
+<meta property="og:url" content="https://ljr.im/articles/smart-speaker-access-to-home-assistant-intranet-penetration-frp-related-configuration/index.html">
+<meta property="og:site_name" content="星路">
+<meta property="og:description" content="frp解决自建技能实现智能音箱接入Home Assistant需要内网穿透的问题。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-10-12T09:30:00.000Z">
+<meta property="article:modified_time" content="2020-10-12T09:43:06.000Z">
+<meta property="article:author" content="cnk700i">
+<meta property="article:tag" content="Home Assistant">
+<meta property="article:tag" content="frp">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://ljr.im/articles/smart-speaker-access-to-home-assistant-intranet-penetration-frp-related-configuration/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>智能音箱接入Home Assistant内网穿透frp相关配置 | 星路</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-137999457-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-137999457-1');
+      }
+    </script>
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?dc919d77bfa18b55261c23c656062137";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">星路</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">追寻那一缕星光，在漆黑夜晚前行</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ljr.im/articles/smart-speaker-access-to-home-assistant-intranet-penetration-frp-related-configuration/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="cnk700i">
+      <meta itemprop="description" content="虽然没用技术赚到钱，至少让生活更有趣吧">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="星路">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          智能音箱接入Home Assistant内网穿透frp相关配置
+        </h1>
+
+        <div class="post-meta">
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-10-12 17:30:00 / 修改时间：17:43:06" itemprop="dateCreated datePublished" datetime="2020-10-12T17:30:00+08:00">2020-10-12</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">网络</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/articles/smart-speaker-access-to-home-assistant-intranet-penetration-frp-related-configuration/" class="post-meta-item leancloud_visitors" data-flag-title="智能音箱接入Home Assistant内网穿透frp相关配置" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.8k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+            <div class="post-description">frp解决自建技能实现智能音箱接入Home Assistant需要内网穿透的问题。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>家庭没有公网IP场景想将智能音箱接入Home Assistant需要进行内网穿透，不少朋友反馈尝试采用frp穿透访问会遇上问题，这里提供一些frp配置案例希望有所帮助。</p>
+<hr>
+<a id="more"></a>
+
+<h2 id="1-环境"><a href="#1-环境" class="headerlink" title="1. 环境"></a>1. 环境</h2><ul>
+<li>公网IP服务器（IP：6.6.6.6）</li>
+<li>本地服务器（IP：192.168.1.100）</li>
+<li>域名（havcs.ljr.im）</li>
+<li>期待效果：访问<code>https://havcs.ljr.im:8443</code>，相当于穿透访问<code>http://192.168.1.100:8123</code></li>
+<li>准备，网上教程很多不详细赘述<ol>
+<li>域名供应商将添加<code>havcs.ljr.im</code>解析到<code>6.6.6.6</code>的A记录</li>
+<li>准备域名ssl证书</li>
+<li>公网IP服务器安装frp服务端</li>
+<li>本地安装frp客户端（可安装在192.168.1.100上）</li>
+<li>本地服务器安装Nginx（可选，监听端口443）和Home Assistant（监听端口8123）</li>
+</ol>
+</li>
+</ul>
+<blockquote>
+<p><strong>INFO：后面涉及的配置请根据实际情况自行调整域名、IP、端口号。</strong></p>
+</blockquote>
+<hr>
+<h2 id="2-方案一-frp做反向代理服务器"><a href="#2-方案一-frp做反向代理服务器" class="headerlink" title="2. 方案一 frp做反向代理服务器"></a>2. 方案一 frp做反向代理服务器</h2><p>该方案由frp提供https服务，但这种情况下frp无法正常处理wss导致<code>外网是无法正常登陆HA</code>，但不影响接口访问。<br>访问路径：音箱平台 -&gt; 6.6.6.6:8443 -&gt; 家庭路由器 -&gt; [https] frp客户端 [http] -&gt; 192.168.1.100:8123(HA)</p>
+<h3 id="2-1-frp服务器配置"><a href="#2-1-frp服务器配置" class="headerlink" title="2.1. frp服务器配置"></a>2.1. frp服务器配置</h3><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">; frps.ini</span></span><br><span class="line"><span class="section">[common]</span></span><br><span class="line"><span class="comment">; frp服务端口</span></span><br><span class="line"><span class="attr">bind_port</span> = <span class="number">6666</span></span><br><span class="line"><span class="comment">; https服务端口，自己调整，设置为443可省略端口号</span></span><br><span class="line"><span class="attr">vhost_https_port</span> = <span class="number">8443</span></span><br><span class="line"><span class="comment">; 认证令牌，自己设置</span></span><br><span class="line"><span class="attr">token</span> = set_your_token</span><br><span class="line"><span class="comment">; 强制链接启用tls</span></span><br><span class="line"><span class="attr">tls_only</span> = <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-frp客户端配置"><a href="#2-2-frp客户端配置" class="headerlink" title="2.2. frp客户端配置"></a>2.2. frp客户端配置</h3><p>PS：这里配置为frp客户端和HA不在同一台服务器，如有差异按配置说明调整。</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">; frpc.ini</span></span><br><span class="line"><span class="section">[common]</span></span><br><span class="line"><span class="comment">; frp服务器域名/IP</span></span><br><span class="line"><span class="attr">server_addr</span> = havcs.ljr.im</span><br><span class="line"><span class="comment">; frp服务器端口，与frps.ini设置一致</span></span><br><span class="line"><span class="attr">server_port</span> = <span class="number">6666</span></span><br><span class="line"><span class="comment">; 链接启用tls</span></span><br><span class="line"><span class="attr">tls_enable</span> = <span class="literal">true</span></span><br><span class="line"><span class="comment">; 认证令牌，与frps.ini设置一致</span></span><br><span class="line"><span class="attr">token</span> = set_your_token</span><br><span class="line"></span><br><span class="line"><span class="section">[method_https]</span></span><br><span class="line"><span class="attr">type</span> = https</span><br><span class="line"><span class="comment">; 修改为自己的域名</span></span><br><span class="line"><span class="attr">custom_domains</span> = havcs.ljr.im</span><br><span class="line"></span><br><span class="line"><span class="comment">; 启用https</span></span><br><span class="line"><span class="attr">plugin</span> = https2http</span><br><span class="line"><span class="comment">; 反代目标，HA的IP及端口，如果frp客户端运行在HA同一台机子上，则改为127.0.0.1:8123</span></span><br><span class="line"><span class="attr">plugin_local_addr</span> = <span class="number">192.168</span>.<span class="number">1.100</span>:<span class="number">8123</span></span><br><span class="line"><span class="comment">; 证书/密钥路径，建议使用绝对路径，相对路径是根据frpc进程目录判断</span></span><br><span class="line"><span class="attr">plugin_crt_path</span> = /etc/frp/havcs.ljr.im/crt.crt</span><br><span class="line"><span class="attr">plugin_key_path</span> = /etc/frp/havcs.ljr.im/key.key</span><br><span class="line"></span><br><span class="line"><span class="attr">plugin_host_header_rewrite</span> = <span class="number">127.0</span>.<span class="number">0.1</span></span><br><span class="line"><span class="attr">plugin_header_X-From-Where</span> = proxy</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="3-方案二-frp中转tcp"><a href="#3-方案二-frp中转tcp" class="headerlink" title="3. 方案二 frp中转tcp"></a>3. 方案二 frp中转tcp</h2><p>该方案frp只中转tcp包，<code>支持外网登陆访问HA</code>，相应的https服务要由本地服务提供，有2种方案：可以中转至Nginx服务器，Nginx服务器再反代HA；或者直接中转给HA，HA需要配置启用https。考虑本地访问便利，建议使用Nginx，这里也只介绍该方案配置。如使用后一方案，参考<a target="_blank" rel="noopener" href="https://www.home-assistant.io/integrations/http/" title="HA https配置">HA官网配置教程</a>设置<br>访问路径：音箱平台 -&gt; 6.6.6.6:8443 -&gt; 家庭路由器 -&gt; frp客户端 -&gt; [https] 192.168.1.100:443(Nginx) [http] -&gt; 192.168.1.100:8123(HA)</p>
+<h3 id="3-1-frp服务器配置"><a href="#3-1-frp服务器配置" class="headerlink" title="3.1. frp服务器配置"></a>3.1. frp服务器配置</h3><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">; frps.ini</span></span><br><span class="line"><span class="section">[common]</span></span><br><span class="line"><span class="comment">; frp服务端口</span></span><br><span class="line"><span class="attr">bind_port</span> = <span class="number">6666</span></span><br><span class="line"><span class="comment">; 认证令牌，自己设置</span></span><br><span class="line"><span class="attr">token</span> = set_your_token</span><br><span class="line"><span class="comment">; 强制链接启用tls</span></span><br><span class="line"><span class="attr">tls_only</span> = <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-frp客户端配置"><a href="#3-2-frp客户端配置" class="headerlink" title="3.2. frp客户端配置"></a>3.2. frp客户端配置</h3><p>PS：这里配置为frp客户端和Nginx不部署在同一台服务器，Nginx和HA部署在同一台服务器，如有差异按配置说明调整。</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">; frpc.ini</span></span><br><span class="line"><span class="section">[common]</span></span><br><span class="line"><span class="comment">; frp服务器域名/IP</span></span><br><span class="line"><span class="attr">server_addr</span> = havcs.ljr.im</span><br><span class="line"><span class="comment">; frp服务器端口，与frps.ini设置一致</span></span><br><span class="line"><span class="attr">server_port</span> = <span class="number">6666</span></span><br><span class="line"><span class="comment">; 链接启用tls</span></span><br><span class="line"><span class="attr">tls_enable</span> = <span class="literal">true</span></span><br><span class="line"><span class="comment">; 认证令牌，与frps.ini设置一致</span></span><br><span class="line"><span class="attr">token</span> = <span class="number">123456</span></span><br><span class="line"></span><br><span class="line"><span class="section">[method_tcp]</span></span><br><span class="line"><span class="attr">type</span> = tcp</span><br><span class="line"><span class="comment">; Nginx服务器IP及端口，如果frp客户端和Nginx部署在统一服务器，ip修改为127.0.0.1；如果HA启用https，则配置为HA服务器IP和端口即可</span></span><br><span class="line"><span class="attr">local_ip</span> = <span class="number">192.168</span>.<span class="number">1.100</span></span><br><span class="line"><span class="attr">local_port</span> = <span class="number">443</span></span><br><span class="line"><span class="comment">; 外网使用域名+该端口访问</span></span><br><span class="line"><span class="attr">remote_port</span> = <span class="number">8443</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-3-Nginx配置"><a href="#3-3-Nginx配置" class="headerlink" title="3.3. Nginx配置"></a>3.3. Nginx配置</h3><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># /etc/nginx/config.d/hass.conf</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果/etc/nginx/nginx.conf中已设置则忽略该配置项</span></span><br><span class="line"><span class="attribute">map</span> <span class="variable">$http_upgrade</span> <span class="variable">$connection_upgrade</span> &#123;</span><br><span class="line">   <span class="attribute">default</span> upgrade;</span><br><span class="line">   &#x27;&#x27;      close;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">    <span class="comment"># Update this line to be your domain</span></span><br><span class="line">    <span class="attribute">server_name</span>     havcs.ljr.im;</span><br><span class="line">    <span class="comment"># 监听端口，与frp.ini对应</span></span><br><span class="line">    <span class="attribute">listen</span>          <span class="number">443</span> ssl;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Ensure these lines point to your SSL certificate and key</span></span><br><span class="line">    <span class="comment"># 自行准备好证书，修改相应的证书地址</span></span><br><span class="line">    <span class="attribute">ssl_certificate</span> /etc/nginx/ssl/havcs.ljr.im/fullchain.pem;</span><br><span class="line">    <span class="attribute">ssl_certificate_key</span> /etc/nginx/ssl/havcs.ljr.im/privkey.pem;</span><br><span class="line">    <span class="comment"># Use these lines instead if you created a self-signed certificate</span></span><br><span class="line">    <span class="comment"># ssl_certificate /etc/nginx/ssl/cert.pem;</span></span><br><span class="line">    <span class="comment"># ssl_certificate_key /etc/nginx/ssl/key.pem;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Ensure this line points to your dhparams file</span></span><br><span class="line">    <span class="comment"># dh2048.pem文件为使用命令生成，查看Nginx安装教程</span></span><br><span class="line">    <span class="attribute">ssl_dhparam</span> /etc/nginx/ssl/dh2048.pem;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># These shouldn&#x27;t need to be changed</span></span><br><span class="line">    <span class="comment"># listen [::]:443 ssl default_server ipv6only=off; # if your nginx version is &gt;= 1.9.5 you can also add the &quot;http2&quot; flag here</span></span><br><span class="line">    <span class="attribute">add_header</span> Strict-Transport-Security <span class="string">&quot;max-age=31536000; includeSubdomains&quot;</span>;</span><br><span class="line">    <span class="comment"># ssl on; # Uncomment if you are using nginx &lt; 1.15.0</span></span><br><span class="line">    <span class="attribute">ssl_protocols</span> TLSv1 TLSv1.<span class="number">1</span> TLSv1.<span class="number">2</span>;</span><br><span class="line">    <span class="attribute">ssl_ciphers</span> <span class="string">&quot;EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4&quot;</span>;</span><br><span class="line">    <span class="attribute">ssl_prefer_server_ciphers</span> <span class="literal">on</span>;</span><br><span class="line">    <span class="attribute">ssl_session_cache</span> shared:SSL:<span class="number">10m</span>;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">proxy_buffering</span> <span class="literal">off</span>;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">location</span> / &#123;</span><br><span class="line">        <span class="comment"># HA服务器IP及端口，此处HA与Nginx在同一台服务器上所以IP为127.0.0.1</span></span><br><span class="line">        <span class="attribute">proxy_pass</span> http://127.0.0.1:8123;</span><br><span class="line">        <span class="attribute">proxy_set_header</span> Host <span class="variable">$host</span>;</span><br><span class="line">        <span class="attribute">proxy_redirect</span> http:// https://;</span><br><span class="line">        <span class="attribute">proxy_http_version</span> <span class="number">1</span>.<span class="number">1</span>;</span><br><span class="line">        <span class="attribute">proxy_set_header</span> X-Forwarded-For <span class="variable">$proxy_add_x_forwarded_for</span>;</span><br><span class="line">        <span class="attribute">proxy_set_header</span> Upgrade <span class="variable">$http_upgrade</span>;</span><br><span class="line">        <span class="attribute">proxy_set_header</span> Connection <span class="variable">$connection_upgrade</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="4-测试"><a href="#4-测试" class="headerlink" title="4. 测试"></a>4. 测试</h2><p>HA安装好插件后，访问<code>https://havcs.ljr.im:8443/havcs/auth/token</code>页面，如有颜文字的404提示，则代表穿透成功。</p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="cnk700i 微信支付">
+        <p>微信支付</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>cnk700i
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://ljr.im/articles/smart-speaker-access-to-home-assistant-intranet-penetration-frp-related-configuration/" title="智能音箱接入Home Assistant内网穿透frp相关配置">https://ljr.im/articles/smart-speaker-access-to-home-assistant-intranet-penetration-frp-related-configuration/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/Home-Assistant/" rel="tag"><i class="fa fa-tag"></i> Home Assistant</a>
+              <a href="/tags/frp/" rel="tag"><i class="fa fa-tag"></i> frp</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/articles/install-jenkins-and-reverse-proxy-access-to-secondary-directories/" rel="prev" title="安装Jenkins及二级目录反向代理访问">
+      <i class="fa fa-chevron-left"></i> 安装Jenkins及二级目录反向代理访问
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E7%8E%AF%E5%A2%83"><span class="nav-text">1. 环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E6%96%B9%E6%A1%88%E4%B8%80-frp%E5%81%9A%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-text">2. 方案一 frp做反向代理服务器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-frp%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%85%8D%E7%BD%AE"><span class="nav-text">2.1. frp服务器配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-frp%E5%AE%A2%E6%88%B7%E7%AB%AF%E9%85%8D%E7%BD%AE"><span class="nav-text">2.2. frp客户端配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E6%96%B9%E6%A1%88%E4%BA%8C-frp%E4%B8%AD%E8%BD%ACtcp"><span class="nav-text">3. 方案二 frp中转tcp</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-frp%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%85%8D%E7%BD%AE"><span class="nav-text">3.1. frp服务器配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-frp%E5%AE%A2%E6%88%B7%E7%AB%AF%E9%85%8D%E7%BD%AE"><span class="nav-text">3.2. frp客户端配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-Nginx%E9%85%8D%E7%BD%AE"><span class="nav-text">3.3. Nginx配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E6%B5%8B%E8%AF%95"><span class="nav-text">4. 测试</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="cnk700i"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">cnk700i</p>
+  <div class="site-description" itemprop="description">虽然没用技术赚到钱，至少让生活更有趣吧</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">40</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">41</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/cnk700i" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cnk700i" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:liangjiarong@gmail.com" title="E-Mail → mailto:liangjiarong@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://jq.qq.com/?_wv=1027&k=5mCE2MH" title="QQ → https:&#x2F;&#x2F;jq.qq.com&#x2F;?_wv&#x3D;1027&amp;k&#x3D;5mCE2MH" rel="noopener" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-rss"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">cnk700i</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">161k</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.id);
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            let target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    let { app_id, app_key, server_url } = {"enable":true,"app_id":"D6eniJJLIQb3z1eCLum0aUsC-MdYXbMMI","app_key":"eqYfUABMvuNoBGflLYsdYcK3","server_url":"https://d6enijjl.api.lncldglobal.com","security":true,"betterPerformance":true};
+    function fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    let api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
