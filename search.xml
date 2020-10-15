@@ -1649,10 +1649,11 @@
 </li>
 </ul>
 <hr>
-<h2 id="2-教程传送门"><a href="#2-教程传送门" class="headerlink" title="2. 教程传送门"></a>2. 教程传送门</h2><ul>
-<li>HAVCS v1：&nbsp;<a href="https://ljr.im/articles/plugin-integration-of-smart-speakers-into-home-assistant/" title="【插件】智能音箱接入Home Assistant整合">&gt;使用说明</a>&emsp;&emsp;<a href="https://github.com/cnk700i/havcs/archive/v0.98.zip" title="HAVCS v1">&gt;下载地址</a><br>基于单插件版本简单整合、设备信息通过customize.yml配置</li>
-<li>HAVCS v2：&nbsp;<a href="https://ljr.im/articles/plugin-smart-speaker-access-home-assistant-integration-plus/" title="【插件】智能音箱接入Home Assistant整合Plus">&gt;使用说明</a>&emsp;&emsp;<a href="https://github.com/cnk700i/havcs/releases/tag/v0.101" title="HAVCS v2">&gt;下载地址</a><br>初步统一设备定义、设备信息通过独立havcs.yml配置</li>
-<li>HAVCS v3：&nbsp;<a href="https://ljr.im/articles/plugin-smart-speaker-access-home-assistant-integration-plusplus/" title="【插件】智能音箱接入Home Assistant整合PlusPlus">&gt;使用说明</a>&emsp;&emsp;<a href="https://github.com/cnk700i/havcs" title="HAVCS v3">&gt;下载地址</a><br>实现全UI管理：集成方式配置插件、web网页管理设备</li>
+<h2 id="2-教程传送门"><a href="#2-教程传送门" class="headerlink" title="2. 教程传送门"></a>2. 教程传送门</h2><p>旧版本已不更新，仅留入口备查，建议使用v3版本</p>
+<ul>
+<li>HAVCS v1：&nbsp;<a href="https://ljr.im/articles/plugin-integration-of-smart-speakers-into-home-assistant/" title="【插件】智能音箱接入Home Assistant整合">&gt; 使用说明</a>&emsp;&emsp;<a href="https://github.com/cnk700i/havcs/archive/v0.98.zip" title="HAVCS v1">&gt; 下载地址</a><br>基于单插件版本简单整合、设备信息通过customize.yml配置</li>
+<li>HAVCS v2：&nbsp;<a href="https://ljr.im/articles/plugin-smart-speaker-access-home-assistant-integration-plus/" title="【插件】智能音箱接入Home Assistant整合Plus">&gt; 使用说明</a>&emsp;&emsp;<a href="https://github.com/cnk700i/havcs/releases/tag/v0.101" title="HAVCS v2">&gt; 下载地址</a><br>初步统一设备定义、设备信息通过独立havcs.yml配置</li>
+<li>HAVCS v3：&nbsp;<a href="https://ljr.im/articles/plugin-smart-speaker-access-home-assistant-integration-plusplus/" title="【插件】智能音箱接入Home Assistant整合PlusPlus">&gt; 使用说明</a>&emsp;&emsp;<a href="https://github.com/cnk700i/havcs" title="HAVCS v3">&gt; 下载地址</a><br>实现全UI管理：集成方式配置插件、web网页管理设备</li>
 </ul>
 <h2 id="3-关于自建技能"><a href="#3-关于自建技能" class="headerlink" title="3. 关于自建技能"></a>3. 关于自建技能</h2><p>自建技能需要额外两个步骤，因涉及较多的知识及不同的环境存在差异，本人只能作简单指引</p>
 <ul>
@@ -1670,6 +1671,17 @@
 <li>先本地测试可访问插件授权页面（插件正常启动），再外网测试（手机数据链接访问）可访问插件授权页面（反代正常工作）</li>
 <li>如无外网访问HA需求，建议使用插件授权页面，只反代/havcs/层级uri到公网</li>
 </ul>
+</li>
+<li><p>证书说明补充</p>
+<ul>
+<li>Let’s Encrypt申请下来证书有四种：cert.pem（证书）、chain.pem（中间证书）、fullchain.pem（证书&amp;中间证书）、privkey.pem（私匙）</li>
+<li>腾讯云申请下来证书有好几个目录，如果需要分开的证书用Apache目录：1_root_bundle.crt（中间证书）、2_havcs.ljr.im.crt（证书）、3_havcs.ljr.im.key（私匙）。如果需要合并的证书用Nginx目录：1_havcs.ljr.im_bundle.crt（证书&amp;中间证书）、2_havcs.ljr.im.key（私匙）</li>
+<li>群晖配置反向代理/Apache配置，需要三个文件，按<code>私匙、证书、中间证书</code>设置对应文件</li>
+<li>HA设置https/Nginx配置，需要两个文件，按<code>私匙、证书&amp;中间证书</code>设置对应文件</li>
+</ul>
+<blockquote>
+<p><strong>INFO：”证书&amp;中间证书”文件内容，实际上就是”证书”文件内容追加”中间证书”文件内容。</strong></p>
+</blockquote>
 </li>
 <li><p>详细设置可参考以下教程<br><a href="https://bbs.hassbian.com/thread-9309-1-1.html" title="小度音箱接入hass详细过程">小度音箱接入hass详细过程</a><br><a href="https://bbs.hassbian.com/thread-5417-1-1.html" title="小度音箱接入HomeAssistant采用自带OAuth访问控制">小度音箱接入HomeAssistant采用自带OAuth访问控制</a><br><a href="https://ljr.im/articles/smart-speaker-access-to-home-assistant-intranet-penetration-frp-related-configuration/" title="智能音箱接入Home Assistant内网穿透frp相关配置">智能音箱接入Home Assistant内网穿透frp相关配置</a></p>
 </li>
