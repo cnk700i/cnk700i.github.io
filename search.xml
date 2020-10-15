@@ -1649,7 +1649,7 @@
 </li>
 </ul>
 <hr>
-<h2 id="2-教程传送门"><a href="#2-教程传送门" class="headerlink" title="2. 教程传送门"></a>2. 教程传送门</h2><p>旧版本已不更新，仅留入口备查，建议使用v3版本</p>
+<h2 id="2-教程传送门"><a href="#2-教程传送门" class="headerlink" title="2. 教程传送门"></a>2. 教程传送门</h2><p>旧版本已不更新，留个备查入口，建议使用v3版本</p>
 <ul>
 <li>HAVCS v1：&nbsp;<a href="https://ljr.im/articles/plugin-integration-of-smart-speakers-into-home-assistant/" title="【插件】智能音箱接入Home Assistant整合">&gt; 使用说明</a>&emsp;&emsp;<a href="https://github.com/cnk700i/havcs/archive/v0.98.zip" title="HAVCS v1">&gt; 下载地址</a><br>基于单插件版本简单整合、设备信息通过customize.yml配置</li>
 <li>HAVCS v2：&nbsp;<a href="https://ljr.im/articles/plugin-smart-speaker-access-home-assistant-integration-plus/" title="【插件】智能音箱接入Home Assistant整合Plus">&gt; 使用说明</a>&emsp;&emsp;<a href="https://github.com/cnk700i/havcs/releases/tag/v0.101" title="HAVCS v2">&gt; 下载地址</a><br>初步统一设备定义、设备信息通过独立havcs.yml配置</li>
