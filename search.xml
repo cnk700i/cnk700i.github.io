@@ -5030,4 +5030,74 @@
         <tag>Leaflet</tag>
       </tags>
   </entry>
+  <entry>
+    <title>【插件】小米（绿米）网关转发代理</title>
+    <url>/articles/plugin-xiaomi-green-rice-gateway-forwarding-proxy/</url>
+    <content><![CDATA[<p><a href="http://docs.opencloud.aqara.com/development/gateway-LAN-communication/" title="小米（绿米）网关局域网通信协议">小米（绿米）网关局域网通信协议</a>中，网关采用UDP组播方式上报终端设备心跳及状态。目前家里有一些米家的设备，通过绿米的空调伴侣网关接入HA。由于docker对网络隔离，容器在桥接模式下是无法收到宿主机的组播包，查找过文档没找到能映射组播端口的方法。所以自从Home Assistant迁移到docker环境运行后，只能设置容器网络为host模式来解决这个问题，但一来容器间无法用容器名互访影响统一编排管理，二来容器共享主机网络也有一定安全隐患，所以做了这个，测试下来效果不错。</p>
+<hr>
+<a id="more"></a> 
+<h2 id="0-插件说明"><a href="#0-插件说明" class="headerlink" title="0. 插件说明"></a>0. 插件说明</h2><ul>
+<li>概述<ul>
+<li>原理很简单，在局域网主机使用agent采集UDP组播消息，封装为TCP发送给Home Assistant插件，插件再还原为UDP组播消息发送到容器本身网络空间。</li>
+<li>小米（绿米）网关[UDP组播] —&gt; 局域网主机(agent)[TCP] —&gt; HA容器(本插件)[UDP组播] —&gt; HA容器(xiaomi_aqara网关插件)</li>
+</ul>
+</li>
+<li>下载地址<ul>
+<li><a href="https://github.com/cnk700i/xiaomi_gateway_proxy" title="xiaomi_gateway_proxy插件">xiaomi_gateway_proxy</a></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="1-环境"><a href="#1-环境" class="headerlink" title="1.环境"></a>1.环境</h2><ul>
+<li>Ubuntu 20.04（部署采集程序）</li>
+<li>Docker 19.03.15</li>
+<li>Home Assistant 2021.5.4</li>
+</ul>
+<hr>
+<h2 id="2-使用说明"><a href="#2-使用说明" class="headerlink" title="2.使用说明"></a>2.使用说明</h2><h3 id="2-1-启用Home-Assistant插件"><a href="#2-1-启用Home-Assistant插件" class="headerlink" title="2.1 启用Home Assistant插件"></a>2.1 启用Home Assistant插件</h3><p>假设Home Assistant宿主机为192.168.1.100，映射服务端口为4321</p>
+<ul>
+<li>下载HA插件，<code>xiaomi_gateway_proxy</code>目录放置在<code>&#123;HA配置目录&#125;/custom_components/</code>下。</li>
+<li>HA配置启用xiaomi_gateway_proxy插件。<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 在 configuration.yaml 添加</span></span><br><span class="line"><span class="attr">xiaomi_gateway_proxy:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">4321</span> <span class="comment"># 通信端口，不指定默认4321</span></span><br></pre></td></tr></table></figure></li>
+<li>docker宿主机将插件通信端口映射出来。<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># docker run方式，增加-p 参数</span></span><br><span class="line">docker run -p 4321:4321/tcp [省略...]</span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># docker-compose方式，增加ports设置</span></span><br><span class="line">[<span class="string">省略...</span>]</span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">homeassistant:</span></span><br><span class="line">    [<span class="string">省略...</span>]</span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">4321</span><span class="string">:4321/tcp</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>INFO：插件作为服务端，提供服务端口给采集程序连接。</strong></p>
+</blockquote>
+</li>
+</ul>
+<h3 id="2-2-部署采集程序"><a href="#2-2-部署采集程序" class="headerlink" title="2.2 部署采集程序"></a>2.2 部署采集程序</h3><p>在和网关同一局域网的机器上部署，采集程序需要python环境运行，一般linux系统已经自带。如果使用windows部署，可编写bat放到计划任务启动执行，具体方法自行搜索。</p>
+<ul>
+<li><p>下载<code>xiaomi_gateway_proxy_agent.py</code>，假设放置在<code>/opt/homeassistant</code>下。</p>
+</li>
+<li><p>启动采集程序，脚本目录、HA宿主机ip、HA插件服务映射端口根据实际调整</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">python3 /opt/homeassistant/xiaomi_gateway_proxy_agent.py --host 192.168.1.100 --port 4321 &gt;/dev/null 2&gt;&amp;1 &amp;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>INO：建议先不加<code>&gt;/dev/null 2&gt;&amp;1 &amp;</code>参数，在前台运行看下输出是否有异常。</strong></p>
+</blockquote>
+</li>
+<li><p>启用开机启动服务（有些linux已启用，可跳过该步骤）</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">touch /etc/rc.local</span><br><span class="line">chmod +x /etc/rc.local</span><br><span class="line">cat /lib/systemd/system/rc-local.service | grep Install || \</span><br><span class="line">cat &gt;&gt; /lib/systemd/system/rc-local.service &lt;&lt; EOF</span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br><span class="line">Alias=rc-local.service</span><br><span class="line">EOF</span><br><span class="line">systemctl <span class="built_in">enable</span> rc-local.service</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>INO：不同版本linux有差异，具体请自行搜索。</strong></p>
+</blockquote>
+</li>
+<li><p>编辑/etc/rc.local添加启动脚本</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line"><span class="comment"># 脚本目录、HA宿主机ip、HA插件服务映射端口根据实际调整</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># python2版本使用这个</span></span><br><span class="line"><span class="comment"># python /opt/homeassistant/xiaomi_gateway_proxy_agent.py --host 192.168.1.100 --port 4321  &gt;/dev/null 2&gt;&amp;1 &amp;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># python3版本使用这个</span></span><br><span class="line">python3 /opt/homeassistant/xiaomi_gateway_proxy_agent.py --host 192.168.1.100 --port 4321  &gt;/dev/null 2&gt;&amp;1 &amp;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 新建的文件不能忽略这个</span></span><br><span class="line"><span class="built_in">exit</span> 0</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<hr>
+<h2 id="3-小结"><a href="#3-小结" class="headerlink" title="3. 小结"></a>3. 小结</h2><ul>
+<li>HA的网关插件需要提取组播通信包的源IP信息，一开始使用udxpy作为采集客户端，发现无法传递源IP信息，所以写了python版本的采集程序。</li>
+<li>设想过另一种解决方案是将宿主机和容器做IP隧道直接转发UDP组播，感觉实现比较复杂暂没深入研究。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Home Assistant</category>
+      </categories>
+      <tags>
+        <tag>Home Assistant</tag>
+        <tag>插件</tag>
+      </tags>
+  </entry>
 </search>

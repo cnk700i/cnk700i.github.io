@@ -34,6 +34,7 @@
 {"title":"【踩坑系列】Home Assistant中Aqara人体传感器的触发状态异常","url":"/articles/stepping-on-the-pit-series-trigger-status-of-aqara-human-sensor-in-home-assistant-is-abnormal/"},
 {"title":"精简下斐讯TC1固件","url":"/articles/streamline-the-fixon-tc1-firmware/"},
 {"title":"docker从入门到入坑的四个阶段","url":"/articles/the-four-stages-of-docker-from-entry-to-pit/"},
+{"title":"Vue组件方式使用Leaflet地图-popup篇","url":"/articles/using-leaflet-map-in-vue-component-modepopup/"},
 {"title":"Visual Studio Code调试Home Assistant代码（Docker版）","url":"/articles/visual-studio-code-debugging-home-assistant-docker-version/"},
 {"title":"Visual Studio Code调试Home Assistant代码（SSH版）","url":"/articles/visual-studio-code-debugging-home-assistant-ssh-version/"},
 {"title":"Visual Studio Code调试Home Assistant代码（WSL版）","url":"/articles/visual-studio-code-debugging-home-assistant-wsl-version/"},
