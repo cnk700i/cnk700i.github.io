@@ -1672,11 +1672,17 @@
 <ul>
 <li>外网服务地址需要使用https，https证书使用腾讯云、阿里云或者Let’s Encrypt等兼容性好的，并注意有效期，<code>证书不匹配域名或失效也会导致授权失败</code></li>
 <li>部署nginx或apache反向代理访问HA，在nginx上配置https，本地可以保留http访问HA</li>
-<li>先本地测试可访问插件授权页面（插件正常启动），再外网测试（手机数据链接访问）可访问插件授权页面（反代正常工作）</li>
-<li>如无外网访问HA需求，建议使用插件授权页面，只反代/havcs/层级uri到公网</li>
+<li>如无外网访问HA需求，建议使用插件的授权页面，只反代/havcs/层级uri到公网，减少安全风险</li>
 </ul>
 </li>
-<li><p>证书说明补充</p>
+<li><p>测试建议</p>
+<ul>
+<li>调整插件的日志等级为DEBUG，重点关注<code>授权过程</code>是否有产生错误日志</li>
+<li>本地环境测试访问插件的授权页面（使用HA的ip），确保能访问（说明插件正常启动）</li>
+<li>外网环境（可使用手机数据）测试访问授权页面（使用域名），确保：1、能访问（说明反代正常工作并且网络正常）；2、没有不安全连接告警（说明证书正常）</li>
+</ul>
+</li>
+<li><p>证书相关补充</p>
 <ul>
 <li>Let’s Encrypt申请下来证书有四种：cert.pem（证书）、chain.pem（中间证书）、fullchain.pem（证书&amp;中间证书）、privkey.pem（私匙）</li>
 <li>腾讯云申请下来证书有好几个目录，如果需要分开的证书用Apache目录：1_root_bundle.crt（中间证书）、2_havcs.ljr.im.crt（证书）、3_havcs.ljr.im.key（私匙）。如果需要合并的证书用Nginx目录：1_havcs.ljr.im_bundle.crt（证书&amp;中间证书）、2_havcs.ljr.im.key（私匙）</li>
@@ -4466,7 +4472,14 @@
 </ul>
 <h3 id="1-2-自建技能方式接入"><a href="#1-2-自建技能方式接入" class="headerlink" title="1.2. 自建技能方式接入"></a>1.2. 自建技能方式接入</h3><ul>
 <li>音箱技能配置见<a href="https://ljr.im/articles/plugins-havcs-edible-instructions/" title="【插件】HAVCS食用说明">总教程</a></li>
-<li>配置Home Assistant<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># &#123;HA配置目录&#125;/configuration.yaml</span></span><br><span class="line"><span class="attr">havcs:</span></span><br><span class="line">  <span class="attr">platform:</span>                               <span class="comment"># 音箱平台服务网关，至少启用一个</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">aligenie</span>                            <span class="comment"># 天猫精灵</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">dueros</span>                              <span class="comment"># 小度</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">jdwhale</span>                             <span class="comment"># 叮咚</span></span><br><span class="line">  <span class="attr">http:</span></span><br><span class="line">    <span class="attr">clients:</span>                              <span class="comment"># 音箱平台客户端认证信息（使用插件的授权页面）。其节点下的键值对代表&quot;client_id: client_secret&quot;，其中client_id起始字符会匹配音箱平台，音箱平台上设置要与此处设置一致</span></span><br><span class="line">      <span class="string">dueros&#123;自定义字符&#125;:</span> &#123;<span class="string">自定义密码</span>&#125;      <span class="comment"># 小度平台认证信息，样例：duerosdemo: 123 代表client_id为duerosdemo，client_secret为123</span></span><br><span class="line">      <span class="string">aligenie&#123;自定义字符&#125;:</span> &#123;<span class="string">自定义密码</span>&#125;    <span class="comment"># 天猫精灵平台认证信息，样例：aligeniedemo: 123 代表client_id为aligeniedemo，client_secret为123</span></span><br><span class="line">      <span class="string">jdwhale&#123;自定义字符&#125;:</span> &#123;<span class="string">自定义密码</span>&#125;     <span class="comment"># 叮咚平台认证信息，样例：jdwhaledemo: 123 代表client_id为jdwhaledemo，client_secret为123</span></span><br><span class="line">      <span class="attr">aligenie_ignore:</span> <span class="string">ignore</span>             <span class="comment"># PS: 如果不使用插件授权页面，也要随意设置一个键值对</span></span><br><span class="line">    <span class="attr">ha_url:</span> <span class="string">http://localhost:8123</span>         <span class="comment"># HA主机本地访问地址，如果HA没配置base_url（http:组件里），可自动识别不用设置；否则设置http://localhost:&#123;端口号&#125; 或 https://localhost:&#123;端口号&#125;（HA启用ssl）</span></span><br><span class="line">    <span class="attr">expire_in_hours:</span> <span class="number">24</span>                   <span class="comment"># token超时时间，单位小时，不设置则默认24h</span></span><br><span class="line">  <span class="attr">device_config:</span> <span class="string">ui</span>                       <span class="comment"># 设备管理模式，text为原来文本编辑，ui为启用web管理页面。不设置默认text &gt;&gt;*新版本调整&lt;&lt;</span></span><br></pre></td></tr></table></figure></li>
+<li>配置Home Assistant<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># &#123;HA配置目录&#125;/configuration.yaml</span></span><br><span class="line"><span class="attr">havcs:</span></span><br><span class="line">  <span class="attr">platform:</span>                               <span class="comment"># 音箱平台服务网关，至少启用一个</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">aligenie</span>                            <span class="comment"># 天猫精灵</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">dueros</span>                              <span class="comment"># 小度</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">jdwhale</span>                             <span class="comment"># 叮咚</span></span><br><span class="line">  <span class="attr">http:</span></span><br><span class="line">    <span class="attr">clients:</span>                              <span class="comment"># 音箱平台客户端认证信息（使用插件的授权页面）。其节点下的键值对代表&quot;client_id: client_secret&quot;，其中client_id起始字符会匹配音箱平台，音箱平台上设置要与此处设置一致</span></span><br><span class="line">      <span class="string">dueros&#123;自定义字符&#125;:</span> &#123;<span class="string">自定义密码</span>&#125;      <span class="comment"># 小度平台认证信息，样例：duerosdemo: 123 代表client_id为duerosdemo，client_secret为123</span></span><br><span class="line">      <span class="string">aligenie&#123;自定义字符&#125;:</span> &#123;<span class="string">自定义密码</span>&#125;    <span class="comment"># 天猫精灵平台认证信息，样例：aligeniedemo: 123 代表client_id为aligeniedemo，client_secret为123</span></span><br><span class="line">      <span class="string">jdwhale&#123;自定义字符&#125;:</span> &#123;<span class="string">自定义密码</span>&#125;     <span class="comment"># 叮咚平台认证信息，样例：jdwhaledemo: 123 代表client_id为jdwhaledemo，client_secret为123</span></span><br><span class="line">      <span class="attr">aligenie_ignore:</span> <span class="string">ignore</span>             <span class="comment"># PS: 如果不使用插件授权页面，也要随意设置一个键值对</span></span><br><span class="line">    <span class="attr">ha_url:</span> <span class="string">http://localhost:8123</span>         <span class="comment"># HA主机本地访问地址，如果HA没配置base_url（http:组件里），可自动识别不用设置；（建议）否则设置http://localhost:&#123;端口号&#125; 或 https://localhost:&#123;端口号&#125;（HA启用ssl）</span></span><br><span class="line">    <span class="attr">expire_in_hours:</span> <span class="number">24</span>                   <span class="comment"># token超时时间，单位小时，不设置则默认24h</span></span><br><span class="line">  <span class="attr">device_config:</span> <span class="string">ui</span>                       <span class="comment"># 设备管理模式，text为原来文本编辑，ui为启用web管理页面。不设置默认text &gt;&gt;*新版本调整&lt;&lt;</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<blockquote>
+<p>__INFO：ha_url通过HA内置方法自动识别时，由于新版HA会优先读取旧版本.storage/core.config的url配置，可能会因此导致不准确。__</p>
+</blockquote>
+<ul>
 <li>配置设备信息及更新音箱平台设备信息同<code>1.1.APP的技能方式接入</code>章节。</li>
 </ul>
 <hr>

@@ -28,7 +28,7 @@
 <meta property="og:description" content="又似一个船新的版本，现全部的配置管理可通过UI实现。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-03-27T13:00:00.000Z">
-<meta property="article:modified_time" content="2020-10-21T16:18:28.000Z">
+<meta property="article:modified_time" content="2021-05-26T09:34:01.000Z">
 <meta property="article:author" content="cnk700i">
 <meta property="article:tag" content="Home Assistant">
 <meta property="article:tag" content="插件">
@@ -241,7 +241,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-10-22 00:18:28" itemprop="dateModified" datetime="2020-10-22T00:18:28+08:00">2020-10-22</time>
+                <time title="修改时间：2021-05-26 17:34:01" itemprop="dateModified" datetime="2021-05-26T17:34:01+08:00">2021-05-26</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -266,7 +266,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>7.4k</span>
+              <span>7.5k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -339,7 +339,14 @@
 </ul>
 <h3 id="1-2-自建技能方式接入"><a href="#1-2-自建技能方式接入" class="headerlink" title="1.2. 自建技能方式接入"></a>1.2. 自建技能方式接入</h3><ul>
 <li>音箱技能配置见<a href="https://ljr.im/articles/plugins-havcs-edible-instructions/" title="【插件】HAVCS食用说明">总教程</a></li>
-<li>配置Home Assistant<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># &#123;HA配置目录&#125;/configuration.yaml</span></span><br><span class="line"><span class="attr">havcs:</span></span><br><span class="line">  <span class="attr">platform:</span>                               <span class="comment"># 音箱平台服务网关，至少启用一个</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">aligenie</span>                            <span class="comment"># 天猫精灵</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">dueros</span>                              <span class="comment"># 小度</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">jdwhale</span>                             <span class="comment"># 叮咚</span></span><br><span class="line">  <span class="attr">http:</span></span><br><span class="line">    <span class="attr">clients:</span>                              <span class="comment"># 音箱平台客户端认证信息（使用插件的授权页面）。其节点下的键值对代表&quot;client_id: client_secret&quot;，其中client_id起始字符会匹配音箱平台，音箱平台上设置要与此处设置一致</span></span><br><span class="line">      <span class="string">dueros&#123;自定义字符&#125;:</span> &#123;<span class="string">自定义密码</span>&#125;      <span class="comment"># 小度平台认证信息，样例：duerosdemo: 123 代表client_id为duerosdemo，client_secret为123</span></span><br><span class="line">      <span class="string">aligenie&#123;自定义字符&#125;:</span> &#123;<span class="string">自定义密码</span>&#125;    <span class="comment"># 天猫精灵平台认证信息，样例：aligeniedemo: 123 代表client_id为aligeniedemo，client_secret为123</span></span><br><span class="line">      <span class="string">jdwhale&#123;自定义字符&#125;:</span> &#123;<span class="string">自定义密码</span>&#125;     <span class="comment"># 叮咚平台认证信息，样例：jdwhaledemo: 123 代表client_id为jdwhaledemo，client_secret为123</span></span><br><span class="line">      <span class="attr">aligenie_ignore:</span> <span class="string">ignore</span>             <span class="comment"># PS: 如果不使用插件授权页面，也要随意设置一个键值对</span></span><br><span class="line">    <span class="attr">ha_url:</span> <span class="string">http://localhost:8123</span>         <span class="comment"># HA主机本地访问地址，如果HA没配置base_url（http:组件里），可自动识别不用设置；否则设置http://localhost:&#123;端口号&#125; 或 https://localhost:&#123;端口号&#125;（HA启用ssl）</span></span><br><span class="line">    <span class="attr">expire_in_hours:</span> <span class="number">24</span>                   <span class="comment"># token超时时间，单位小时，不设置则默认24h</span></span><br><span class="line">  <span class="attr">device_config:</span> <span class="string">ui</span>                       <span class="comment"># 设备管理模式，text为原来文本编辑，ui为启用web管理页面。不设置默认text &gt;&gt;*新版本调整&lt;&lt;</span></span><br></pre></td></tr></table></figure></li>
+<li>配置Home Assistant<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># &#123;HA配置目录&#125;/configuration.yaml</span></span><br><span class="line"><span class="attr">havcs:</span></span><br><span class="line">  <span class="attr">platform:</span>                               <span class="comment"># 音箱平台服务网关，至少启用一个</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">aligenie</span>                            <span class="comment"># 天猫精灵</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">dueros</span>                              <span class="comment"># 小度</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">jdwhale</span>                             <span class="comment"># 叮咚</span></span><br><span class="line">  <span class="attr">http:</span></span><br><span class="line">    <span class="attr">clients:</span>                              <span class="comment"># 音箱平台客户端认证信息（使用插件的授权页面）。其节点下的键值对代表&quot;client_id: client_secret&quot;，其中client_id起始字符会匹配音箱平台，音箱平台上设置要与此处设置一致</span></span><br><span class="line">      <span class="string">dueros&#123;自定义字符&#125;:</span> &#123;<span class="string">自定义密码</span>&#125;      <span class="comment"># 小度平台认证信息，样例：duerosdemo: 123 代表client_id为duerosdemo，client_secret为123</span></span><br><span class="line">      <span class="string">aligenie&#123;自定义字符&#125;:</span> &#123;<span class="string">自定义密码</span>&#125;    <span class="comment"># 天猫精灵平台认证信息，样例：aligeniedemo: 123 代表client_id为aligeniedemo，client_secret为123</span></span><br><span class="line">      <span class="string">jdwhale&#123;自定义字符&#125;:</span> &#123;<span class="string">自定义密码</span>&#125;     <span class="comment"># 叮咚平台认证信息，样例：jdwhaledemo: 123 代表client_id为jdwhaledemo，client_secret为123</span></span><br><span class="line">      <span class="attr">aligenie_ignore:</span> <span class="string">ignore</span>             <span class="comment"># PS: 如果不使用插件授权页面，也要随意设置一个键值对</span></span><br><span class="line">    <span class="attr">ha_url:</span> <span class="string">http://localhost:8123</span>         <span class="comment"># HA主机本地访问地址，如果HA没配置base_url（http:组件里），可自动识别不用设置；（建议）否则设置http://localhost:&#123;端口号&#125; 或 https://localhost:&#123;端口号&#125;（HA启用ssl）</span></span><br><span class="line">    <span class="attr">expire_in_hours:</span> <span class="number">24</span>                   <span class="comment"># token超时时间，单位小时，不设置则默认24h</span></span><br><span class="line">  <span class="attr">device_config:</span> <span class="string">ui</span>                       <span class="comment"># 设备管理模式，text为原来文本编辑，ui为启用web管理页面。不设置默认text &gt;&gt;*新版本调整&lt;&lt;</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<blockquote>
+<p>__INFO：ha_url通过HA内置方法自动识别时，由于新版HA会优先读取旧版本.storage/core.config的url配置，可能会因此导致不准确。__</p>
+</blockquote>
+<ul>
 <li>配置设备信息及更新音箱平台设备信息同<code>1.1.APP的技能方式接入</code>章节。</li>
 </ul>
 <hr>
