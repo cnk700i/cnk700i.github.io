@@ -4178,7 +4178,7 @@
   <entry>
     <title>【插件】智能音箱接入Home Assistant整合</title>
     <url>/articles/plugin-integration-of-smart-speakers-into-home-assistant/</url>
-    <content><![CDATA[<p>前情回顾：年前折腾的<a href="https://ljr.im/articles/flip-car-series-smart-speaker-universal-access-platform/" title="【翻车系列】智能音箱通用接入平台">通用智能音箱接入平台</a>因音箱技能类型限制不过审翻车了，然后将项目成果整理做了个<a href="https://ljr.im/articles/plugin-mqtt-relay-to-achieve-smart-speaker-access-home-assistant/" title="【插件】MQTT中转实现智能音箱接入Home Assistant">智能音箱mqtt代理转发插件</a>。考虑到易用性，趁着过年闲着，于是折腾了下各个平台的智能家居类型技能对接，最终成果就是这么一个整合版插件了。</p>
+    <content><![CDATA[<p>前情回顾：年前折腾的<a href="https://ljr.im/articles/rollover-series-universal-access-platform-for-smart-speakers/" title="【翻车系列】智能音箱通用接入平台">通用智能音箱接入平台</a>因音箱技能类型限制不过审翻车了，然后将项目成果整理做了个<a href="https://ljr.im/articles/plugin-mqtt-transit-to-achieve-smart-speaker-access-home-assistant/" title="【插件】MQTT中转实现智能音箱接入Home Assistant">智能音箱mqtt代理转发插件</a>。考虑到易用性，趁着过年闲着，于是折腾了下各个平台的智能家居类型技能对接，最终成果就是这么一个整合版插件了。</p>
 <hr>
 <a id="more"></a>
 <h2 id="0-更新"><a href="#0-更新" class="headerlink" title="0.更新"></a>0.更新</h2><p><font color = "red">新版本插件已发布并更名为havcs（<a href="https://ljr.im/articles/plugin-smart-speaker-access-home-assistant-integration-plus/" title="【插件】智能音箱接入Home Assistant整合Plus">传送门</a>），主要变更了设备配置方式，其它部分内容基本仍适用，建议先粗略观看完此版本内容再移步观看新版本。</font></p>
