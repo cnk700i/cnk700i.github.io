@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://ljr.im/articles/plugin-home-assistant-universal-timer-upgraded-version/</loc>
+    <lastmod>2021-10-19</lastmod>
+  </url>
+  <url>
     <loc>https://ljr.im/articles/plugins-havcs-edible-instructions/</loc>
     <lastmod>2021-10-19</lastmod>
   </url>
@@ -27,10 +31,6 @@
   <url>
     <loc>https://ljr.im/articles/install-jenkins-and-reverse-proxy-access-to-secondary-directories/</loc>
     <lastmod>2020-09-27</lastmod>
-  </url>
-  <url>
-    <loc>https://ljr.im/articles/plugin-home-assistant-universal-timer-upgraded-version/</loc>
-    <lastmod>2020-08-31</lastmod>
   </url>
   <url>
     <loc>https://ljr.im/articles/plugin-mqtt-transit-to-achieve-smart-speaker-access-home-assistant/</loc>
