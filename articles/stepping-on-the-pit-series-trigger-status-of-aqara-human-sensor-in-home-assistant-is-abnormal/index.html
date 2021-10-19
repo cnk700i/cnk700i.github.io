@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.1.1">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -27,7 +27,7 @@
 <meta property="og:site_name" content="星路">
 <meta property="og:description" content="解决Aqara人体传感器触发状态不同步的问题。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2018-07-05T22:18:00.000Z">
+<meta property="article:published_time" content="2018-07-05T14:18:00.000Z">
 <meta property="article:modified_time" content="2020-08-28T13:38:43.000Z">
 <meta property="article:author" content="cnk700i">
 <meta property="article:tag" content="Home Assistant">
@@ -234,7 +234,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2018-07-06 06:18:00" itemprop="dateCreated datePublished" datetime="2018-07-06T06:18:00+08:00">2018-07-06</time>
+              <time title="创建时间：2018-07-05 22:18:00" itemprop="dateCreated datePublished" datetime="2018-07-05T22:18:00+08:00">2018-07-05</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
@@ -290,11 +290,11 @@
 <p>前不久将Aqara人体传感器接入了HA，联动控制楼梯灯，使用下来感觉除了感应距离和范围小了点，灵敏度还是可以的。另外发现了一个问题，HA中它的state有点迷，基本都是“触发”状态，不能够正常同步真实状态。</p>
 </blockquote>
 <hr>
-<a id="more"></a>
+<span id="more"></span>
 <h2 id="1-环境"><a href="#1-环境" class="headerlink" title="1.环境"></a>1.环境</h2><p>Ubuntu18.04 + HA 0.71.0</p>
 <hr>
 <h2 id="2-过程"><a href="#2-过程" class="headerlink" title="2.过程"></a>2.过程</h2><p>{[HA安装目录]}/components/binary_sensor/xiaomi_aqara.py中XiaomiMotionSensor类的init方法增加一行代码即可。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#……省略……#</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">XiaomiMotionSensor</span>(<span class="params">XiaomiBinarySensor</span>):</span></span><br><span class="line"><span class="comment">#……省略……#</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, device, hass, xiaomi_hub</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Initialize the XiaomiMotionSensor.&quot;&quot;&quot;</span></span><br><span class="line">    self._hass = hass</span><br><span class="line">    self._no_motion_since = <span class="number">0</span></span><br><span class="line">    <span class="keyword">if</span> <span class="string">&#x27;proto&#x27;</span> <span class="keyword">not</span> <span class="keyword">in</span> device <span class="keyword">or</span> int(device[<span class="string">&#x27;proto&#x27;</span>][<span class="number">0</span>:<span class="number">1</span>]) == <span class="number">1</span>:</span><br><span class="line">        data_key = <span class="string">&#x27;status&#x27;</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        data_key = <span class="string">&#x27;motion_status&#x27;</span></span><br><span class="line">    XiaomiBinarySensor.__init__(self, device, <span class="string">&#x27;Motion Sensor&#x27;</span>, xiaomi_hub,</span><br><span class="line">                                data_key, <span class="string">&#x27;motion&#x27;</span>)</span><br><span class="line">    self._should_poll = <span class="literal">True</span>		<span class="comment">#增加的代码行</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#……省略……#</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">XiaomiMotionSensor</span>(<span class="params">XiaomiBinarySensor</span>):</span></span><br><span class="line"><span class="comment">#……省略……#</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, device, hass, xiaomi_hub</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Initialize the XiaomiMotionSensor.&quot;&quot;&quot;</span></span><br><span class="line">    self._hass = hass</span><br><span class="line">    self._no_motion_since = <span class="number">0</span></span><br><span class="line">    <span class="keyword">if</span> <span class="string">&#x27;proto&#x27;</span> <span class="keyword">not</span> <span class="keyword">in</span> device <span class="keyword">or</span> <span class="built_in">int</span>(device[<span class="string">&#x27;proto&#x27;</span>][<span class="number">0</span>:<span class="number">1</span>]) == <span class="number">1</span>:</span><br><span class="line">        data_key = <span class="string">&#x27;status&#x27;</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        data_key = <span class="string">&#x27;motion_status&#x27;</span></span><br><span class="line">    XiaomiBinarySensor.__init__(self, device, <span class="string">&#x27;Motion Sensor&#x27;</span>, xiaomi_hub,</span><br><span class="line">                                data_key, <span class="string">&#x27;motion&#x27;</span>)</span><br><span class="line">    self._should_poll = <span class="literal">True</span>		<span class="comment">#增加的代码行</span></span><br></pre></td></tr></table></figure>
 <blockquote>
 <p><strong>INFO：HA启动过程会为binary_sensor.xiaomi_aqara这个platform注册一个更新数据的周期性任务（任务中通过should_poll属性判断该设备是否调用update方法去更新数据），前提是该platform下的设备的should_poll属性不能全为False。而代码中默认的should_poll属性都是False，所以导致无法正常更新数据。故需要在设备初始化的时候设置一下should_poll的值即可。</strong></p>
 </blockquote>

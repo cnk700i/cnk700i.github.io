@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.1.1">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -288,7 +288,7 @@
       
         <p>上次打算整个通用的智能音箱接入平台，结果自定义技能不给做智能家居控制，翻车了。后来改用智能家居技能实现，虽然基础功能是没问题，但想要统一语音控制命令，不论是实现的成本还是使用的学习成本都太大，只得先搁浅了。目前瀚思彼岸论坛中已经有天猫精灵、小度音箱两个实现度比较高的插件了，将上个项目的成果改造下，提供一个免公网IP与智能音箱平台对接的新方法吧。</p>
 <hr>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="0-插件说明"><a href="#0-插件说明" class="headerlink" title="0.插件说明"></a>0.插件说明</h2><p><strong>技术架构</strong></p>
 <ul>
@@ -336,7 +336,7 @@
 </li>
 <li>平台配置<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#前往音箱技能平台进行设置</span></span><br><span class="line"><span class="comment">#授权地址</span></span><br><span class="line"><span class="string">https://&#123;本地HA访问地址&#125;/auth/authorize</span></span><br><span class="line"><span class="comment">#Client_Id，回调地址域名那一串即可</span></span><br><span class="line"><span class="string">小度：https://xiaodu.baidu.com</span></span><br><span class="line"><span class="string">天猫：https://open.bot.tmall.com</span></span><br><span class="line"><span class="comment">#Token地址</span></span><br><span class="line"><span class="string">https://ai-home.ljr.im/h2m2h/&#123;app_key&#125;/auth/token</span></span><br><span class="line"><span class="comment">#WebService地址（服务网关）</span></span><br><span class="line"><span class="string">小度：https://ai-home.ljr.im/h2m2h/&#123;app_key&#125;/dueros_gate</span></span><br><span class="line"><span class="string">天猫：https://ai-home.ljr.im/h2m2h/&#123;app_key&#125;/ali_genie_gate</span></span><br></pre></td></tr></table></figure>
 <blockquote>
-<p>__INFO：{本地HA访问地址}、{app_key}替换成相应的字符串。__</p>
+<p><strong>INFO：{本地HA访问地址}、{app_key}替换成相应的字符串。</strong></p>
 </blockquote>
 </li>
 </ul>

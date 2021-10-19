@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.1.1">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -300,7 +300,7 @@
 <p>为了定期让家里暗卫的排风扇“开启-关闭-开启”循环工作，保证暗卫的排风时间，把之前的<a href="https://ljr.im/articles/plugin-home-assistant-general-timer/" title="【插件】Home Assistant通用定时器">插件</a>完善了下，顺便优化了一下代码结构，并加入了配置项、服务调用方法，嗯嗯，看起来更像一个标准插件了。</p>
 </blockquote>
 <hr>
-<a id="more"></a>
+<span id="more"></span>
 <h2 id="0-功能说明"><a href="#0-功能说明" class="headerlink" title="0. 功能说明"></a>0. 功能说明</h2><img src="/articles/plugin-home-assistant-universal-timer-upgraded-version/demo.gif" class="" title="[效果图]">
 <ul>
 <li>支持多个定时任务</li>
@@ -348,23 +348,17 @@
 <h3 id="2-2-修改官方组件"><a href="#2-2-修改官方组件" class="headerlink" title="2.2. 修改官方组件"></a>2.2. 修改官方组件</h3><p>本插件需要对官方的input_select、input_text、input_boolean组件进行修改。<font color=red>注意：新版本插件可忽略此步骤。</font></p>
 <ul>
 <li><p>input_select.py</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#&#123;HA安装目录&#125;/components/input_select.py</span></span><br><span class="line"><span class="comment">#……省略……#</span></span><br><span class="line"><span class="string">def</span> <span class="string">async_setup(hass,</span> <span class="string">config):</span></span><br><span class="line">    <span class="string">&quot;&quot;</span><span class="string">&quot;Set up an input select.&quot;</span><span class="string">&quot;&quot;</span></span><br><span class="line">    <span class="string">component</span> <span class="string">=</span> <span class="string">hass.data[DOMAIN]</span> <span class="string">=</span> <span class="string">EntityComponent(_LOGGER,</span> <span class="string">DOMAIN,</span> <span class="string">hass)</span></span><br><span class="line"><span class="comment">#……省略……#</span></span><br></pre></td></tr></table></figure>
-</li>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#&#123;HA安装目录&#125;/components/input_select.py</span></span><br><span class="line"><span class="comment">#……省略……#</span></span><br><span class="line"><span class="string">def</span> <span class="string">async_setup(hass,</span> <span class="string">config):</span></span><br><span class="line">    <span class="string">&quot;&quot;</span><span class="string">&quot;Set up an input select.&quot;</span><span class="string">&quot;&quot;</span></span><br><span class="line">    <span class="string">component</span> <span class="string">=</span> <span class="string">hass.data[DOMAIN]</span> <span class="string">=</span> <span class="string">EntityComponent(_LOGGER,</span> <span class="string">DOMAIN,</span> <span class="string">hass)</span></span><br><span class="line"><span class="comment">#……省略……#</span></span><br></pre></td></tr></table></figure></li>
 <li><p>input_text.py</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#&#123;HA安装目录&#125;/components/input_text.py</span></span><br><span class="line"><span class="comment">#……省略……#</span></span><br><span class="line"><span class="string">def</span> <span class="string">async_setup(hass,</span> <span class="string">config):</span></span><br><span class="line">    <span class="string">&quot;&quot;</span><span class="string">&quot;Set up an input text box.&quot;</span><span class="string">&quot;&quot;</span></span><br><span class="line">    <span class="string">component</span> <span class="string">=</span> <span class="string">hass.data[DOMAIN]</span> <span class="string">=</span> <span class="string">EntityComponent(_LOGGER,</span> <span class="string">DOMAIN,</span> <span class="string">hass)</span></span><br><span class="line"><span class="comment">#……省略……#</span></span><br></pre></td></tr></table></figure>
-</li>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#&#123;HA安装目录&#125;/components/input_text.py</span></span><br><span class="line"><span class="comment">#……省略……#</span></span><br><span class="line"><span class="string">def</span> <span class="string">async_setup(hass,</span> <span class="string">config):</span></span><br><span class="line">    <span class="string">&quot;&quot;</span><span class="string">&quot;Set up an input text box.&quot;</span><span class="string">&quot;&quot;</span></span><br><span class="line">    <span class="string">component</span> <span class="string">=</span> <span class="string">hass.data[DOMAIN]</span> <span class="string">=</span> <span class="string">EntityComponent(_LOGGER,</span> <span class="string">DOMAIN,</span> <span class="string">hass)</span></span><br><span class="line"><span class="comment">#……省略……#</span></span><br></pre></td></tr></table></figure></li>
 <li><p>input_boolean.py</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#&#123;HA安装目录&#125;/components/input_boolean.py</span></span><br><span class="line"><span class="comment">#……省略……#</span></span><br><span class="line"><span class="string">async</span> <span class="string">def</span> <span class="string">async_setup(hass,</span> <span class="string">config):</span></span><br><span class="line">    <span class="string">&quot;&quot;</span><span class="string">&quot;Set up an input boolean.&quot;</span><span class="string">&quot;&quot;</span></span><br><span class="line">    <span class="string">component</span> <span class="string">=</span> <span class="string">hass.data[DOMAIN]</span> <span class="string">=</span> <span class="string">EntityComponent(_LOGGER,</span> <span class="string">DOMAIN,</span> <span class="string">hass)</span></span><br><span class="line"><span class="comment">#……省略……#</span></span><br></pre></td></tr></table></figure>
-
-</li>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#&#123;HA安装目录&#125;/components/input_boolean.py</span></span><br><span class="line"><span class="comment">#……省略……#</span></span><br><span class="line"><span class="string">async</span> <span class="string">def</span> <span class="string">async_setup(hass,</span> <span class="string">config):</span></span><br><span class="line">    <span class="string">&quot;&quot;</span><span class="string">&quot;Set up an input boolean.&quot;</span><span class="string">&quot;&quot;</span></span><br><span class="line">    <span class="string">component</span> <span class="string">=</span> <span class="string">hass.data[DOMAIN]</span> <span class="string">=</span> <span class="string">EntityComponent(_LOGGER,</span> <span class="string">DOMAIN,</span> <span class="string">hass)</span></span><br><span class="line"><span class="comment">#……省略……#</span></span><br></pre></td></tr></table></figure></li>
 </ul>
 <blockquote>
-<p>__INFO：把官方的几个input_xxx component修改一下，以便保存EntityComponent到全局变量hass.data[DOMAIN]，插件初始化需要调用。__</p>
+<p><strong>INFO：把官方的几个input_xxx component修改一下，以便保存EntityComponent到全局变量hass.data[DOMAIN]，插件初始化需要调用。</strong></p>
 </blockquote>
 <h3 id="2-3-配置"><a href="#2-3-配置" class="headerlink" title="2.3. 配置"></a>2.3. 配置</h3><ul>
-<li>common_timer插件（<a target="_blank" rel="noopener" href="https://github.com/cnk700i/common_timer" title="common_timer">github下载</a>）<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#把common_timer目录放到custom_components下，包含2个文件。</span></span><br><span class="line"><span class="comment">#&#123;HA配置目录&#125;/custom_components/common_timer/__init__.py</span></span><br><span class="line"><span class="comment">#&#123;HA配置目录&#125;/custom_components/common_timer/services.yaml</span></span><br></pre></td></tr></table></figure>
-
-</li>
+<li>common_timer插件（<a target="_blank" rel="noopener" href="https://github.com/cnk700i/common_timer" title="common_timer">github下载</a>）<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#把common_timer目录放到custom_components下，包含2个文件。</span></span><br><span class="line"><span class="comment">#&#123;HA配置目录&#125;/custom_components/common_timer/__init__.py</span></span><br><span class="line"><span class="comment">#&#123;HA配置目录&#125;/custom_components/common_timer/services.yaml</span></span><br></pre></td></tr></table></figure></li>
 </ul>
 <blockquote>
 <p><strong>DEBUG：梳理了一遍代码，增加了塑料英文注释。</strong></p>
@@ -372,16 +366,18 @@
 <hr>
 <h2 id="3-新版本优化部署说明"><a href="#3-新版本优化部署说明" class="headerlink" title="3. 新版本优化部署说明"></a>3. 新版本优化部署说明</h2><p>修改安装目录下官方的input_select、input_text、input_boolean组件代码，当HA升级后会被覆盖又要重新修改。另外，使用docker方式部署（比如hassio），一般只映射配置目录，修改安装目录存在难度。因此新版本插件已经将input_select、input_text、input_boolean打包进来，如Home Assistant后续版本有对以上三个组件更新，可按以下方法进行同步更新：</p>
 <ol>
-<li>找到对应组件文件，有两种方法：<ul>
+<li>找到对应组件文件，有两种方法：</li>
+</ol>
+<ul>
 <li>在HA安装目录下components文件夹，docker部署可以使用<code>docker cp [容器id]:/usr/src/app/homeassistant/components [宿主机目录]</code>复制components文件夹处理（注意不同容器安装目录可能不同，可以先进入容器使用<code>find / -name homeassistant</code>定位安装目录）</li>
 <li>去官方github下载相应版本releases包解压获取</li>
 </ul>
-</li>
+<ol start="2">
 <li>拷贝组件到<code>[HA配置目录]/custom_components</code>目录下</li>
 <li>修改组件py文件（以input_select为例，旧版本HA是input_select.py，新版本HA是input_select文件夹的__init__.py），将<code>async def async_setup(hass, config):</code>里的 <code>component= EntityComponent(_LOGGER, DOMAIN, hass)</code>=&gt;<code>component = hass.data[DOMAIN] = EntityComponent(_LOGGER, DOMAIN, hass)</code></li>
 </ol>
 <blockquote>
-<p>__INFO：同名组件会优先使用自定义组件目录（custom_components）下的组件。__</p>
+<p><strong>INFO：同名组件会优先使用自定义组件目录（custom_components）下的组件。</strong></p>
 </blockquote>
 <hr>
 <h2 id="4-小结"><a href="#4-小结" class="headerlink" title="4. 小结"></a>4. 小结</h2><ul>

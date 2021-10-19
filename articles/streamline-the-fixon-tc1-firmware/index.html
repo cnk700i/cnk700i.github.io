@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.1.1">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -27,7 +27,7 @@
 <meta property="og:site_name" content="星路">
 <meta property="og:description" content="趁着折腾刷斐讯TC1固件的机会，简单体验了一把MiCO的开发。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2019-04-23T21:38:00.000Z">
+<meta property="article:published_time" content="2019-04-23T13:38:00.000Z">
 <meta property="article:modified_time" content="2020-08-28T13:31:33.000Z">
 <meta property="article:author" content="cnk700i">
 <meta property="article:tag" content="MQTT">
@@ -234,7 +234,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2019-04-24 05:38:00" itemprop="dateCreated datePublished" datetime="2019-04-24T05:38:00+08:00">2019-04-24</time>
+              <time title="创建时间：2019-04-23 21:38:00" itemprop="dateCreated datePublished" datetime="2019-04-23T21:38:00+08:00">2019-04-23</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
@@ -288,7 +288,7 @@
       
         <p>某天百度发现有大佬把斐讯TC1的<a target="_blank" rel="noopener" href="https://github.com/a2633063/zTC1" title="zTC1">固件</a>(基于MiCO开发)给做出来了，犹豫再三还是剁手了，因为家里的排插真的好多了，又需要新的编程器。不过真香，六插孔+USB充电确实实用。想着原来固件的功能有的自己用不上，看了下代码结构挺简单的，于是精简了一下功能，分享下折腾记录吧。</p>
 <hr>
-<a id="more"></a>
+<span id="more"></span>
 <h2 id="0-update"><a href="#0-update" class="headerlink" title="0. update"></a>0. update</h2><ul>
 <li>2019-09-27<br>经反馈会有断外网重启的bug，查看代码貌似只有SNTP同步时间会联外网，于是尝试调整了一下SNTP相关代码（编译固件也可以把<code>main.c</code>的<code>sntp_init();</code>去掉不要sntp功能），要是还解决不了我也木办法了{摊手}</li>
 </ul>
@@ -307,8 +307,7 @@
 <h2 id="2-编译环境"><a href="#2-编译环境" class="headerlink" title="2. 编译环境"></a>2. 编译环境</h2><p>使用docker，docker安装方法<a href="https://ljr.im/articles/docker-installation-using-nodered-practice/" title="docker安装使用Node-RED实践">传送门</a>。</p>
 <ul>
 <li><p>拉一个python2.7的镜像</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull python:2-slim-stretch</span><br></pre></td></tr></table></figure>
-</li>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull python:2-slim-stretch</span><br></pre></td></tr></table></figure></li>
 <li><p>启动容器并进入容器</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#自己调整主机映射目录/home/mico；容器内工程目录设置为/workdir，可根据喜好调整，但注意后续命令也要调整。</span></span><br><span class="line">docker run -it --name mico -v /home/mico:/workdir python:2-slim-stretch bash</span><br></pre></td></tr></table></figure>
 <blockquote>
@@ -355,11 +354,9 @@
 </blockquote>
 </li>
 <li><p>设置WiFi及MQTT，修改项目代码main.h文件</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//自定义</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZTC_NAME <span class="meta-string">&quot;tc1_%s&quot;</span>                       <span class="comment">//设备名称模板，默认生成的设备名称为tc1_&#123;&#123;MAC地址&#125;&#125;，PS：如修改要保留%s，将填充MAC地址</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CONFIG_SSID <span class="meta-string">&quot;wifi_ssid&quot;</span>                 <span class="comment">//WiFi名称</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CONFIG_USER_KEY <span class="meta-string">&quot;wifi_password&quot;</span>         <span class="comment">//WiFi密码</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CONFIG_MQTT_IP <span class="meta-string">&quot;mqtt_ip&quot;</span>                <span class="comment">//MQTT服务器IP</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CONFIG_MQTT_PORT 1883                   <span class="comment">//MQTT服务器端口     </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CONFIG_MQTT_USER <span class="meta-string">&quot;mqtt_user&quot;</span>            <span class="comment">//MQTT用户名</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CONFIG_MQTT_PASSWORD <span class="meta-string">&quot;mqtt_password&quot;</span>    <span class="comment">//MQTT密码</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> STATE_UPDATE_INTERVAL 10000             <span class="comment">//功率上报间隔，单位ms</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MQTT_CLIENT_SUB_TOPIC   <span class="meta-string">&quot;cmnd/%s&quot;</span>       <span class="comment">//命令控制接收topic，%s取ZTC_NAME（默认tc1_&#123;&#123;MAC地址&#125;&#125;），PS：请勿修改此处，可修改ZTC_NAME</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MQTT_CLIENT_PUB_TOPIC   <span class="meta-string">&quot;stat/%s&quot;</span>       <span class="comment">//状态信息topic，%s取ZTC_NAME（默认tc1_&#123;&#123;MAC地址&#125;&#125;），PS：请勿修改此处，可修改ZTC_NAME</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> USER_CONFIG_VERSION 3                   <span class="comment">//修改为与上次固件不同，触发重新加载信息（线刷可忽略）</span></span></span><br></pre></td></tr></table></figure>
-</li>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//自定义</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZTC_NAME <span class="meta-string">&quot;tc1_%s&quot;</span>                       <span class="comment">//设备名称模板，默认生成的设备名称为tc1_&#123;&#123;MAC地址&#125;&#125;，PS：如修改要保留%s，将填充MAC地址</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CONFIG_SSID <span class="meta-string">&quot;wifi_ssid&quot;</span>                 <span class="comment">//WiFi名称</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CONFIG_USER_KEY <span class="meta-string">&quot;wifi_password&quot;</span>         <span class="comment">//WiFi密码</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CONFIG_MQTT_IP <span class="meta-string">&quot;mqtt_ip&quot;</span>                <span class="comment">//MQTT服务器IP</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CONFIG_MQTT_PORT 1883                   <span class="comment">//MQTT服务器端口     </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CONFIG_MQTT_USER <span class="meta-string">&quot;mqtt_user&quot;</span>            <span class="comment">//MQTT用户名</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CONFIG_MQTT_PASSWORD <span class="meta-string">&quot;mqtt_password&quot;</span>    <span class="comment">//MQTT密码</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> STATE_UPDATE_INTERVAL 10000             <span class="comment">//功率上报间隔，单位ms</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MQTT_CLIENT_SUB_TOPIC   <span class="meta-string">&quot;cmnd/%s&quot;</span>       <span class="comment">//命令控制接收topic，%s取ZTC_NAME（默认tc1_&#123;&#123;MAC地址&#125;&#125;），PS：请勿修改此处，可修改ZTC_NAME</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MQTT_CLIENT_PUB_TOPIC   <span class="meta-string">&quot;stat/%s&quot;</span>       <span class="comment">//状态信息topic，%s取ZTC_NAME（默认tc1_&#123;&#123;MAC地址&#125;&#125;），PS：请勿修改此处，可修改ZTC_NAME</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> USER_CONFIG_VERSION 3                   <span class="comment">//修改为与上次固件不同，触发重新加载信息（线刷可忽略）</span></span></span><br></pre></td></tr></table></figure></li>
 <li><p>编译项目代码</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#容器bash</span></span><br><span class="line"><span class="comment">#/workdir/TC1</span></span><br><span class="line">mico make TC1@MK3031@moc</span><br></pre></td></tr></table></figure>
-</li>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#容器bash</span></span><br><span class="line"><span class="comment">#/workdir/TC1</span></span><br><span class="line">mico make TC1@MK3031@moc</span><br></pre></td></tr></table></figure></li>
 </ul>
 <hr>
 <h2 id="4-刷固件"><a href="#4-刷固件" class="headerlink" title="4.刷固件"></a>4.刷固件</h2><ul>
@@ -377,7 +374,7 @@
 </li>
 <li><p>OTA则使用MQTT客户端，例如MQTT.fx，发送消息给TC1触发OTA。</p>
 <ul>
-<li>topic<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;cmnd/tc1_&#123;&#123;MAC地址&#125;&#125;&quot;（如修改设备名称模板ZTC_NAME，则填写&quot;cmnd/&#123;&#123;设备名称&#125;&#125;&quot;）</span><br></pre></td></tr></table></figure></li>
+<li>topic<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;cmnd/tc1_&#123;&#123;MAC地址&#125;&#125;&quot;</span>（如修改设备名称模板ZTC_NAME，则填写<span class="string">&quot;cmnd/&#123;&#123;设备名称&#125;&#125;&quot;</span>）</span><br></pre></td></tr></table></figure></li>
 <li>content<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;setting&quot;</span>:</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">&quot;ota&quot;</span>:<span class="string">&quot;&#123;&#123;ota.bin的http下载地址&#125;&#125;&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p><strong>WARN：可以用Http File Server之类的免安装工具搭建http服务器，使用浏览器测试打开链接可以直接下载bin文件。另外文件名不要含特殊符号。</strong></p>
@@ -389,7 +386,7 @@
 <hr>
 <h2 id="5-接入homeassistant"><a href="#5-接入homeassistant" class="headerlink" title="5.接入homeassistant"></a>5.接入homeassistant</h2><p>启用homeassistant的mqtt组件的自动发现，重启HA，再重启TC1（断电再接电）。<br>  <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;<span class="string">HA配置目录</span>&#125;&#125;<span class="string">/configuration.yaml</span></span><br><span class="line"><span class="attr">mqtt:</span></span><br><span class="line"><span class="attr">mqtt:</span></span><br><span class="line">  <span class="comment"># MQTT Broker的IP地址或者域名</span></span><br><span class="line">  <span class="attr">broker:</span> <span class="string">xx</span></span><br><span class="line">  <span class="comment"># MQTT Broker的端口号，缺省为1883</span></span><br><span class="line">  <span class="attr">port:</span> <span class="string">xx</span></span><br><span class="line">  <span class="comment"># 用户名</span></span><br><span class="line">  <span class="attr">username:</span> <span class="string">xx</span></span><br><span class="line">  <span class="comment"># 密码</span></span><br><span class="line">  <span class="attr">password:</span> <span class="string">xx</span></span><br><span class="line">  <span class="comment"># 自动发现</span></span><br><span class="line">  <span class="attr">discovery:</span> <span class="literal">true</span></span><br><span class="line">  <span class="comment"># 自动发现topic前缀，与固件设置的一致</span></span><br><span class="line">  <span class="attr">discovery_prefix:</span> <span class="string">homeassistant</span></span><br></pre></td></tr></table></figure></p>
 <blockquote>
-<p>__INFO：TC1在启动的时候往&#123;&#123;discovery_prefix&#125;&#125;/&#123;&#123;component&#125;&#125;/&#123;&#123;node_id&#125;&#125;/&#123;&#123;object_id&#125;&#125;/config发送配置信息，HA根据配置信息生成entity。__</p>
+<p><strong>INFO：TC1在启动的时候往&#123;&#123;discovery_prefix&#125;&#125;/&#123;&#123;component&#125;&#125;/&#123;&#123;node_id&#125;&#125;/&#123;&#123;object_id&#125;&#125;/config发送配置信息，HA根据配置信息生成entity。</strong></p>
 </blockquote>
 <hr>
 <h2 id="5-小结"><a href="#5-小结" class="headerlink" title="5.小结"></a>5.小结</h2><ul>

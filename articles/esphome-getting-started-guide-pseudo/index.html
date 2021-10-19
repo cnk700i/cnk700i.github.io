@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.1.1">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -27,7 +27,7 @@
 <meta property="og:site_name" content="星路">
 <meta property="og:description" content="一些折腾ESPHome的心得。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2019-04-12T20:38:00.000Z">
+<meta property="article:published_time" content="2019-04-12T12:38:00.000Z">
 <meta property="article:modified_time" content="2019-04-12T13:32:32.000Z">
 <meta property="article:author" content="cnk700i">
 <meta property="article:tag" content="Home Assistant">
@@ -232,16 +232,10 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2019-04-13 04:38:00" itemprop="dateCreated datePublished" datetime="2019-04-13T04:38:00+08:00">2019-04-13</time>
+              <time title="创建时间：2019-04-12 20:38:00 / 修改时间：21:32:32" itemprop="dateCreated datePublished" datetime="2019-04-12T20:38:00+08:00">2019-04-12</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-04-12 21:32:32" itemprop="dateModified" datetime="2019-04-12T21:32:32+08:00">2019-04-12</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -265,7 +259,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>5.8k</span>
+              <span>5.7k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -287,17 +281,19 @@
       
         <p>hassbian的三木大做了<a target="_blank" rel="noopener" href="https://bbs.hassbian.com/thread-6628-1-2.html" title="[插件发布] [4月1日更新！！]斐讯DC1插座自制固件接入ha">斐讯DC1固件</a>，于是乎买了两个来玩玩，开始接触了ESPHome，折腾下来有了一些心得，写点东西总结总结吧。由于接触时间有限，理解不一定准确，仅供参考。</p>
 <hr>
-<a id="more"></a>
+<span id="more"></span>
 <h2 id="1-快速理解"><a href="#1-快速理解" class="headerlink" title="1. 快速理解"></a>1. 快速理解</h2><h3 id="1-1-刷固件三件套"><a href="#1-1-刷固件三件套" class="headerlink" title="1.1 刷固件三件套"></a>1.1 刷固件三件套</h3><p>以刷斐讯DC1固件为例，涉及三个项目。</p>
 <ol>
-<li>esphome<ul>
+<li>esphome</li>
+</ol>
+<ul>
 <li>项目地址：<a target="_blank" rel="noopener" href="https://github.com/Samuel-0-0/esphome">https://github.com/Samuel-0-0/esphome</a></li>
 <li>作用：基于python的ESPHome管理工具，负责编译、烧录固件。<blockquote>
 <p><strong>INFO：安装该项目会同时安装platformio依赖，platformio是一个8266开发板的开发环境。</strong></p>
 </blockquote>
 </li>
 </ul>
-</li>
+<ol start="2">
 <li>esphome-core<ul>
 <li>项目地址：<a target="_blank" rel="noopener" href="https://github.com/Samuel-0-0/esphome-core">https://github.com/Samuel-0-0/esphome-core</a></li>
 <li>作用：ESPHome的C++源文件，编译后成为.bin固件，在8266开发板上运行。</li>
@@ -315,11 +311,8 @@
 <li>esphome调用platformio的接口编译C++工程文件，生成.bin固件</li>
 </ol>
 <h3 id="1-3-烧录固件的姿势"><a href="#1-3-烧录固件的姿势" class="headerlink" title="1.3 烧录固件的姿势"></a>1.3 烧录固件的姿势</h3><ol>
-<li><p>线刷：接串口线烧录；可以用<code>esphome run/upload</code>命令（参数指定串口–device=/dev/ttyUSB0），也可以用<a target="_blank" rel="noopener" href="https://github.com/esphome/esphome-flasher/releases" title="esphome-flasher">esphome-flasher</a>软件。</p>
-</li>
-<li><p>OTA：使用TCP或者UDP通信刷机；可以用<code>esphome run/upload</code>命令，也可以用设备的web服务（配置文件启用web_server组件），也可以用Home Assistant的ESPHome集成服务。</p>
-<p> __INFO：如果配置文件中没有给设备指定IP地址（静态IP或设置use_address属性），命令行OTA会尝试解析{NodeName}.local的IP地址。如果客户机没有mDNS服务是找不到IP的，要么安装mDNS服务（配合设备的mDNS服务工作）；要么在hosts文件手动添加解析记录；如果电脑用的是路由器DNS服务，也可以在路由器上添加解析记录。__</p>
-</li>
+<li>线刷：接串口线烧录；可以用<code>esphome run/upload</code>命令（参数指定串口–device=/dev/ttyUSB0），也可以用<a target="_blank" rel="noopener" href="https://github.com/esphome/esphome-flasher/releases" title="esphome-flasher">esphome-flasher</a>软件。</li>
+<li>OTA：使用TCP或者UDP通信刷机；可以用<code>esphome run/upload</code>命令，也可以用设备的web服务（配置文件启用web_server组件），也可以用Home Assistant的ESPHome集成服务。 <strong>INFO：如果配置文件中没有给设备指定IP地址（静态IP或设置use_address属性），命令行OTA会尝试解析{NodeName}.local的IP地址。如果客户机没有mDNS服务是找不到IP的，要么安装mDNS服务（配合设备的mDNS服务工作）；要么在hosts文件手动添加解析记录；如果电脑用的是路由器DNS服务，也可以在路由器上添加解析记录。</strong></li>
 </ol>
 <h3 id="1-4-设备工作模式"><a href="#1-4-设备工作模式" class="headerlink" title="1.4 设备工作模式"></a>1.4 设备工作模式</h3><p>ESPHome提供三种工作模式对设备进行控制.</p>
 <table>
@@ -376,7 +369,7 @@
 <li>esphome组件</li>
 </ul>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 核心配置</span></span><br><span class="line"><span class="attr">esphome:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">$device_name</span> <span class="comment"># 设备名称，不能和其它设备重复</span></span><br><span class="line">  <span class="attr">platform:</span> <span class="string">ESP8266</span></span><br><span class="line">  <span class="attr">board:</span> <span class="string">$board_model</span></span><br><span class="line">  <span class="attr">esphome_core_version:</span> <span class="comment">#指定esphome_core来源，如果只用latest、dev，则会从官方的项目下载。</span></span><br><span class="line">    <span class="comment">#local: path/to/esphome-core #指定本地来源</span></span><br><span class="line">    <span class="attr">repository:</span> <span class="string">https://github.com/Samuel-0-0/esphome-core.git</span> <span class="comment">#指定外部来源，项目作用上面有介绍过</span></span><br><span class="line">    <span class="attr">branch:</span> <span class="string">dc1</span></span><br><span class="line">  <span class="attr">build_path:</span> <span class="string">build/$device_name</span> <span class="comment"># 编译路径，默认是&#123;CONFIG_DIR&#125;/&#123;NODE_NAME&#125;</span></span><br><span class="line">  <span class="attr">esp8266_restore_from_flash:</span> <span class="literal">yes</span></span><br><span class="line">  <span class="attr">arduino_version:</span> <span class="number">2.5</span><span class="number">.0</span></span><br><span class="line">  <span class="attr">platformio_options:</span></span><br><span class="line">    <span class="attr">platform:</span> <span class="string">https://github.com/Samuel-0-0/platform-espressif8266.git#dc1</span> <span class="comment"># 项目作用上面有介绍过</span></span><br></pre></td></tr></table></figure>
-<p>__INFO：$device_name是使用了substitutions设定的变量。__<br><strong>INFO：编译后生成固件路径{build_path}/.pioenvs/{NODE_NAME}/firmware.bin</strong></p>
+<p><strong>INFO：$device_name是使用了substitutions设定的变量。</strong><br><strong>INFO：编译后生成固件路径{build_path}/.pioenvs/{NODE_NAME}/firmware.bin</strong></p>
 <ul>
 <li>wifi组件</li>
 </ul>
@@ -403,7 +396,7 @@
 </blockquote>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 日志组件</span></span><br><span class="line"><span class="attr">logger:</span></span><br><span class="line"><span class="comment">#  hardware_uart: UART1 # 串口调式，不懂</span></span><br><span class="line">  <span class="attr">level:</span> <span class="string">info</span> <span class="comment"># 日志等级，默认DEBUG，平常用设置INFO</span></span><br></pre></td></tr></table></figure>
 <blockquote>
-<p>__INFO：启用mqtt后，通过订阅{topic_prefix}/debug也可以获取日志。__</p>
+<p><strong>INFO：启用mqtt后，通过订阅{topic_prefix}/debug也可以获取日志。</strong></p>
 </blockquote>
 <hr>
 <h2 id="4-mqtt模式"><a href="#4-mqtt模式" class="headerlink" title="4.mqtt模式"></a>4.mqtt模式</h2><p>ESPHome中大部分组件都能叠加mqtt功能直接使用，只需要相应的配置即可。</p>

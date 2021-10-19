@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.1.1">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -29,7 +29,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://ljr.im/articles/plugin-%C2%B7-change-lovelace-weather-card-based-on-windy/demo.gif">
 <meta property="og:image" content="https://ljr.im/articles/plugin-%C2%B7-change-lovelace-weather-card-based-on-windy/demo2.gif">
-<meta property="article:published_time" content="2019-05-02T22:09:00.000Z">
+<meta property="article:published_time" content="2019-05-02T14:09:00.000Z">
 <meta property="article:modified_time" content="2020-08-28T13:31:03.000Z">
 <meta property="article:author" content="cnk700i">
 <meta property="article:tag" content="Home Assistant">
@@ -237,7 +237,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2019-05-03 06:09:00" itemprop="dateCreated datePublished" datetime="2019-05-03T06:09:00+08:00">2019-05-03</time>
+              <time title="创建时间：2019-05-02 22:09:00" itemprop="dateCreated datePublished" datetime="2019-05-02T22:09:00+08:00">2019-05-02</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
@@ -291,7 +291,7 @@
       
         <p>还是管不住手把HA升级到0.92，开始配置大迁移。旧的天气插件用的是<a target="_blank" rel="noopener" href="https://bbs.hassbian.com/thread-3971-1-1.html" title="和风天气插件组(天气预报+生活提示+小时预报+空气质量)">伸手拿来用版</a>，测试下来基本能继续用，不过比较臃肿，会生成很多sensor来保存展示数据。刚好这次得启用lovelace界面，想了下干脆一起改了吧，做个自定义卡片统一展示天气数据。折腾了两天还算顺利地完成了，还好之前接触Vue框架积累了点经验，这次看Polymer的前台代码不至于眼前一黑了。目前对HA前端整体架构理解还是有限，只能做到小修改，以后有机会再深入了解吧。</p>
 <hr>
-<a id="more"></a>
+<span id="more"></span>
 <h2 id="0-插件说明"><a href="#0-插件说明" class="headerlink" title="0. 插件说明"></a>0. 插件说明</h2><ul>
 <li>概述<ul>
 <li>包含hf_weather组件、自定义卡片两块：hf_weather组件获取数据，卡片展示数据。<img src="/articles/plugin-%C2%B7-change-lovelace-weather-card-based-on-windy/demo.gif" class="" title="[效果图]"></li>
