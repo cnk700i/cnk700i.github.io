@@ -1213,7 +1213,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #b9ff36;
+  background: #77ffb6;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2602,11 +2602,12 @@ ul.breadcrumb li + li:last-child {
   --md-admonition-icon--example: url("data:image/svg+xml;charset=utf-8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M7 13v-2h14v2H7m0 6v-2h14v2H7M7 7V5h14v2H7M3 8V5H2V4h2v4H3m-1 9v-1h3v4H2v-1h2v-.5H3v-1h1V17H2m2.25-7a.75.75 0 0 1 .75.75c0 .2-.08.39-.21.52L3.12 13H5v1H2v-.92L4 11H2v-1h2.25z'/></svg>");
   --md-admonition-icon--quote: url("data:image/svg+xml;charset=utf-8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M14 17h3l2-4V7h-6v6h3M6 17h3l2-4V7H5v6h3l-2 4z'/></svg>");
 }
-.post-body p,
-.post-body ul,
-.post-body ol,
-.post-body table {
-  margin: 1em 0;
+.post-body .admonition p:not(.admonition-title),
+.post-body .admonition ul,
+.post-body .admonition ol,
+.post-body .admonition table {
+  margin-bottom: 1em;
+  margin-top: 1em;
 }
 .post-body .admonition,
 .post-body details {
