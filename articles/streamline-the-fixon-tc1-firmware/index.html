@@ -28,7 +28,7 @@
 <meta property="og:description" content="趁着折腾刷斐讯TC1固件的机会，简单体验了一把MiCO的开发。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2019-04-23T13:38:00.000Z">
-<meta property="article:modified_time" content="2020-08-28T13:31:33.000Z">
+<meta property="article:modified_time" content="2021-10-19T17:15:18.000Z">
 <meta property="article:author" content="cnk700i">
 <meta property="article:tag" content="MQTT">
 <meta property="article:tag" content="TC1">
@@ -241,7 +241,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-08-28 21:31:33" itemprop="dateModified" datetime="2020-08-28T21:31:33+08:00">2020-08-28</time>
+                <time title="修改时间：2021-10-20 01:15:18" itemprop="dateModified" datetime="2021-10-20T01:15:18+08:00">2021-10-20</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -300,9 +300,9 @@
 <li>MQTT通信协议根据自己使用习惯进行了调整：调整topic、增加上线下线通知、使用qos</li>
 <li>把编译的warning警告基本去掉了</li>
 </ul>
-<blockquote>
-<p><strong>WARING：因为精简掉UDP通信协议，使用上会造成不方便，精简带来的好处实际也不明显，请自行权衡。</strong></p>
-</blockquote>
+<div class="admonition warning"><p class="admonition-title">注意</p><p>因为精简掉UDP通信协议，使用上会造成不方便，精简带来的好处实际也不明显，请自行权衡。</p>
+</div>
+
 <hr>
 <h2 id="2-编译环境"><a href="#2-编译环境" class="headerlink" title="2. 编译环境"></a>2. 编译环境</h2><p>使用docker，docker安装方法<a href="https://ljr.im/articles/docker-installation-using-nodered-practice/" title="docker安装使用Node-RED实践">传送门</a>。</p>
 <ul>
@@ -310,49 +310,35 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull python:2-slim-stretch</span><br></pre></td></tr></table></figure></li>
 <li><p>启动容器并进入容器</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#自己调整主机映射目录/home/mico；容器内工程目录设置为/workdir，可根据喜好调整，但注意后续命令也要调整。</span></span><br><span class="line">docker run -it --name mico -v /home/mico:/workdir python:2-slim-stretch bash</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p><strong>DEBUG：后续进入容器可以用命令docker exec -it mico bash，更多docker命令介绍<a href="https://ljr.im/articles/the-four-stages-of-docker-from-entry-to-pit/" title="docker从入门到入坑的四个阶段">传送门</a>。</strong></p>
-</blockquote>
-</li>
+<div class="admonition info"><p class="admonition-title">Tips</p><p>后续进入容器可以用命令docker exec -it mico bash，更多docker命令介绍<a href="https://ljr.im/articles/the-four-stages-of-docker-from-entry-to-pit/" title="docker从入门到入坑的四个阶段">传送门</a>。</p>
+</div></li>
 <li><p>更新源、安装软件</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#容器bash</span></span><br><span class="line">apt update &amp;&amp; apt install git wget lib32ncurses5</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p><strong>INFO：一个坑，不安装lib32ncurses5库编译会报”arm-none-eabi-gcc: not found”错误。</strong></p>
-</blockquote>
-</li>
+<div class="admonition info"><p class="admonition-title">一个坑</p><p>不安装lib32ncurses5库编译会报&quot;arm-none-eabi-gcc: not found&quot;错误。</p>
+</div></li>
 <li><p>python bin</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ln -s /usr/<span class="built_in">local</span>/bin/python /usr/bin/python</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p><strong>INFO：一个坑，不设置软链接编译会报”/usr/bin/python: not found”错误。</strong></p>
-</blockquote>
-</li>
+<div class="admonition info"><p class="admonition-title">一个坑</p><p>不设置软链接编译会报&quot;/usr/bin/python: not found&quot;错误。</p>
+</div></li>
 <li><p>安装MiCo编译环境（mico-cube、MiCoder）</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#容器bash</span></span><br><span class="line">pip install mico-cube &amp;&amp; \</span><br><span class="line"><span class="built_in">cd</span> /workdir &amp;&amp; \</span><br><span class="line">wget http://firmware.mxchip.com/MiCoder_v1.1.Linux.tar.gz &amp;&amp; \</span><br><span class="line">tar -zxf MiCoder_v1.1.Linux.tar.gz &amp;&amp; \</span><br><span class="line">rm MiCoder_v1.1.Linux.tar.gz &amp;&amp; \</span><br><span class="line">mico config --global MICODER /workdir/MiCoder</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p><strong>DEBUG：mico-cube是MXCHIP的MiCO项目开发管理工具包；MiCoder是MiCO编译和调试系统必须的工具软件包。</strong></p>
-</blockquote>
-</li>
+<div class="admonition info"><p class="admonition-title">Tips</p><p>mico-cube是MXCHIP的MiCO项目开发管理工具包；MiCoder是MiCO编译和调试系统必须的工具软件包。</p>
+</div></li>
 </ul>
 <hr>
 <h2 id="3-编译固件"><a href="#3-编译固件" class="headerlink" title="3.编译固件"></a>3.编译固件</h2><ul>
 <li><p>创建一个空项目，名为TC1，自己开发则自定义</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#容器bash</span></span><br><span class="line"><span class="built_in">cd</span> /workdir &amp;&amp; \</span><br><span class="line">mico new TC1 --create-only</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p><strong>INFO：命令执行完后，会在当前目录生成名称为TC1项目目录。</strong></p>
-</blockquote>
-</li>
+<div class="admonition info"><p class="admonition-title">Tips</p><p>命令执行完后，会在当前目录生成名称为TC1项目目录。</p>
+</div></li>
 <li><p>添加mico-os组件</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#容器bash</span></span><br><span class="line"><span class="built_in">cd</span> /workdir/TC1 &amp;&amp; \</span><br><span class="line">mico add https://code.aliyun.com/mico/mico-os.git/<span class="comment">#6c465211d3ff8797cd835e400ec54a06530dd476</span></span><br></pre></td></tr></table></figure>
-<blockquote>
-<p><strong>INFO：需要在项目目录下执行。</strong></p>
-</blockquote>
-</li>
+<div class="admonition info"><p class="admonition-title">注意</p><p>需要在项目目录下执行。</p>
+</div></li>
 <li><p>添加项目代码，代码目录在项目目录下的<code>项目同名目录</code>，/workdir/TC1/TC1，自己开发则自定义</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#容器bash</span></span><br><span class="line">git <span class="built_in">clone</span> https://github.com/cnk700i/tc1_mqtt.git &amp;&amp; \</span><br><span class="line">mv tc1_mqtt/TC1 . &amp;&amp; \</span><br><span class="line">rm tc1_mqtt -r</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p><strong>DEBUG：下载zip解压后再拷贝进去也可以。</strong></p>
-</blockquote>
-</li>
+<div class="admonition info"><p class="admonition-title">手动解压</p><p>下载zip解压后再拷贝进去也可以。</p>
+</div></li>
 <li><p>设置WiFi及MQTT，修改项目代码main.h文件</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//自定义</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZTC_NAME <span class="meta-string">&quot;tc1_%s&quot;</span>                       <span class="comment">//设备名称模板，默认生成的设备名称为tc1_&#123;&#123;MAC地址&#125;&#125;，PS：如修改要保留%s，将填充MAC地址</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CONFIG_SSID <span class="meta-string">&quot;wifi_ssid&quot;</span>                 <span class="comment">//WiFi名称</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CONFIG_USER_KEY <span class="meta-string">&quot;wifi_password&quot;</span>         <span class="comment">//WiFi密码</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CONFIG_MQTT_IP <span class="meta-string">&quot;mqtt_ip&quot;</span>                <span class="comment">//MQTT服务器IP</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CONFIG_MQTT_PORT 1883                   <span class="comment">//MQTT服务器端口     </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CONFIG_MQTT_USER <span class="meta-string">&quot;mqtt_user&quot;</span>            <span class="comment">//MQTT用户名</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CONFIG_MQTT_PASSWORD <span class="meta-string">&quot;mqtt_password&quot;</span>    <span class="comment">//MQTT密码</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> STATE_UPDATE_INTERVAL 10000             <span class="comment">//功率上报间隔，单位ms</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MQTT_CLIENT_SUB_TOPIC   <span class="meta-string">&quot;cmnd/%s&quot;</span>       <span class="comment">//命令控制接收topic，%s取ZTC_NAME（默认tc1_&#123;&#123;MAC地址&#125;&#125;），PS：请勿修改此处，可修改ZTC_NAME</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MQTT_CLIENT_PUB_TOPIC   <span class="meta-string">&quot;stat/%s&quot;</span>       <span class="comment">//状态信息topic，%s取ZTC_NAME（默认tc1_&#123;&#123;MAC地址&#125;&#125;），PS：请勿修改此处，可修改ZTC_NAME</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> USER_CONFIG_VERSION 3                   <span class="comment">//修改为与上次固件不同，触发重新加载信息（线刷可忽略）</span></span></span><br></pre></td></tr></table></figure></li>
 <li><p>编译项目代码</p>
@@ -366,9 +352,9 @@
 </ul>
 </li>
 </ul>
-<blockquote>
-<p><strong>INFO：主机映射目录/home/mico/TC1/build/TC1@MK3031@moc/binary内可找到固件。</strong></p>
-</blockquote>
+<div class="admonition info"><p class="admonition-title">固件路径</p><p>主机映射目录/home/mico/TC1/build/TC1@MK3031@moc/binary内可找到固件。</p>
+</div>
+
 <ul>
 <li><p>线刷方法略，见原固件教程的<a target="_blank" rel="noopener" href="https://github.com/a2633063/zTC1/wiki/%E5%9B%BA%E4%BB%B6%E7%83%A7%E5%BD%95" title="固件烧录">固件烧录</a></p>
 </li>
@@ -376,18 +362,16 @@
 <ul>
 <li>topic<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;cmnd/tc1_&#123;&#123;MAC地址&#125;&#125;&quot;</span>（如修改设备名称模板ZTC_NAME，则填写<span class="string">&quot;cmnd/&#123;&#123;设备名称&#125;&#125;&quot;</span>）</span><br></pre></td></tr></table></figure></li>
 <li>content<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;setting&quot;</span>:</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">&quot;ota&quot;</span>:<span class="string">&quot;&#123;&#123;ota.bin的http下载地址&#125;&#125;&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p><strong>WARN：可以用Http File Server之类的免安装工具搭建http服务器，使用浏览器测试打开链接可以直接下载bin文件。另外文件名不要含特殊符号。</strong></p>
-</blockquote>
-</li>
+<div class="admonition warning"><p class="admonition-title">http服务</p><p>可以用Http File Server之类的免安装工具搭建http服务器，使用浏览器测试打开链接可以直接下载bin文件。另外文件名不要含特殊符号。</p>
+</div></li>
 </ul>
 </li>
 </ul>
 <hr>
 <h2 id="5-接入homeassistant"><a href="#5-接入homeassistant" class="headerlink" title="5.接入homeassistant"></a>5.接入homeassistant</h2><p>启用homeassistant的mqtt组件的自动发现，重启HA，再重启TC1（断电再接电）。<br>  <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;<span class="string">HA配置目录</span>&#125;&#125;<span class="string">/configuration.yaml</span></span><br><span class="line"><span class="attr">mqtt:</span></span><br><span class="line"><span class="attr">mqtt:</span></span><br><span class="line">  <span class="comment"># MQTT Broker的IP地址或者域名</span></span><br><span class="line">  <span class="attr">broker:</span> <span class="string">xx</span></span><br><span class="line">  <span class="comment"># MQTT Broker的端口号，缺省为1883</span></span><br><span class="line">  <span class="attr">port:</span> <span class="string">xx</span></span><br><span class="line">  <span class="comment"># 用户名</span></span><br><span class="line">  <span class="attr">username:</span> <span class="string">xx</span></span><br><span class="line">  <span class="comment"># 密码</span></span><br><span class="line">  <span class="attr">password:</span> <span class="string">xx</span></span><br><span class="line">  <span class="comment"># 自动发现</span></span><br><span class="line">  <span class="attr">discovery:</span> <span class="literal">true</span></span><br><span class="line">  <span class="comment"># 自动发现topic前缀，与固件设置的一致</span></span><br><span class="line">  <span class="attr">discovery_prefix:</span> <span class="string">homeassistant</span></span><br></pre></td></tr></table></figure></p>
-<blockquote>
-<p><strong>INFO：TC1在启动的时候往&#123;&#123;discovery_prefix&#125;&#125;/&#123;&#123;component&#125;&#125;/&#123;&#123;node_id&#125;&#125;/&#123;&#123;object_id&#125;&#125;/config发送配置信息，HA根据配置信息生成entity。</strong></p>
-</blockquote>
+<div class="admonition info"><p class="admonition-title">Tips</p><p>TC1在启动的时候往Topic<code>&#123;discovery_prefix&#125;/&#123;component&#125;/&#123;node_id&#125;/&#123;object_id&#125;/config</code>发送配置信息，HA根据配置信息生成entity。</p>
+</div>
+
 <hr>
 <h2 id="5-小结"><a href="#5-小结" class="headerlink" title="5.小结"></a>5.小结</h2><ul>
 <li>MiCo开发平台比之前DC1用的ESPHome容易上手好多，搭建环境也简单些，遇到一些小坑还是比较快就解决了。</li>

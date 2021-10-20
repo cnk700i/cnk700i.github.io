@@ -28,7 +28,7 @@
 <meta property="og:description" content="介似一个船新的版本，优化了设备配置方式。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2019-09-29T13:00:00.000Z">
-<meta property="article:modified_time" content="2020-08-31T05:35:32.000Z">
+<meta property="article:modified_time" content="2021-10-19T15:58:46.000Z">
 <meta property="article:author" content="cnk700i">
 <meta property="article:tag" content="Home Assistant">
 <meta property="article:tag" content="插件">
@@ -241,7 +241,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-08-31 13:35:32" itemprop="dateModified" datetime="2020-08-31T13:35:32+08:00">2020-08-31</time>
+                <time title="修改时间：2021-10-19 23:58:46" itemprop="dateModified" datetime="2021-10-19T23:58:46+08:00">2021-10-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -388,18 +388,18 @@
 <td align="center">支持设置group，会搜索加入该分组下的sensor</td>
 </tr>
 </tbody></table>
-<blockquote>
-<p><strong>INFO：属性字典的格式为”属性名: 取值”，需要有1个空格间隔。</strong></p>
-</blockquote>
+<div class="admonition info"><p class="admonition-title">格式</p><p>属性字典的格式为&quot;属性名: 取值&quot;，需要有1个空格间隔。</p>
+</div>
+
 <h3 id="2-1-特殊设备配置说明"><a href="#2-1-特殊设备配置说明" class="headerlink" title="2.1 特殊设备配置说明"></a>2.1 特殊设备配置说明</h3><p>对input_boolean类型的配置方式进行了扩展，实现指定指令调用自定义的service。</p>
 <ul>
 <li>新增一个input_boolean实体<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#&#123;HA配置目录&#125;/configuration.yaml</span></span><br><span class="line"><span class="attr">input_boolean:</span></span><br><span class="line">  <span class="attr">call_service:</span></span><br></pre></td></tr></table></figure></li>
-<li>自定义虚拟input_boolean的属性，在havcs_actions属性中设置对应的service指令（只能设置turn_on/turn_off/timing_turn_on/timing_turn_off/increase_brightness/decrease_brightness，对应打开/关闭/延时打开/延时关闭/调高亮度/调低亮度指令）<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#&#123;HA配置目录&#125;/havcs.yaml</span></span><br><span class="line"><span class="attr">input_boolean.call_service:</span>  </span><br><span class="line">  <span class="attr">havcs_device_name:</span> <span class="string">客厅灯</span></span><br><span class="line">  <span class="attr">havcs_zone:</span> <span class="string">客厅</span></span><br><span class="line">  <span class="attr">havcs_device_type:</span> <span class="string">light</span>                <span class="comment"># 模拟灯设备</span></span><br><span class="line">  <span class="attr">havcs_attributes:</span> [<span class="string">&#x27;power_state&#x27;</span>]       </span><br><span class="line">  <span class="comment">#↓↓↓指令根据实际需要配置↓↓↓</span></span><br><span class="line">  <span class="attr">havcs_actions:</span></span><br><span class="line">      <span class="comment"># service指令格式:[domain, service_name, service_data（json字符串）]，具体内容需参见相应组件的服务定义。</span></span><br><span class="line">      <span class="comment"># 注意，参数变更为数组以支持多条指令，单条指令也别忘了加-</span></span><br><span class="line">      <span class="attr">turn_on:</span></span><br><span class="line">        <span class="bullet">-</span> [<span class="string">&#x27;common_timer&#x27;</span>, <span class="string">&#x27;set&#x27;</span>, <span class="string">&#x27;&#123;&quot;entity_id&quot;:&quot;switch.demo&quot;,&quot;duration&quot;:&quot;01:00:00&quot;,&quot;operation&quot;:&quot;off&quot;&#125;&#x27;</span>] <span class="comment"># 打开命令</span></span><br><span class="line">        <span class="bullet">-</span> [<span class="string">&#x27;input_boolean&#x27;</span>, <span class="string">&#x27;turn_on&#x27;</span>, <span class="string">&#x27;&#123;&#125;&#x27;</span>] <span class="comment"># 同步打开状态</span></span><br><span class="line">      <span class="attr">turn_off:</span></span><br><span class="line">        <span class="bullet">-</span> [<span class="string">&#x27;common_timer&#x27;</span>, <span class="string">&#x27;cancel&#x27;</span>, <span class="string">&#x27;&#123;&quot;entity_id&quot;:&quot;switch.demo&quot;&#125;&#x27;</span>] <span class="comment"># 关闭命令</span></span><br><span class="line">        <span class="bullet">-</span> [<span class="string">&#x27;input_boolean&#x27;</span>, <span class="string">&#x27;turn_off&#x27;</span>, <span class="string">&#x27;&#123;&#125;&#x27;</span>] <span class="comment"># 同步关闭状态</span></span><br><span class="line">      <span class="attr">timing_turn_on:</span>         <span class="comment"># 延时打开指令（小度音箱）</span></span><br><span class="line">        <span class="bullet">-</span> [<span class="string">&#x27;指令1&#x27;</span>]</span><br><span class="line">        <span class="bullet">-</span> [<span class="string">&#x27;指令2&#x27;</span>]</span><br><span class="line">      <span class="attr">timing_turn_off:</span>        <span class="comment"># 延时关闭指令（小度音箱）</span></span><br><span class="line">        <span class="bullet">-</span> [<span class="string">&#x27;指令1&#x27;</span>]</span><br><span class="line">        <span class="bullet">-</span> [<span class="string">&#x27;指令2&#x27;</span>]</span><br><span class="line">      <span class="attr">increase_brightness:</span></span><br><span class="line">        <span class="bullet">-</span> [<span class="string">&#x27;指令1&#x27;</span>]</span><br><span class="line">        <span class="bullet">-</span> [<span class="string">&#x27;指令2&#x27;</span>]</span><br><span class="line">      <span class="attr">decrease_brightness:</span></span><br><span class="line">        <span class="bullet">-</span> [<span class="string">&#x27;指令1&#x27;</span>]</span><br><span class="line">        <span class="bullet">-</span> [<span class="string">&#x27;指令2&#x27;</span>]</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p><strong>INFO：调自动化(automation.turn_on)、调脚本(scrpit.turn_on)、调红外指令(climate.xiaomi_miio_send_command)等会比较适合。</strong><br><strong>INFO：天猫精灵无法自定义名称，不太适合使用。</strong></p>
-</blockquote>
-</li>
+<li>自定义虚拟input_boolean的属性，在havcs_actions属性中设置对应的service指令（只能设置turn_on/turn_off/timing_turn_on/timing_turn_off/increase_brightness/decrease_brightness，对应打开/关闭/延时打开/延时关闭/调高亮度/调低亮度指令）<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#&#123;HA配置目录&#125;/havcs.yaml</span></span><br><span class="line"><span class="attr">input_boolean.call_service:</span>  </span><br><span class="line">  <span class="attr">havcs_device_name:</span> <span class="string">客厅灯</span></span><br><span class="line">  <span class="attr">havcs_zone:</span> <span class="string">客厅</span></span><br><span class="line">  <span class="attr">havcs_device_type:</span> <span class="string">light</span>                <span class="comment"># 模拟灯设备</span></span><br><span class="line">  <span class="attr">havcs_attributes:</span> [<span class="string">&#x27;power_state&#x27;</span>]       </span><br><span class="line">  <span class="comment">#↓↓↓指令根据实际需要配置↓↓↓</span></span><br><span class="line">  <span class="attr">havcs_actions:</span></span><br><span class="line">      <span class="comment"># service指令格式:[domain, service_name, service_data（json字符串）]，具体内容需参见相应组件的服务定义。</span></span><br><span class="line">      <span class="comment"># 注意，参数变更为数组以支持多条指令，单条指令也别忘了加-</span></span><br><span class="line">      <span class="attr">turn_on:</span></span><br><span class="line">        <span class="bullet">-</span> [<span class="string">&#x27;common_timer&#x27;</span>, <span class="string">&#x27;set&#x27;</span>, <span class="string">&#x27;&#123;&quot;entity_id&quot;:&quot;switch.demo&quot;,&quot;duration&quot;:&quot;01:00:00&quot;,&quot;operation&quot;:&quot;off&quot;&#125;&#x27;</span>] <span class="comment"># 打开命令</span></span><br><span class="line">        <span class="bullet">-</span> [<span class="string">&#x27;input_boolean&#x27;</span>, <span class="string">&#x27;turn_on&#x27;</span>, <span class="string">&#x27;&#123;&#125;&#x27;</span>] <span class="comment"># 同步打开状态</span></span><br><span class="line">      <span class="attr">turn_off:</span></span><br><span class="line">        <span class="bullet">-</span> [<span class="string">&#x27;common_timer&#x27;</span>, <span class="string">&#x27;cancel&#x27;</span>, <span class="string">&#x27;&#123;&quot;entity_id&quot;:&quot;switch.demo&quot;&#125;&#x27;</span>] <span class="comment"># 关闭命令</span></span><br><span class="line">        <span class="bullet">-</span> [<span class="string">&#x27;input_boolean&#x27;</span>, <span class="string">&#x27;turn_off&#x27;</span>, <span class="string">&#x27;&#123;&#125;&#x27;</span>] <span class="comment"># 同步关闭状态</span></span><br><span class="line">      <span class="attr">timing_turn_on:</span>         <span class="comment"># 延时打开指令（小度音箱）</span></span><br><span class="line">        <span class="bullet">-</span> [<span class="string">&#x27;指令1&#x27;</span>]</span><br><span class="line">        <span class="bullet">-</span> [<span class="string">&#x27;指令2&#x27;</span>]</span><br><span class="line">      <span class="attr">timing_turn_off:</span>        <span class="comment"># 延时关闭指令（小度音箱）</span></span><br><span class="line">        <span class="bullet">-</span> [<span class="string">&#x27;指令1&#x27;</span>]</span><br><span class="line">        <span class="bullet">-</span> [<span class="string">&#x27;指令2&#x27;</span>]</span><br><span class="line">      <span class="attr">increase_brightness:</span></span><br><span class="line">        <span class="bullet">-</span> [<span class="string">&#x27;指令1&#x27;</span>]</span><br><span class="line">        <span class="bullet">-</span> [<span class="string">&#x27;指令2&#x27;</span>]</span><br><span class="line">      <span class="attr">decrease_brightness:</span></span><br><span class="line">        <span class="bullet">-</span> [<span class="string">&#x27;指令1&#x27;</span>]</span><br><span class="line">        <span class="bullet">-</span> [<span class="string">&#x27;指令2&#x27;</span>]</span><br></pre></td></tr></table></figure></li>
 </ul>
+<div class="admonition info"><p class="admonition-title">使用建议</p><p>调自动化(automation.turn_on)、调脚本(scrpit.turn_on)、调红外指令(climate.xiaomi_miio_send_command)等会比较适合。</p>
+<p>天猫精灵无法自定义名称，不太适合使用。</p>
+</div>
+
 <hr>
 <h2 id="3-完成度"><a href="#3-完成度" class="headerlink" title="3.完成度"></a>3.完成度</h2><p>目前完成度有些低，后续再继续测试完善吧。</p>
 <ul>
@@ -604,31 +604,23 @@
 <li>叮咚<ul>
 <li>打开/关闭<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#打开/关闭</span></span><br><span class="line"><span class="comment">#用途：一般为电源控制</span></span><br><span class="line"><span class="comment">#语义：打开/关闭&#123;设备名称&#125;</span></span><br><span class="line"><span class="comment">#例子：打开主卧灯</span></span><br></pre></td></tr></table></figure></li>
 <li>查询状态<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#打开/关闭</span></span><br><span class="line"><span class="comment">#用途：查询设备状态</span></span><br><span class="line"><span class="comment">#语义：查询&#123;设备名称&#125;的&#123;状态/xx状态&#125;</span></span><br><span class="line"><span class="comment">#例子：查询主卧传感器的状态；查询主卧传感器的温度；查询主卧灯的电源状态</span></span><br></pre></td></tr></table></figure>
-<blockquote>
-<p><strong>INFO：传感器信息需要挂靠到具体设备上进行查询。一般来说温度、湿度需要挂靠到空气净化器类型上。</strong></p>
-</blockquote>
-</li>
+<div class="admonition info"><p class="admonition-title">使用建议</p><p>传感器信息需要挂靠到具体设备上进行查询。一般来说温度、湿度需要挂靠到空气净化器类型上。</p>
+</div></li>
 </ul>
 </li>
 <li>天猫精灵<ul>
 <li>打开/关闭<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#打开/关闭</span></span><br><span class="line"><span class="comment">#用途：一般为电源控制</span></span><br><span class="line"><span class="comment">#语义：打开/关闭&#123;房间名&#125;的&#123;设备类型/别名&#125;</span></span><br><span class="line"><span class="comment">#例子：打开主卧的灯。</span></span><br><span class="line"><span class="comment">#备注：&#123;房间名&#125;、&#123;设备类型/别名&#125;需要指定，均为枚举值</span></span><br></pre></td></tr></table></figure>
-<blockquote>
-<p><strong>INFO：优先匹配“位置（可为空）+别名”：例如有台灯、灯两个设备，“打开台灯”则精确匹配台灯；然后匹配“位置（可为空）+设备类型”，例如有一个台灯设备，“打开吸顶灯”、“打开床头灯”等都可控制。指令不带位置，如设备别名多个匹配，询问设备位置；当有相同匹配，一起执行。</strong></p>
-</blockquote>
-</li>
+<div class="admonition info"><p class="admonition-title">使用建议</p><p>优先匹配“位置（可为空）+别名”：例如有台灯、灯两个设备，“打开台灯”则精确匹配台灯；然后匹配“位置（可为空）+设备类型”，例如有一个台灯设备，“打开吸顶灯”、“打开床头灯”等都可控制。指令不带位置，如设备别名多个匹配，询问设备位置；当有相同匹配，一起执行。</p>
+</div></li>
 <li> 查询状态<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#打开/关闭</span></span><br><span class="line"><span class="comment">#用途：查询设备状态</span></span><br><span class="line"><span class="comment">#语义：查询&#123;房间名&#125;&#123;设备类型/别名&#125;的&#123;状态/xx状态&#125;</span></span><br><span class="line"><span class="comment">#例子：查询主卧传感器的状态；查询主卧传感器的温度</span></span><br></pre></td></tr></table></figure>
-<blockquote>
-<p><strong>INFO：查询传感器好像有个bug：查询所有状态不能正常播报；查询单个状态，发送的指令是查询所有状态的指令。</strong></p>
-</blockquote>
-</li>
+<div class="admonition info"><p class="admonition-title">补充</p><p>查询传感器好像有个bug：查询所有状态不能正常播报；查询单个状态，发送的指令是查询所有状态的指令。</p>
+</div></li>
 </ul>
 </li>
 <li>小度<ul>
 <li>打开/关闭<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#打开/关闭</span></span><br><span class="line"><span class="comment">#用途：一般为电源控制</span></span><br><span class="line"><span class="comment">#语义：打开/关闭&#123;设备名称&#125;</span></span><br><span class="line"><span class="comment">#例子：打开主卧灯</span></span><br><span class="line"><span class="string">```</span>   </span><br><span class="line"><span class="bullet">-</span> <span class="string">查询状态</span></span><br><span class="line"><span class="string">```yaml</span></span><br><span class="line"><span class="comment">#打开/关闭</span></span><br><span class="line"><span class="comment">#用途：查询设备状态</span></span><br><span class="line"><span class="comment">#语义：查询&#123;设备名称&#125;的&#123;xx状态&#125;/&#123;设备名称&#125;查询&#123;xx状态&#125;</span></span><br><span class="line"><span class="comment">#例子：查询主卧传感器的温度/主卧传感器查询温度</span></span><br></pre></td></tr></table></figure>
-<blockquote>
-<p><strong>INFO：只能查询单一状态。</strong></p>
-</blockquote>
-</li>
+<div class="admonition info"><p class="admonition-title">补充</p><p>只能查询单一状态。</p>
+</div></li>
 </ul>
 </li>
 </ul>
@@ -646,9 +638,9 @@
 <li>说音响指令后，观看是否有相关的处理日志</li>
 <li>web页面-&gt;开发者工具-&gt;服务-&gt;havcs.reload，观看是否生成设备信息</li>
 </ol>
-<blockquote>
-<p><strong>WARN: 如需要帮助，请提供以上步骤相对应的日志信息方便定位原因。</strong></p>
-</blockquote>
+<div class="admonition warning"><p class="admonition-title">调试建议</p><p>如需要帮助，请<strong>提供</strong>以上步骤相对应的<strong>日志信息</strong>方便定位原因。</p>
+</div>
+
 <hr>
 <h2 id="6-小结"><a href="#6-小结" class="headerlink" title="6.小结"></a>6.小结</h2><ul>
 <li>有了统一的设备信息定义，后续可以考虑做设备管理页面。</li>

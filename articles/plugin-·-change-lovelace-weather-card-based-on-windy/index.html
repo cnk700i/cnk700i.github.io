@@ -30,7 +30,7 @@
 <meta property="og:image" content="https://ljr.im/articles/plugin-%C2%B7-change-lovelace-weather-card-based-on-windy/demo.gif">
 <meta property="og:image" content="https://ljr.im/articles/plugin-%C2%B7-change-lovelace-weather-card-based-on-windy/demo2.gif">
 <meta property="article:published_time" content="2019-05-02T14:09:00.000Z">
-<meta property="article:modified_time" content="2020-08-28T13:31:03.000Z">
+<meta property="article:modified_time" content="2021-10-19T17:04:34.000Z">
 <meta property="article:author" content="cnk700i">
 <meta property="article:tag" content="Home Assistant">
 <meta property="article:tag" content="插件">
@@ -244,7 +244,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-08-28 21:31:03" itemprop="dateModified" datetime="2020-08-28T21:31:03+08:00">2020-08-28</time>
+                <time title="修改时间：2021-10-20 01:04:34" itemprop="dateModified" datetime="2021-10-20T01:04:34+08:00">2021-10-20</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -331,29 +331,21 @@
 </li>
 <li><p>配置启用hf_weather组件。</p>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 配置 configuration.yaml</span></span><br><span class="line"><span class="comment"># &#123;&#123;&#125;&#125;符号为标示变量</span></span><br><span class="line"><span class="attr">weather:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">platform:</span> <span class="string">hf_weather</span></span><br><span class="line">    <span class="attr">name:</span> &#123;&#123;<span class="string">test</span>&#125;&#125;              <span class="comment"># 必填，自定义实体名称，生成实体的entityId为weather.&#123;&#123;test&#125;&#125;，后续配置需要用到</span></span><br><span class="line">    <span class="attr">city:</span> &#123;&#123;<span class="string">YOUR_CITY_CODE</span>&#125;&#125;    <span class="comment"># 必填，城市代码，支持城市中英文名称、ID和IP地址，例如city=北京，city=beijing，city=CN101010100，city= 60.194.130.1，建议使用ID</span></span><br><span class="line">    <span class="attr">appkey:</span> &#123;&#123;<span class="string">YOUR_API_KEY</span>&#125;&#125;    <span class="comment"># 必填，京东万象api平台申请的key</span></span><br></pre></td></tr></table></figure>
-<blockquote>
-<p><strong>INFO：重复即可增加多个实体。</strong></p>
-</blockquote>
-</li>
+<div class="admonition info"><p class="admonition-title">Tips</p><p>重复即可增加多个实体。</p>
+</div></li>
 <li><p>启用sun组件。</p>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 配置 configuration.yaml</span></span><br><span class="line"><span class="attr">sun:</span></span><br></pre></td></tr></table></figure>
-<blockquote>
-<p><strong>DEBUG：用于提供卡片的日出日落数据。</strong></p>
-</blockquote>
-</li>
+<div class="admonition info"><p class="admonition-title">说明</p><p>用于提供卡片的日出日落数据。</p>
+</div></li>
 </ul>
 <h3 id="2-2-自定义卡片"><a href="#2-2-自定义卡片" class="headerlink" title="2.2 自定义卡片"></a>2.2 自定义卡片</h3><ul>
-<li>下载文件，<code>hf_weather-card</code>目录放置在<code>&#123;HA配置目录&#125;/www/custom-lovelace/</code>下。</li>
-</ul>
-<blockquote>
-<p><strong>INO：该路径可自定义，只要保证在www目录里即可。</strong></p>
-</blockquote>
-<ul>
-<li>lovelace启用天气卡片<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 配置lovelace（使用UI的原始编辑器编辑即可）,注意删除备注不然无法保存</span></span><br><span class="line"><span class="comment"># 引入自定义卡片hf_weather-card</span></span><br><span class="line"><span class="attr">resources:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">type:</span> <span class="string">module</span></span><br><span class="line">    <span class="attr">url:</span> <span class="string">/local/custom-lovelace/hf_weather-card/hf_weather-card.js</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">type:</span> <span class="string">module</span></span><br><span class="line">    <span class="attr">url:</span> <span class="string">/local/custom-lovelace/hf_weather-card/hf_weather-more-info.js</span></span><br><span class="line"><span class="comment"># 在view里面的cards节点，增加天气卡片类型</span></span><br><span class="line"><span class="attr">views:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">path:</span> <span class="string">default_view</span></span><br><span class="line">    <span class="attr">title:</span> <span class="string">Home</span></span><br><span class="line">    <span class="attr">cards:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">type:</span> <span class="string">&#x27;custom:hf_weather-card&#x27;</span>                                <span class="comment"># card类型</span></span><br><span class="line">        <span class="attr">entity:</span> <span class="string">weather.test</span>                                         <span class="comment"># 天气插件生成实体的entityId</span></span><br><span class="line">        <span class="attr">mode:</span> <span class="string">daily</span>                                                   <span class="comment"># 指定显示模式，hourly按小时天气预报、daily按天天气预报，不设置（不要这个属性）则同时显示</span></span><br><span class="line">        <span class="attr">title:</span> <span class="string">天气</span>                                                   <span class="comment"># 标题，不设置则使用entity的friendly_name</span></span><br><span class="line">        <span class="attr">icons:</span> <span class="string">/local/custom-lovelace/hf_weather-card/icons/animated/</span>  <span class="comment"># 图标路径，不设置则采用cdn，结尾要有&quot;/&quot;</span></span><br></pre></td></tr></table></figure>
-<blockquote>
-<p><strong>WARN：lovelace配置里面路径，<code>/local/</code>实际映射<code>&#123;HA配置目录&#125;/www/</code>，保证放置文件的子路径设置对。</strong></p>
-</blockquote>
-</li>
+<li><p>下载文件，<code>hf_weather-card</code>目录放置在<code>&#123;HA配置目录&#125;/www/custom-lovelace/</code>下。</p>
+<div class="admonition info"><p class="admonition-title">路径</p><p>该路径可自定义，只要保证在www目录里即可。</p>
+</div></li>
+<li><p>lovelace启用天气卡片</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 配置lovelace（使用UI的原始编辑器编辑即可）,注意删除备注不然无法保存</span></span><br><span class="line"><span class="comment"># 引入自定义卡片hf_weather-card</span></span><br><span class="line"><span class="attr">resources:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">type:</span> <span class="string">module</span></span><br><span class="line">    <span class="attr">url:</span> <span class="string">/local/custom-lovelace/hf_weather-card/hf_weather-card.js</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">type:</span> <span class="string">module</span></span><br><span class="line">    <span class="attr">url:</span> <span class="string">/local/custom-lovelace/hf_weather-card/hf_weather-more-info.js</span></span><br><span class="line"><span class="comment"># 在view里面的cards节点，增加天气卡片类型</span></span><br><span class="line"><span class="attr">views:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">path:</span> <span class="string">default_view</span></span><br><span class="line">    <span class="attr">title:</span> <span class="string">Home</span></span><br><span class="line">    <span class="attr">cards:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">type:</span> <span class="string">&#x27;custom:hf_weather-card&#x27;</span>                                <span class="comment"># card类型</span></span><br><span class="line">        <span class="attr">entity:</span> <span class="string">weather.test</span>                                         <span class="comment"># 天气插件生成实体的entityId</span></span><br><span class="line">        <span class="attr">mode:</span> <span class="string">daily</span>                                                   <span class="comment"># 指定显示模式，hourly按小时天气预报、daily按天天气预报，不设置（不要这个属性）则同时显示</span></span><br><span class="line">        <span class="attr">title:</span> <span class="string">天气</span>                                                   <span class="comment"># 标题，不设置则使用entity的friendly_name</span></span><br><span class="line">        <span class="attr">icons:</span> <span class="string">/local/custom-lovelace/hf_weather-card/icons/animated/</span>  <span class="comment"># 图标路径，不设置则采用cdn，结尾要有&quot;/&quot;</span></span><br></pre></td></tr></table></figure>
+<div class="admonition warning"><p class="admonition-title">路径映射</p><p>lovelace配置里面路径，<code>/local/</code>实际映射<code>&#123;HA配置目录&#125;/www/</code>，保证放置文件的子路径设置对。</p>
+</div></li>
 </ul>
 <hr>
 <h2 id="3-小结"><a href="#3-小结" class="headerlink" title="3. 小结"></a>3. 小结</h2><ul>

@@ -28,7 +28,7 @@
 <meta property="og:description" content="初试Appdaemon自动化。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2018-06-11T14:09:00.000Z">
-<meta property="article:modified_time" content="2020-08-28T13:39:20.000Z">
+<meta property="article:modified_time" content="2021-10-19T18:37:14.000Z">
 <meta property="article:author" content="cnk700i">
 <meta property="article:tag" content="Home Assistant">
 <meta property="article:tag" content="Appdaemon">
@@ -241,7 +241,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-08-28 21:39:20" itemprop="dateModified" datetime="2020-08-28T21:39:20+08:00">2020-08-28</time>
+                <time title="修改时间：2021-10-20 02:37:14" itemprop="dateModified" datetime="2021-10-20T02:37:14+08:00">2021-10-20</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -266,7 +266,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>5.6k</span>
+              <span>5.5k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -296,10 +296,11 @@
 </blockquote>
 <hr>
 <h2 id="0-说明"><a href="#0-说明" class="headerlink" title="0.说明"></a>0.说明</h2><blockquote>
-<p><strong>INFO：代码中”{[中文]}”的内容需要自行确认进行替换。</strong></p>
-<p><strong>DEBUG：因为实践时间跨度有点长，估计会有遗漏的地方，建议也观看参考教程。</strong></p>
-<p><strong>PS：DEBUG、INFO、WARN代表提醒的重要程度。</strong></p>
+<p><strong>1. 代码中”{[中文]}”的内容需要自行确认进行替换。</strong></p>
+<p><strong>2. 因为实践时间跨度有点长，估计会有遗漏的地方，建议也观看参考教程。</strong></p>
+<p><strong><del>PS：DEBUG、INFO、WARN代表提醒的重要程度。</del></strong></p>
 </blockquote>
+<hr>
 <h2 id="1-环境"><a href="#1-环境" class="headerlink" title="1.环境"></a>1.环境</h2><h3 id="1-1-硬件（买买买）"><a href="#1-1-硬件（买买买）" class="headerlink" title="1.1.硬件（买买买）"></a>1.1.硬件（买买买）</h3><ul>
 <li>sonoff basic（淘宝28元左右那款）</li>
 <li>BH1750光照度传感器（6元左右）</li>
@@ -320,76 +321,66 @@
 <li><p>光线暗并且感应到人，开灯</p>
 </li>
 <li><p>感应到没人，延时一段时间（自定义）后关灯</p>
-<blockquote>
-<p><strong>DEBUG：HC-SR501检测到人之后设置一个计时器，计时器结束后才输出低电平。期间检测到人活动，会重置计时器，所以关灯的时间是HC-SR501的计时器（可通过旋钮调）+自定义时间。</strong></p>
-</blockquote>
-</li>
+<div class="admonition info"><p class="admonition-title">Tips</p><p>HC-SR501检测到人之后设置一个计时器，计时器结束后才输出低电平。期间检测到人活动，会重置计时器，所以关灯的时间是HC-SR501的计时器（可通过旋钮调）+自定义时间。</p>
+</div></li>
 <li><p>使用无线开关进行物理控制</p>
 </li>
 </ul>
 <hr>
 <h2 id="2-Sonoff"><a href="#2-Sonoff" class="headerlink" title="2.Sonoff"></a>2.Sonoff</h2><h3 id="Step1-刷固件"><a href="#Step1-刷固件" class="headerlink" title="Step1.刷固件"></a>Step1.刷固件</h3><p>先把排针焊接在中间的5个孔上</p>
-<blockquote>
-<p><strong>DEBUG：我买的两个模块焊盘都是堵上的，如果没有吸锡器（其实吸锡器没想象中好用），可以把排针拆成一个一个，加热锡盘时候把排针顶进去。</strong></p>
-</blockquote>
+<div class="admonition info"><p class="admonition-title">建议</p><p>我买的两个模块焊盘都是堵上的，如果没有吸锡器（其实吸锡器没想象中好用），可以把排针拆成一个一个，加热锡盘时候把排针顶进去。</p>
+</div>
+
 <p>然后按<a target="_blank" rel="noopener" href="https://bbs.hassbian.com/thread-419-1-1.html" title="[智能传感] Sonoff开关刷Tasmota基础教程（环境配置篇）">教程</a>刷好固件</p>
-<blockquote>
-<p><strong>WARN：com参数的Flash Mode:DIO要改成DOUT！</strong><br><strong>INFO：按住开关接电才能进入刷机模式。</strong></p>
-</blockquote>
+<div class="admonition warning"><p class="admonition-title">一个坑</p><p>com参数的Flash Mode:DIO要改成DOUT！</p>
+</div>
+<div class="admonition info"><p class="admonition-title">Tips</p><p>按住开关接电才能进入刷机模式。</p>
+</div>
+
 <h3 id="Step2-接线"><a href="#Step2-接线" class="headerlink" title="Step2.接线"></a>Step2.接线</h3><p>    光照传感器 &lt;–&gt; Sonoff<br>    VCC - 3.3V    <br>    SCL - GPIO 3    <br>    SDA - GPIO 1    <br>    GND - GND</p>
 <p>    人体传感器 &lt;–&gt; Sonoff<br>    VCC - 3.3V    <br>    OUT - GPIO 14  <br>    GND - GND</p>
-<blockquote>
-<p>INFO：人体传感器一般供电是5V，可能是3.3V供电影响，距离旋钮不能调大，不然好像工作不正常，具体请自行测试。</p>
-<p>DEBUG：两个传感器需要共用3.3V和GND供电，有美观强迫症的朋友可以把杜邦线的头抽出来（挑起条形的挡片就能抽出来了），然后把另一根线的头剪掉、剥线绕在前一根的金属头上，再放回去就好看了。</p>
-</blockquote>
+<div class="admonition info"><p class="admonition-title">Tips</p><p>人体传感器一般供电是5V，可能是3.3V供电影响，距离旋钮不能调大，不然好像工作不正常，具体请自行测试。</p>
+<p>两个传感器需要共用3.3V和GND供电，有美观强迫症的朋友可以把杜邦线的头抽出来（挑起条形的挡片就能抽出来了），然后把另一根线的头剪掉、剥线绕在前一根的金属头上，再放回去就好看了。</p>
+</div>
+
 <h3 id="Step3-配置"><a href="#Step3-配置" class="headerlink" title="Step3.配置"></a>Step3.配置</h3><ul>
 <li>设置时区  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#主页&gt;Console</span></span><br><span class="line">$ Timezone 8</span><br></pre></td></tr></table></figure></li>
 <li>设置switch2的模式  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#主页&gt;Console</span></span><br><span class="line">$ SwitchMode2 1</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>DEBUG：默认工作模式是0，详细解释可见<a target="_blank" rel="noopener" href="https://bbs.hassbian.com/thread-1358-1-1.html" title="[经验分享] Sonoff Tasmota 使用指南">帖子</a></p>
-</blockquote>
-</li>
+<div class="admonition info"><p class="admonition-title">Tips</p><p>默认工作模式是0，详细解释可见<a target="_blank" rel="noopener" href="https://bbs.hassbian.com/thread-1358-1-1.html" title="[经验分享] Sonoff Tasmota 使用指南">帖子</a></p>
+</div></li>
 <li>设置传感器上报间隔  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#主页&gt;Configuration&gt;Configure Logging</span></span><br><span class="line">配置Telemetry period，最小是10，一般60就可以</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>DEBUG：这个只影响照度的上传频率，因为代码可以通过http接口主动取数据，不用担心设置过大影响准确率
-    </p>
-</blockquote>
-</li>
+<div class="admonition info"><p class="admonition-title">Tips</p><p>这个只影响照度的上传频率，因为代码可以通过http接口主动取数据，不用担心设置过大影响准确率</p>
+</div>
+    </li>
 <li>设置mqtt  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#主页&gt;Configuration&gt;Configure MQTT</span></span><br><span class="line">按mosquitto的设置配置Host、Port、User、Password</span><br><span class="line"><span class="comment">#主页&gt;Configuration&gt;Configure Other</span></span><br><span class="line">勾上<span class="string">&quot;MQTT enable&quot;</span>选项</span><br></pre></td></tr></table></figure></li>
 <li>设置数据端口（<a target="_blank" rel="noopener" href="https://bbs.hassbian.com/thread-1120-1-1.html" title="[智能传感] Sonoff Tasmota接入温湿度+光照+人体传感器并支持物理开关控制">参考教程</a>）  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#主页&gt;Configuration&gt;Configure Module</span></span><br><span class="line"><span class="comment">#人体传感器数据</span></span><br><span class="line">GPIO 4：Relay2。</span><br><span class="line">GPIO 14：Switch2。</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>DEBUG：原理应该是借助Relay的状态来间接传递人体传感器的输出（有人&gt;高电平&gt;Switch2接通&gt;Relay2接通&gt;MQTT传递状态）。</p>
-  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 光照传感器数据</span></span><br><span class="line">GPIO 3：I2C SCL</span><br><span class="line">GPIO 1：I2C SDA</span><br></pre></td></tr></table></figure></blockquote>
-</li>
+<div class="admonition info"><p class="admonition-title">Tips</p><p>原理应该是借助Relay的状态来间接传递人体传感器的输出（有人&gt;高电平&gt;Switch2接通&gt;Relay2接通&gt;MQTT传递状态）</p>
+</div>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 光照传感器数据</span></span><br><span class="line">GPIO 3：I2C SCL</span><br><span class="line">GPIO 1：I2C SDA</span><br></pre></td></tr></table></figure></li>
 </ul>
 <hr>
 <h2 id="3-Homeassistant"><a href="#3-Homeassistant" class="headerlink" title="3.Homeassistant"></a>3.Homeassistant</h2><p>{[HA配置目录]}/Configuration.yaml下，增加一个sensor，用于接收光照度信息；增加一个binary_sensor，用于接收触发状态；增加一个mqtt，与mosquitto主机通信；增加一个light/switch，Sonoff控制的灯。</p>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">sensor:</span></span><br><span class="line">  <span class="string">-</span> <span class="attr">platform:</span> <span class="string">mqtt</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">illuminance_hallway</span></span><br><span class="line">    <span class="attr">state_topic:</span> <span class="string">&quot;tele/sonoff/SENSOR&quot;</span></span><br><span class="line">    <span class="attr">value_template:</span> <span class="string">&quot;<span class="template-variable">&#123;&#123; value_json[&#x27;BH1750&#x27;].Illuminance &#125;&#125;</span>&quot;</span></span><br><span class="line">    <span class="attr">unit_of_measurement:</span> <span class="string">&quot;lux&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">binary_sensor:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">platform:</span> <span class="string">mqtt</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">motion_hallway</span></span><br><span class="line">    <span class="attr">qos:</span> <span class="number">1</span></span><br><span class="line">    <span class="attr">state_topic:</span> <span class="string">&quot;stat/sonoff/POWER2&quot;</span></span><br><span class="line">    <span class="attr">payload_on:</span> <span class="string">&quot;ON&quot;</span></span><br><span class="line">    <span class="attr">payload_off:</span> <span class="string">&quot;OFF&quot;</span></span><br><span class="line">    <span class="attr">device_class:</span> <span class="string">motion</span></span><br><span class="line"></span><br><span class="line"><span class="attr">mqtt:</span></span><br><span class="line">  <span class="comment"># MQTT Broker的IP地址或者域名</span></span><br><span class="line">  <span class="attr">broker:</span> &#123;[<span class="string">mosquitto主机的ip</span>]&#125;</span><br><span class="line">  <span class="comment"># MQTT Broker的端口号，缺省为1883</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">1883</span></span><br><span class="line">  <span class="comment"># 用户名</span></span><br><span class="line">  <span class="attr">username:</span> &#123;[<span class="string">自定义</span>]&#125;</span><br><span class="line">  <span class="comment"># 密码</span></span><br><span class="line">  <span class="attr">password:</span> &#123;[<span class="string">自定义</span>]&#125;</span><br></pre></td></tr></table></figure>
+
 <hr>
 <h2 id="4-Appdaemon"><a href="#4-Appdaemon" class="headerlink" title="4.Appdaemon"></a>4.Appdaemon</h2><h3 id="4-1-安装"><a href="#4-1-安装" class="headerlink" title="4.1.安装"></a>4.1.安装</h3><p>安装好docker后，直接运行一条命令即可。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker run --name=appdaemon -d -p 5050:5050 \</span><br><span class="line">--restart=always \</span><br><span class="line">-v &#123;[你的配置目录]&#125;:/conf \</span><br><span class="line">-v /etc/localtime:/etc/localtime \</span><br><span class="line">/appdaemon:latest</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p><strong>INFO：-v 是映射宿主的目录到docker实例中去，不用进docker实例去修改配置文件。</strong></p>
-</blockquote>
+<div class="admonition info"><p class="admonition-title">Tips</p><p>-v 是映射宿主的目录到docker实例中去，不用进docker实例去修改配置文件。</p>
+</div>
+
 <h3 id="4-2-配置"><a href="#4-2-配置" class="headerlink" title="4.2.配置"></a>4.2.配置</h3><ul>
 <li><p>{[appdaemon配置目录]}/appdaemon.yaml</p>
   <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">secrets:</span> <span class="string">/conf/secrets.yaml</span></span><br><span class="line"><span class="attr">log:</span></span><br><span class="line">  <span class="attr">accessfile:</span> <span class="string">/conf/logs/access.log</span></span><br><span class="line">  <span class="attr">errorfile:</span> <span class="string">/conf/logs/error.log</span></span><br><span class="line">  <span class="attr">logfile:</span> <span class="string">/conf/logs/appdaemon.log</span></span><br><span class="line">  <span class="attr">log_generations:</span> <span class="number">3</span></span><br><span class="line">  <span class="attr">log_size:</span> <span class="number">1000000</span></span><br><span class="line"><span class="attr">appdaemon:</span></span><br><span class="line">  <span class="attr">threads:</span> <span class="number">10</span></span><br><span class="line">  <span class="attr">time_zone:</span> <span class="string">Asia/Shanghai</span></span><br><span class="line">  <span class="attr">api_port:</span> <span class="number">5000</span></span><br><span class="line">  <span class="attr">api_key:</span> &#123;[<span class="string">api访问密码，自定义</span>]&#125;</span><br><span class="line">  <span class="comment"># api_ssl_certificate: &lt;path/to/root/CA/cert&gt;</span></span><br><span class="line">  <span class="comment"># api_ssl_key: &lt;path/to/root/CA/key&gt;</span></span><br><span class="line">  <span class="attr">plugins:</span></span><br><span class="line">    <span class="attr">HASS:</span></span><br><span class="line">      <span class="attr">type:</span> <span class="string">hass</span></span><br><span class="line">      <span class="attr">ha_url:</span> &#123;[<span class="string">ha的http地址</span>]&#125;</span><br><span class="line">      <span class="attr">ha_key:</span> &#123;[<span class="string">ha的密码</span>]&#125;</span><br><span class="line">      <span class="comment"># cert_path: &lt;path/to/root/CA/cert&gt;</span></span><br><span class="line">      <span class="comment"># cert_verify: True</span></span><br><span class="line">      <span class="attr">namespace:</span> <span class="string">default</span></span><br><span class="line"><span class="attr">hadashboard:</span></span><br><span class="line">  <span class="attr">dash_url:</span> <span class="string">http://&#123;[docker宿主ip]&#125;:5050</span></span><br></pre></td></tr></table></figure>
-<blockquote>
-<p><strong>DEBUG：3.x版本相对2.x版本配置文件有了调整。</strong></p>
-</blockquote>
-</li>
+<div class="admonition info"><p class="admonition-title">注意</p><p>Appdaemon 3.x版本相对2.x版本配置文件有了调整。</p>
+</div></li>
 <li><p>{[appdaemon配置目录]}/apps/motion_light.py</p>
   <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> appdaemon.plugins.hass.hassapi <span class="keyword">as</span> hass</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> datetime</span><br><span class="line"> </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MotionLights</span>(<span class="params">hass.Hass</span>):</span></span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">initialize</span>(<span class="params">self</span>):</span></span><br><span class="line">        self._resource=self.args[<span class="string">&quot;resource&quot;</span>]        <span class="comment">#Sonoff的http接口</span></span><br><span class="line">        self._delay=self.args[<span class="string">&quot;delay&quot;</span>]</span><br><span class="line">        self._light=self.args[<span class="string">&quot;light_id&quot;</span>]</span><br><span class="line">        self._illuminance=self.args[<span class="string">&quot;illuminance_id&quot;</span>]</span><br><span class="line">        self._motion_sensor=self.args[<span class="string">&quot;motion_sensor_id&quot;</span>]</span><br><span class="line">        self.listen_state(self.motion, self._motion_sensor, new = <span class="string">&quot;on&quot;</span>)</span><br><span class="line">        self.listen_state(self.no_motion, self._motion_sensor, new = <span class="string">&quot;off&quot;</span>)</span><br><span class="line">        self._last_motion_time=datetime.datetime.now()</span><br><span class="line">        self._last_no_motion_time=datetime.datetime.now()</span><br><span class="line">   </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">motion</span>(<span class="params">self, entity, attribute, old, new, kwargs</span>):</span></span><br><span class="line">        self._last_motion_time=datetime.datetime.now()</span><br><span class="line">        res = requests.get(self._resource)</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            illuminance=res.json()[<span class="string">&quot;StatusSNS&quot;</span>][<span class="string">&quot;BH1750&quot;</span>][<span class="string">&quot;Illuminance&quot;</span>]    <span class="comment">#通过Sonoff的http接口获取最新的照度数据</span></span><br><span class="line">        <span class="keyword">except</span>:</span><br><span class="line">            illuminance=self.get_state(self._illuminance)                   <span class="comment">#如果通过http获取失败，则取mqtt的数据</span></span><br><span class="line">        <span class="keyword">if</span> illuminance &lt; <span class="number">20</span> <span class="keyword">and</span> self.get_state(self._light) == <span class="string">&quot;off&quot;</span>:       <span class="comment">#亮度低于20并且灯处于关闭状态才执行</span></span><br><span class="line">            self.turn_on(self._light)   <span class="comment">#开灯</span></span><br><span class="line">   </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">no_motion</span>(<span class="params">self, entity, attribute, old, new, kwargs</span>):</span></span><br><span class="line">        self._last_no_motion_time=datetime.datetime.now()</span><br><span class="line">        self.run_in(self.light_off,self._delay)         <span class="comment">#无人，经过设定的延时时间后执行关灯</span></span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">light_off</span>(<span class="params">self, kwargs</span>):</span></span><br><span class="line">        <span class="keyword">if</span> self._last_no_motion_time &gt; self._last_motion_time <span class="keyword">and</span> self.get_state(self._light) == <span class="string">&quot;on&quot;</span>:    <span class="comment">#无新触发情况（on-&gt;off后，在delay时间内发生off-&gt;on情况）并且灯处于开状态才执行</span></span><br><span class="line">            self.turn_off(self._light)  <span class="comment">#关灯</span></span><br></pre></td></tr></table></figure>
-<blockquote>
-<p><strong>DEBUG：3.x版本相对2.x版本import的模块发生了变化。</strong></p>
-</blockquote>
-</li>
+<div class="admonition info"><p class="admonition-title">注意</p><p>Appdaemon 3.x版本相对2.x版本import的模块发生了变化。</p>
+</div></li>
 <li><p>{appdaemon配置目录}/apps/apps.yaml</p>
   <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">hallway_motion_light:</span></span><br><span class="line">  <span class="attr">module:</span> <span class="string">motion_light</span></span><br><span class="line">  <span class="attr">class:</span> <span class="string">MotionLights</span></span><br><span class="line">  <span class="attr">resource:</span> <span class="string">&quot;http://&#123;[Sonoff的IP]&#125;/cm?cmnd=Status 10&amp;user=admin&amp;password=[Sonoff设置的密码]&quot;</span>  <span class="comment">#http查询接口</span></span><br><span class="line">  <span class="attr">light_id:</span> <span class="string">light.hallway</span>                            <span class="comment">#所控制的灯,HA配置</span></span><br><span class="line">  <span class="attr">illuminance_id:</span> <span class="string">sensor.illuminance_hallway</span>         <span class="comment">#光照度传感器,HA配置</span></span><br><span class="line">  <span class="attr">motion_sensor_id:</span> <span class="string">binary_sensor.motion_hallway</span>     <span class="comment">#移动传感器,HA配置</span></span><br><span class="line">  <span class="attr">delay:</span> <span class="number">10</span>                                          <span class="comment">#无感应后延时关灯时间(s)</span></span><br><span class="line"><span class="attr">hallway_switch:</span></span><br><span class="line">  <span class="attr">module:</span> <span class="string">aqara_switch</span></span><br><span class="line">  <span class="attr">class:</span> <span class="string">Switchs</span></span><br><span class="line">  <span class="attr">switch_id:</span> <span class="string">binary_sensor.wall_switch_xxxxxxxxxxxx_2</span>           <span class="comment">#无线开关id,我用的是aqara墙壁开关</span></span><br><span class="line">  <span class="attr">target_device:</span> <span class="string">light.hallway</span>                                  <span class="comment">#所控制的灯,HA配置</span></span><br><span class="line">  <span class="attr">click_type:</span> <span class="string">single</span>                                            <span class="comment">#按键类型</span></span><br></pre></td></tr></table></figure>
-<blockquote>
-<p><strong>DEBUG：resource是Sonoff的http获取光照度的接口，如果Sonoff没有设置密码去掉”&amp;user=admin&amp;password=[Sonoff设置的密码]”即可。</strong></p>
-</blockquote>
-</li>
+<div class="admonition info"><p class="admonition-title">Tips</p><p>resource是Sonoff的http获取光照度的接口，如果Sonoff没有设置密码去掉&quot;&amp;user=admin&amp;password=[Sonoff设置的密码]&quot;即可。</p>
+</div></li>
 </ul>
 <hr>
 

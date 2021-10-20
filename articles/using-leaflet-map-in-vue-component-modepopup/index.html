@@ -28,7 +28,7 @@
 <meta property="og:description" content="Vue通过动态渲染方式实现自定义Leaflet的popup。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-04-16T08:00:00.000Z">
-<meta property="article:modified_time" content="2021-04-16T08:39:48.000Z">
+<meta property="article:modified_time" content="2021-10-19T15:28:18.000Z">
 <meta property="article:author" content="cnk700i">
 <meta property="article:tag" content="Vue">
 <meta property="article:tag" content="Leaflet">
@@ -232,10 +232,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2021-04-16 16:00:00 / 修改时间：16:39:48" itemprop="dateCreated datePublished" datetime="2021-04-16T16:00:00+08:00">2021-04-16</time>
+              <time title="创建时间：2021-04-16 16:00:00" itemprop="dateCreated datePublished" datetime="2021-04-16T16:00:00+08:00">2021-04-16</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-10-19 23:28:18" itemprop="dateModified" datetime="2021-10-19T23:28:18+08:00">2021-10-19</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -306,10 +312,8 @@
 <li><p>关键代码</p>
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;vue-leaflet-container&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">l-map</span> <span class="attr">ref</span>=<span class="string">&quot;map&quot;</span> <span class="attr">style</span>=<span class="string">&quot;width: 100%; height: 100%&quot;</span> <span class="attr">:zoom</span>=<span class="string">&quot;zoom&quot;</span> <span class="attr">:center</span>=<span class="string">&quot;center&quot;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">l-tile-layer</span> <span class="attr">:url</span>=<span class="string">&quot;url&quot;</span> <span class="attr">:attribution</span>=<span class="string">&quot;attribution&quot;</span> /&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">template</span> <span class="attr">v-for</span>=<span class="string">&quot;(marker, index) in markers&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">l-marker</span> <span class="attr">:key</span>=<span class="string">&quot;index&quot;</span> <span class="attr">:lat-lng</span>=<span class="string">&quot;marker.location&quot;</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">l-popup</span> <span class="attr">:content</span>=<span class="string">&quot;</span></span></span><br><span class="line"><span class="string"><span class="tag">              cardTemplate[0] +</span></span></span><br><span class="line"><span class="string"><span class="tag">                marker.name + // 传入站点名称</span></span></span><br><span class="line"><span class="string"><span class="tag">                cardTemplate[1] +</span></span></span><br><span class="line"><span class="string"><span class="tag">                marker.id + // 传入站点id</span></span></span><br><span class="line"><span class="string"><span class="tag">                cardTemplate[2]</span></span></span><br><span class="line"><span class="string"><span class="tag">            &quot;</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">l-marker</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">l-map</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  <span class="function"><span class="title">created</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.cardTemplate[<span class="number">0</span>] = <span class="string">&#x27;&lt;div id=&quot;stationName&quot;&gt;&#x27;</span></span><br><span class="line">    <span class="built_in">this</span>.cardTemplate[<span class="number">1</span>] = <span class="string">&#x27;&lt;/div&gt;&lt;br&gt;告警数量：&lt;a id=&quot;alarmNum&quot; href=&quot;javascript:void(0);&quot; sid=&quot;&#x27;</span></span><br><span class="line">    <span class="built_in">this</span>.cardTemplate[<span class="number">2</span>] = <span class="string">&#x27;&quot;&gt;0&amp;nbsp&amp;nbsp&amp;nbsp&amp;nbsp&amp;nbsp&amp;nbsp&amp;nbsp&amp;nbsp&lt;/a&gt;&lt;br&gt;&#x27;</span></span><br><span class="line">    <span class="built_in">this</span>.getMarks()</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="function"><span class="title">mounted</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">    <span class="keyword">var</span> that = <span class="built_in">this</span></span><br><span class="line">    <span class="built_in">this</span>.$refs.map.mapObject.on(<span class="string">&#x27;popupopen&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">e</span>) </span>&#123;</span><br><span class="line">      <span class="comment">// 根据dom属性获取站点id，知道该弹窗属于哪个站点</span></span><br><span class="line">      <span class="keyword">const</span> sid = <span class="built_in">document</span>.getElementById(<span class="string">&#x27;alarmNum&#x27;</span>).getAttribute(<span class="string">&#x27;sid&#x27;</span>)</span><br><span class="line">      <span class="comment">// 根据站点id获取该站点的告警数量，并更新弹窗页面</span></span><br><span class="line">      <span class="built_in">document</span>.getElementById(<span class="string">&#x27;alarmNum&#x27;</span>).innerHTML = that.alarmNum[sid]</span><br><span class="line">      <span class="comment">// dom元素点击事件，根据需要跳转</span></span><br><span class="line">      <span class="built_in">document</span>.getElementById(<span class="string">&#x27;alarmNum&#x27;</span>).onclick = <span class="function"><span class="keyword">function</span> (<span class="params">e</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">const</span> stationName = <span class="built_in">document</span>.getElementById(<span class="string">&#x27;stationName&#x27;</span>).innerHTML</span><br><span class="line">        alert(<span class="string">&#x27;点击marker为&#x27;</span> + stationName)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p><strong>INFO：this.$refs.map.mapObject方式获取到原生dom对象，可以用js方法绑定事件。类似地，给LMarker、LPopup设置ref也有mapObject属性可以获取到原生dom对象。</strong></p>
-</blockquote>
-</li>
+<div class="admonition info"><p class="admonition-title">Tips</p><p>this.$refs.map.mapObject方式获取到原生dom对象，可以用js方法绑定事件。类似地，给LMarker、LPopup设置ref也有mapObject属性可以获取到原生dom对象。</p>
+</div></li>
 <li><p>问题与优化</p>
 </li>
 </ul>
@@ -341,14 +345,14 @@
 <p> 建议为每个popup中content的挂载点div指定唯一id(虽然直接$mount方法测试没问题)</p>
 </li>
 </ol>
-<blockquote>
-<p><strong>INFO：LPopup可以通过options属性设置popup的options，相关设置项可通过官网查看api文档。</strong></p>
-</blockquote>
-<hr>
-<h2 id="3-小结"><a href="#3-小结" class="headerlink" title="3.小结"></a>3.小结</h2><ul>
-<li>通过查看vue2-leaflet源码发现，leaflet的vue组件有属性可以设置，进行初始化后和原生js调用api初始化方式达到相同效果。</li>
-<li>使用Vue.extend可以动态渲染组件进行挂载。</li>
-</ul>
+<div class="admonition info"><p class="admonition-title">Tips</p><p>LPopup可以通过options属性设置popup的options，相关设置项可通过官网查看api文档。</p>
+</div>
+***
+## 3.小结 ##
+- 通过查看vue2-leaflet源码发现，leaflet的vue组件有属性可以设置，进行初始化后和原生js调用api初始化方式达到相同效果。
+- 使用Vue.extend可以动态渲染组件进行挂载。
+
+
 
     </div>
 
@@ -466,7 +470,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0-%E7%8E%AF%E5%A2%83"><span class="nav-text">0.环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%AE%89%E8%A3%85"><span class="nav-text">1.安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E6%A1%88%E4%BE%8B"><span class="nav-text">2.案例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E7%89%88%E6%9C%AC%E4%B8%80-%E7%9B%B4%E6%8E%A5%E6%8B%BC%E6%8E%A5%E5%86%85%E5%AE%B9"><span class="nav-text">2.1.版本一 直接拼接内容</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E7%89%88%E6%9C%AC%E4%BA%8C-%E5%8A%A8%E6%80%81%E6%B8%B2%E6%9F%93%E7%BB%84%E4%BB%B6"><span class="nav-text">2.2.版本二 动态渲染组件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%B0%8F%E7%BB%93"><span class="nav-text">3.小结</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0-%E7%8E%AF%E5%A2%83"><span class="nav-text">0.环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%AE%89%E8%A3%85"><span class="nav-text">1.安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E6%A1%88%E4%BE%8B"><span class="nav-text">2.案例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E7%89%88%E6%9C%AC%E4%B8%80-%E7%9B%B4%E6%8E%A5%E6%8B%BC%E6%8E%A5%E5%86%85%E5%AE%B9"><span class="nav-text">2.1.版本一 直接拼接内容</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E7%89%88%E6%9C%AC%E4%BA%8C-%E5%8A%A8%E6%80%81%E6%B8%B2%E6%9F%93%E7%BB%84%E4%BB%B6"><span class="nav-text">2.2.版本二 动态渲染组件</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 

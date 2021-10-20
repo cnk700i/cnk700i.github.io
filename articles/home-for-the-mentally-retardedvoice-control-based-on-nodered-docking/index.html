@@ -27,8 +27,31 @@
 <meta property="og:site_name" content="星路">
 <meta property="og:description" content="经过半年折腾，语音控制的设想也算初步实现了，不过现在的整体方案较当初规划有不少变化，正好整理一下填一下半年前挖的坑。">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/1.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/2.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/3.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/4.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/step1.1.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/step2.1.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/step2.2.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/step2.3.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/step2.4.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/step2.5.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/step2.6.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/step2.7.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/step2.8.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/step2.9.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/step2.10.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/step3.1.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/step4.1.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/step5.1.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/step6.1.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/step6.2.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/step6.3.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/step6.4.png">
+<meta property="og:image" content="https://ljr.im/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/step6.5.png">
 <meta property="article:published_time" content="2018-09-16T01:55:00.000Z">
-<meta property="article:modified_time" content="2020-08-28T13:36:20.000Z">
+<meta property="article:modified_time" content="2021-10-19T18:12:10.000Z">
 <meta property="article:author" content="cnk700i">
 <meta property="article:tag" content="Home Assistant">
 <meta property="article:tag" content="Node-RED">
@@ -36,6 +59,7 @@
 <meta property="article:tag" content="Alexa">
 <meta property="article:tag" content="Echo">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ljr.im/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/1.png">
 
 <link rel="canonical" href="https://ljr.im/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/">
 
@@ -243,7 +267,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-08-28 21:36:20" itemprop="dateModified" datetime="2020-08-28T21:36:20+08:00">2020-08-28</time>
+                <time title="修改时间：2021-10-20 02:12:10" itemprop="dateModified" datetime="2021-10-20T02:12:10+08:00">2021-10-20</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -268,7 +292,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>4.4k</span>
+              <span>4.5k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -298,6 +322,7 @@
 <p><code>&#123;&#39;entity_id&#39;:&#39;switch.template&#39;&#125;</code></p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//响应样例</span></span><br><span class="line">[&#123;</span><br><span class="line">  <span class="string">&quot;attributes&quot;</span>: &#123;</span><br><span class="line">      <span class="string">&quot;friendly_name&quot;</span>: <span class="string">&quot;测试&quot;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">&quot;context&quot;</span>: &#123;</span><br><span class="line">      <span class="string">&quot;id&quot;</span>: <span class="string">&quot;1898701755c24dd58c41df43d32fa4d1&quot;</span>,</span><br><span class="line">      <span class="string">&quot;user_id&quot;</span>: <span class="literal">null</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">&quot;entity_id&quot;</span>: <span class="string">&quot;switch.template&quot;</span>,</span><br><span class="line">  <span class="string">&quot;last_changed&quot;</span>: <span class="string">&quot;2018-09-14T03:32:28.422597+00:00&quot;</span>,</span><br><span class="line">  <span class="string">&quot;last_updated&quot;</span>: <span class="string">&quot;2018-09-14T03:32:28.422597+00:00&quot;</span>,</span><br><span class="line">  <span class="string">&quot;state&quot;</span>: <span class="string">&quot;on&quot;</span></span><br><span class="line">&#125;]</span><br></pre></td></tr></table></figure>
 
+<hr>
 <h2 id="2-Echo音箱"><a href="#2-Echo音箱" class="headerlink" title="2.Echo音箱"></a>2.Echo音箱</h2><p>前往开发者平台创建一个自定义技能，并关联到Echo，这样Echo就能将我们的语音指令翻译成Json格式指令并发送到我们指定的接口服务器。后续再根据指令调用HA的api来对终端设备进行控制。</p>
 <h3 id="2-1创建skill"><a href="#2-1创建skill" class="headerlink" title="2.1创建skill"></a>2.1创建skill</h3><ul>
 <li><p><a target="_blank" rel="noopener" href="https://developer.amazon.com/alexa/console/ask" title="Amazon开发者平台">登陆开发者平台</a></p>
@@ -305,181 +330,179 @@
 <li><p>点击右侧”Create Skill”按钮</p>
 </li>
 </ul>
-
+<img src="/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/1.png" class="">
 
 <ul>
 <li>输入技能名称，类型选”Custom”，点击”Create Skill”按钮。</li>
 </ul>
+<img src="/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/2.png" class="">
 
+<div class="admonition info"><p class="admonition-title">技能类型</p><p>其实更建议选&quot;Smart Home&quot;，Amazon定义好了很多标准属性，更加适合智能家居场景，不过指令的处理需要使用AWS Lamaba，不能用自己的服务。</p>
+</div>
 
-<blockquote>
-<p><strong>DEBUG：其实更建议选”Smart Home”，Amazon定义好了很多标准属性，更加适合智能家居场景，不过指令的处理需要使用AWS Lamaba，不能用自己的服务。</strong></p>
-</blockquote>
 <ul>
 <li>默认第一个即可，点击”Choose”继续。</li>
 </ul>
-
+<img src="/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/3.png" class="">
 
 <ul>
 <li>“Build”标签页加载如下，在这我们对Skill进行配置，可以看到1-4步骤是必须的。</li>
 </ul>
-
+<img src="/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/4.png" class="">
 
 <h4 id="2-1-1-Invocation"><a href="#2-1-1-Invocation" class="headerlink" title="2.1.1 Invocation"></a>2.1.1 Invocation</h4><ul>
 <li>点击左侧面板”Invocation”，设置调用名称，默认是和技能名称一样。</li>
 </ul>
+<img src="/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/step1.1.png" class="">
 
+<div class="admonition info"><p class="admonition-title">保存</p><p>设置完毕点击&quot;Save Model&quot;保存，后续不再提及。</p>
+</div>
 
-<blockquote>
-<p><strong>INFO：设置完毕点击”Save Model”保存，后续不再提及。</strong></p>
-</blockquote>
 <h4 id="2-1-2-Intent"><a href="#2-1-2-Intent" class="headerlink" title="2.1.2 Intent"></a>2.1.2 Intent</h4><ul>
 <li>点击左侧面板”Intents”，打开页面中点击”Add Intent”。</li>
 </ul>
-
+<img src="/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/step2.1.png" class="">
 
 <ul>
 <li>创建一个意图。假设我们目的是控制灯，创建一个”LightControll”意图。</li>
 </ul>
+<img src="/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/step2.2.png" class="">
 
+<div class="admonition info"><p class="admonition-title">Tips</p><p>意图（intent）是在语言处理模块与执行模块之间传递信息的一种比较通用的格式标准，可以简单认为是用户命令的形式化描述。</p>
+<p>意图名称&quot;LightControll&quot;会传递给接口服务器，然后我们就知道这是控制灯。</p>
+</div>
 
-<blockquote>
-<p><strong>DEBUG：意图（intent）是在语言处理模块与执行模块之间传递信息的一种比较通用的格式标准，可以简单认为是用户命令的形式化描述。</strong></p>
-</blockquote>
-<blockquote>
-<p><strong>INFO：意图名称”LightControll”会传递给接口服务器，然后我们就知道这是控制灯。</strong></p>
-</blockquote>
 <ul>
 <li>一个意图需要设置Sample Utterances和Intent Slots。</li>
 </ul>
+<img src="/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/step2.3.png" class="">
 
+<div class="admonition info"><p class="admonition-title">Tips</p><p>Sample Utterances是不同的说话样例，比如我们关灯可以说“打开厨房的灯”和“把厨房的灯打开”。然后Intent Slots是说话样例中的变量，我们“打开厨房的灯”、“打开客厅的灯”，“客厅”、“厨房”就是一个位置变量，用一个Slot代替。</p>
+</div>
 
-<blockquote>
-<p><strong>INFO：Sample Utterances是不同的说话样例，比如我们关灯可以说“打开厨房的灯”和“把厨房的灯打开”。然后Intent Slots是说话样例中的变量，我们“打开厨房的灯”、“打开客厅的灯”，“客厅”、“厨房”就是一个位置变量，用一个Slot代替。</strong></p>
-</blockquote>
 <ul>
 <li>在这我创建两种话例：”turn {sate} the {zone} light”、”turn the {zone} light {state}”Utterances。其中包含两个变量{state}，代表开灯还是关灯；{zone}，代表灯的位置。</li>
 </ul>
+<img src="/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/step2.4.png" class="">
 
+<div class="admonition info"><p class="admonition-title">Tips</p><p>当增加的话例中含有{xxx}，会自动创建对应名称的slot。</p>
+</div>
 
-<blockquote>
-<p><strong>DEBUG：当增加的话例中含有{xxx}，会自动创建对应名称的slot。</strong></p>
-</blockquote>
 <ul>
 <li>还要为slot设置类型，点击左侧面板”Slot Types”，然后点击”Add Slot Type”。</li>
 </ul>
-
+<img src="/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/step2.5.png" class="">
 
 <ul>
 <li>自定义即可，输入名称”CUSTOM_ZONE”，点击”Create custom slot type”。</li>
 </ul>
-
+<img src="/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/step2.6.png" class="">
 
 <ul>
 <li>依次添加”kitchen”和”living room”，作为测试就不添加多了。</li>
 </ul>
+<img src="/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/step2.7.png" class="">
 
+<div class="admonition info"><p class="admonition-title">Tips</p><p>如果设置同义词&quot;SYNONYMS&quot;，那应该设置&quot;ID&quot;，这样对接服务器根据&quot;ID&quot;来判断具体位置。</p>
+</div>
 
-<blockquote>
-<p><strong>DEBUG：如果设置同义词”SYNONYMS”，那应该设置”ID”，这样对接服务器根据”ID”来判断具体位置。</strong></p>
-</blockquote>
 <ul>
 <li>类似添加”CUSTOM_STATE”，两个值”on”、”off”分别对应开、关，。</li>
 </ul>
-
+<img src="/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/step2.8.png" class="">
 
 <ul>
 <li>点击左侧面板”LightControll” Intent返回先前页面，为”zone”、”state”设置SLOT TYPE。</li>
 </ul>
-
+<img src="/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/step2.9.png" class="">
 
 <ul>
 <li>点击上方”Save Model”，再点击”Build Model”，需要等待一段时间。</li>
 </ul>
-
+<img src="/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/step2.10.png" class="">
 
 
 <h3 id="2-2配置"><a href="#2-2配置" class="headerlink" title="2.2配置"></a>2.2配置</h3><h4 id="2-2-1-Endpoint"><a href="#2-2-1-Endpoint" class="headerlink" title="2.2.1 Endpoint"></a>2.2.1 Endpoint</h4><ul>
 <li>点击左侧面板”Endpoint”，点击HTTPS，输入接口服务器的API地址<code>https://&#123;[你的域名]&#125;/gate</code>。下拉框是选择证书类型，一般选<code>My development endpoint is a sub-domain of a domain that has a wildcard certificate from a certificate authority.</code></li>
 </ul>
+<img src="/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/step3.1.png" class="">
 
+<div class="admonition info"><p class="admonition-title">Tips</p><p>我们服务器与Alexa Skill服务器对接的网址，负责处理Json指令请求，具体实现见4.2章节。</p>
+</div>
+<div class="admonition warning"><p class="admonition-title">端口</p><p>需要使用HTTPS以及默认的443端口。</p>
+</div>
 
-<blockquote>
-<p><strong>DEBUG：我们服务器与Alexa Skill服务器对接的网址，负责处理Json指令请求，具体实现见4.2章节。</strong><br><strong>WARN：需要使用HTTPS以及默认的443端口。</strong></p>
-</blockquote>
 <h4 id="2-2-2-ACCOUNT-LINKING"><a href="#2-2-2-ACCOUNT-LINKING" class="headerlink" title="2.2.2 ACCOUNT LINKING"></a>2.2.2 ACCOUNT LINKING</h4><ul>
 <li>点击左侧面板”ACCOUNT LINKING”，打开开关，选择”Auth Code Grant”</li>
 </ul>
-
+<img src="/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/step4.1.png" class="">
 
 <ul>
 <li>“Authorization URI”填<code>https://&#123;[你的域名]&#125;/authorize.php</code>；”Access Token URI”填<code>https://&#123;[你的域名]&#125;/token.php</code>；”Client ID”填<code>alexa</code>；”Client Secret”填<code>alexa</code>；”Client Authentication Scheme”选择<code>Credentials in request body</code>；”Redirect URLs”中挑选一个（选择一个可以ping通的域名即可）。</li>
 </ul>
-<blockquote>
-<p><strong>INFO：认证服务网址的内容见3.1章节</strong></p>
-</blockquote>
+<div class="admonition info"><p class="admonition-title">网址</p><p>认证服务网址的内容见3.1章节</p>
+</div>
+
 
 
 <h4 id="2-2-3-Oauth服务"><a href="#2-2-3-Oauth服务" class="headerlink" title="2.2.3 Oauth服务"></a>2.2.3 Oauth服务</h4><p>参考<a href="https://ljr.im/articles/mentally-retarded-home-first-battle-docking-articles/" title="智障家居初战-对接篇">教程2.2.②章节</a>创建好数据库，增加一个用户即可。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#Ubuntu</span></span><br><span class="line">mysql -u root -p <span class="comment">#登陆Mysql</span></span><br><span class="line">&gt; use oauth; <span class="comment">#选择数据库</span></span><br><span class="line">&gt; INSERT INTO oauth_clients (client_id, client_secret, redirect_uri) VALUES(<span class="string">&quot;alexa&quot;</span>,<span class="string">&quot;alexa&quot;</span>,<span class="string">&quot;https://pitangui.amazon.com/api/skill/link/xxx&quot;</span>); <span class="comment">#增加认证用户（信息与上小节设置一致）</span></span><br></pre></td></tr></table></figure>
 
+<hr>
 <h2 id="3-对接"><a href="#3-对接" class="headerlink" title="3.对接"></a>3.对接</h2><h3 id="3-1公网服务"><a href="#3-1公网服务" class="headerlink" title="3.1公网服务"></a>3.1公网服务</h3><p>参考<a href="https://ljr.im/articles/mentally-retarded-home-first-battle-network-articles/" title="智障家居初战-网络篇">教程</a>部署公网访问服务器，其中oauth认证服务采用之前的即可。之前设置接口服务器的API网址为<code>https://&#123;[你的域名]&#125;/gate</code>，接下来只要apache2将请求转发给Node-Red服务器即可。<br><a href="https://ljr.im/articles/docker-installation-using-nodered-practice/" title="docker安装使用Node-RED实践">Node-Red安装参考教程</a></p>
 <ul>
-<li>apache2配置，假设Node-Red的访问地址是<code>http://192.168.0.100:1880</code>。<ol>
+<li><p>apache2配置，假设Node-Red的访问地址是<code>http://192.168.0.100:1880</code>。</p>
+<ol>
 <li><code># a2enmod proxy</code></li>
 <li><code># vi /etc/apache2/sites-available/default-ssl.conf</code></li>
 <li>在&lt;VirtualHost&gt;&lt;/VirtualHost&gt;标签内加入<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">ProxyPass</span> <span class="string">/gate</span> <span class="string">http://192.168.0.100:1880/gate</span></span><br><span class="line"><span class="string">ProxyPassReverse</span> <span class="string">/gate</span> <span class="string">http://192.168.0.100:1880/gate</span></span><br></pre></td></tr></table></figure></li>
-<li><code># service apache2 restart</code><blockquote>
-<p><strong>WARN：注意不要把根目录/进行反向代理，不然外网可以访问Node-Red了。</strong></p>
-</blockquote>
-</li>
+<li><code># service apache2 restart</code><div class="admonition warning"><p class="admonition-title">注意</p><p>不要把根目录/进行反向代理，不然外网可以访问Node-Red了。</p>
+</div></li>
 </ol>
 </li>
-</ul>
-<ul>
 <li><p>Node-red配置，设置登陆密码，加强安全。</p>
 <ol>
 <li><code># docker exec -it &#123;[Node-Red容器名]&#125; bash</code></li>
 <li><code>root@xxxx# node -e &quot;console.log(require(&#39;bcryptjs&#39;).hashSync(process.argv[1], 8));&quot; password</code><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@xxxx<span class="comment"># $2a$08$BpwjQlfQEtuT8z5ZfwiTqeDBauNkMeVYMl4vbNrmxd89o1/WeGtRm</span></span><br></pre></td></tr></table></figure></li>
 <li><code>root@xxxx# vi /data/settings.js</code></li>
 <li>找到adminAuth，注释掉adminAuth，password处填第2步生成的字符串。<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">adminAuth: &#123;</span><br><span class="line"><span class="attr">type</span>: <span class="string">&quot;credentials&quot;</span>,</span><br><span class="line"><span class="attr">users</span>: [&#123;</span><br><span class="line">    <span class="attr">username</span>: <span class="string">&quot;&#123;[用户名]&#125;&quot;</span>,</span><br><span class="line">    <span class="attr">password</span>: <span class="string">&quot;&#123;[密码]&#125;&quot;</span>,</span><br><span class="line">    <span class="attr">permissions</span>: <span class="string">&quot;*&quot;</span></span><br><span class="line">&#125;]</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure></li>
-<li>返回到宿主机，<code># doecker restart &#123;[Node-Red容器名]&#125;</code>使配置生效。<blockquote>
-<p><strong>DEBUG：配置password保存的是加密后的字符串。</strong></p>
-</blockquote>
-</li>
+<li>返回到宿主机，<code># doecker restart &#123;[Node-Red容器名]&#125;</code>使配置生效。<div class="admonition info"><p class="admonition-title">password</p><p>配置中password保存的是加密后的字符串。</p>
+</div></li>
 </ol>
 </li>
 </ul>
+<hr>
 <h2 id="4-业务处理"><a href="#4-业务处理" class="headerlink" title="4.业务处理"></a>4.业务处理</h2><p>Node-Red搭建业务处理节点，因篇幅有限，加上本人对Alexa的交互了解有限，所以在此只介绍下大体处理流程，详细的实现还是要耐心去看看官方的文档。</p>
+<img src="/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/step5.1.png" class="">
 
+<div class="admonition info"><p class="admonition-title">使用建议</p><p>采用Node-Red进行对接的最大的好处就是灵活扩展，基本流程上扩充即可，可以一边学习一边不断完善。</p>
+</div>
 
-<blockquote>
-<p><strong>DEBUG：采用Node-Red进行对接的最大的好处就是灵活扩展，基本流程上扩充即可，可以一边学习一边不断完善。</strong></p>
-</blockquote>
+<hr>
 <h2 id="5-联调"><a href="#5-联调" class="headerlink" title="5.联调"></a>5.联调</h2><ul>
 <li>打开<a target="_blank" rel="noopener" href="https://alexa.amazon.com/" title="Echo设备管理页面">Echo设备管理页面</a>，左侧点击’Skills’，然后点击右上角’Your Skills’。</li>
 </ul>
-
+<img src="/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/step6.1.png" class="">
 
 <ul>
 <li>点击’ALL SKILLS’，可以看到开发的技能。</li>
 </ul>
-
+<img src="/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/step6.2.png" class="">
 
 <ul>
 <li>点击’ENABLE’启用技能，会跳转到授权页面。</li>
 </ul>
-
+<img src="/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/step6.3.png" class="">
 
 <ul>
 <li>认证成功会返回如下页面。</li>
 </ul>
-
+<img src="/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/step6.4.png" class="">
 
 <ul>
 <li>返回开发者平台的技能页面，在上方点击’Test’标签打开测试页面，输入指令可以进行测试。</li>
 </ul>
-
+<img src="/articles/home-for-the-mentally-retardedvoice-control-based-on-nodered-docking/step6.5.png" class="">
 
 <ul>
 <li>文字指令测试正常，可以进行真机测试。</li>
